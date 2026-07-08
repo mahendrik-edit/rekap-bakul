@@ -208,31 +208,55 @@
             </div>
         </div>
 
-        <!-- TAB 3: REKAP LABA -->
-        <div class="tab-panel" id="tabLaba">
-            <p class="subtitle">Rekap laba per kemitraan & kandang</p>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
-                <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
-            </div>
-            <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
-            <div class="table-wrapper" id="labaWrapper" style="display:none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Kemitraan</th>
-                            <th>Kandang</th>
-                            <th class="text-right">Total Tonase</th>
-                            <th class="text-right">Total Penjualan</th>
-                            <th class="text-right">Total Kemitraan</th>
-                            <th class="text-right">Total Biaya</th>
-                            <th class="text-right">Total Laba</th>
-                        </tr>
-                    </thead>
-                    <tbody id="labaBody"></tbody>
-                </table>
-            </div>
-        </div>
+       <!-- TAB 3: REKAP LABA -->
+<div class="tab-panel" id="tabLaba">
+    <p class="subtitle">Rekap laba per kemitraan & kandang dengan rincian penjualan</p>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+        <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
+    </div>
+    <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+    
+    <!-- RINCIAN LABA PER KEMITRAAN -->
+    <div class="table-wrapper" id="labaWrapper" style="display:none;">
+        <h4 style="margin:12px 0 8px;">📊 Rekap Laba per Kemitraan & Kandang</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Kemitraan</th>
+                    <th>Kandang</th>
+                    <th class="text-right">Total Tonase</th>
+                    <th class="text-right">Total Penjualan</th>
+                    <th class="text-right">Total Kemitraan</th>
+                    <th class="text-right">Total Biaya</th>
+                    <th class="text-right">Total Laba</th>
+                </tr>
+            </thead>
+            <tbody id="labaBody"></tbody>
+        </table>
+    </div>
 
+    <!-- RINCIAN PENJUALAN PER BAKUL -->
+    <div class="table-wrapper" id="rincianWrapper" style="display:none; margin-top:24px;">
+        <h4 style="margin:12px 0 8px;">🧾 Rincian Penjualan per Bakul</h4>
+        <p style="color:var(--ios-gray);font-size:13px;margin-bottom:8px;">Detail penjualan dari setiap nota yang sudah didistribusikan</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>No Nota</th>
+                    <th>Tanggal</th>
+                    <th>Kemitraan</th>
+                    <th>Kandang</th>
+                    <th>Bakul</th>
+                    <th class="text-right">Tonase</th>
+                    <th class="text-right">Harga Jual</th>
+                    <th class="text-right">Total Penjualan</th>
+                    <th class="text-right">Laba</th>
+                </tr>
+            </thead>
+            <tbody id="rincianBody"></tbody>
+        </table>
+    </div>
+</div>
         <!-- TAB 4: MASTER -->
         <div class="tab-panel" id="tabMaster">
             <p class="subtitle">Kelola harga master</p>
@@ -615,88 +639,209 @@
             }
         }
 
-        // ============ REKAP LABA ============
-        async function loadLaba() {
-            if (!requirePassword()) return;
-            const urlNota = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
-            const urlBakul = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_BAKUL?key=${API_KEY}`;
-            try {
-                const [resNota, resBakul] = await Promise.all([fetch(urlNota), fetch(urlBakul)]);
-                const notaData = await resNota.json();
-                const bakulData = await resBakul.json();
-                
-                const notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
-                const bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
+       // ============ REKAP LABA DENGAN RINCIAN ============
+async function loadLaba() {
+    if (!requirePassword()) return;
+    
+    const urlNota = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
+    const urlBakul = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_BAKUL?key=${API_KEY}`;
+    
+    try {
+        const [resNota, resBakul] = await Promise.all([fetch(urlNota), fetch(urlBakul)]);
+        const notaData = await resNota.json();
+        const bakulData = await resBakul.json();
+        
+        const notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
+        const bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
 
-                document.getElementById('loadingLaba').style.display = 'none';
-                document.getElementById('labaWrapper').style.display = 'block';
+        document.getElementById('loadingLaba').style.display = 'none';
+        document.getElementById('labaWrapper').style.display = 'block';
+        document.getElementById('rincianWrapper').style.display = 'block';
 
-                // Group laba per kemitraan & kandang
-                const labaMap = {};
-                notaRows.forEach(nota => {
-                    const noNota = nota[0];
-                    const kemitraan = nota[2] || 'Unknown';
-                    const kandang = nota[3] || 'Unknown';
-                    const totalKemitraan = parseFloat(nota[6]) || 0;
-                    const biayaOperasional = parseFloat(nota[10]) || 0;
-                    const key = kemitraan + '|' + kandang;
-                    if (!labaMap[key]) {
-                        labaMap[key] = { kemitraan, kandang, totalTonase: 0, totalPenjualan: 0, totalKemitraan: 0, totalBiaya: 0 };
-                    }
-                    labaMap[key].totalKemitraan += totalKemitraan;
-                    labaMap[key].totalBiaya += biayaOperasional;
-                });
-
-                bakulRows.forEach(row => {
-                    const noNota = row[0];
-                    const kemitraan = row[2] || 'Unknown';
-                    const kandang = row[3] || 'Unknown';
-                    const key = kemitraan + '|' + kandang;
-                    const tonase = parseFloat(row[2]) || 0;
-                    const totalPenjualan = parseFloat(row[4]) || 0;
-                    if (labaMap[key]) {
-                        labaMap[key].totalTonase += tonase;
-                        labaMap[key].totalPenjualan += totalPenjualan;
-                    }
-                });
-
-                const tbody = document.getElementById('labaBody');
-                const keys = Object.keys(labaMap);
-                if (keys.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
-                    return;
-                }
-                let grandTotalLaba = 0;
-                tbody.innerHTML = keys.map(key => {
-                    const item = labaMap[key];
-                    const laba = item.totalPenjualan - (item.totalKemitraan + item.totalBiaya);
-                    grandTotalLaba += laba;
-                    return `
-                        <tr>
-                            <td>${item.kemitraan}</td>
-                            <td>${item.kandang}</td>
-                            <td class="text-right">${item.totalTonase.toFixed(1)}</td>
-                            <td class="text-right">Rp ${item.totalPenjualan.toLocaleString('id-ID')}</td>
-                            <td class="text-right">Rp ${item.totalKemitraan.toLocaleString('id-ID')}</td>
-                            <td class="text-right">Rp ${item.totalBiaya.toLocaleString('id-ID')}</td>
-                            <td class="text-right ${laba >= 0 ? 'text-success' : 'text-danger'}">Rp ${laba.toLocaleString('id-ID')}</td>
-                        </tr>
-                    `;
-                }).join('');
-
-                // Grand Total
-                tbody.innerHTML += `
-                    <tr style="font-weight:700;background:var(--ios-gray-light);">
-                        <td colspan="6" class="text-right">GRAND TOTAL LABA</td>
-                        <td class="text-right ${grandTotalLaba >= 0 ? 'text-success' : 'text-danger'}">Rp ${grandTotalLaba.toLocaleString('id-ID')}</td>
-                    </tr>
-                `;
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById('loadingLaba').textContent = '❌ Gagal memuat data laba';
+        // ===== 1. REKAP LABA PER KEMITRAAN & KANDANG =====
+        const labaMap = {};
+        
+        // Buat map untuk kemitraan & kandang dari DATA_NOTA
+        notaRows.forEach(nota => {
+            const noNota = nota[0];
+            const kemitraan = nota[2] || 'Unknown';
+            const kandang = nota[3] || 'Unknown';
+            const totalKemitraan = parseFloat(nota[6]) || 0;
+            const biayaOperasional = parseFloat(nota[11]) || 0;
+            const key = kemitraan + '|' + kandang;
+            
+            if (!labaMap[key]) {
+                labaMap[key] = { 
+                    kemitraan, 
+                    kandang, 
+                    totalTonase: 0, 
+                    totalPenjualan: 0, 
+                    totalKemitraan: 0, 
+                    totalBiaya: 0,
+                    details: []
+                };
             }
+            labaMap[key].totalKemitraan += totalKemitraan;
+            labaMap[key].totalBiaya += biayaOperasional;
+        });
+
+        // Tambahkan data dari DATA_BAKUL
+        bakulRows.forEach(row => {
+            const noNota = row[0];
+            const bakul = row[1] || 'Unknown';
+            const tonase = parseFloat(row[2]) || 0;
+            const hargaJual = parseFloat(row[3]) || 0;
+            const totalPenjualan = parseFloat(row[4]) || 0;
+            const laba = parseFloat(row[5]) || 0;
+            const tanggal = row[6] || '';
+            
+            // Cari kemitraan & kandang dari nota
+            let kemitraan = 'Unknown';
+            let kandang = 'Unknown';
+            for (let n of notaRows) {
+                if (n[0] === noNota) {
+                    kemitraan = n[2] || 'Unknown';
+                    kandang = n[3] || 'Unknown';
+                    break;
+                }
+            }
+            
+            const key = kemitraan + '|' + kandang;
+            if (labaMap[key]) {
+                labaMap[key].totalTonase += tonase;
+                labaMap[key].totalPenjualan += totalPenjualan;
+                labaMap[key].details.push({
+                    noNota,
+                    tanggal,
+                    kemitraan,
+                    kandang,
+                    bakul,
+                    tonase,
+                    hargaJual,
+                    totalPenjualan,
+                    laba
+                });
+            } else {
+                // Jika tidak ada di map (kemungkinan data tidak konsisten)
+                if (!labaMap[key]) {
+                    labaMap[key] = { 
+                        kemitraan, 
+                        kandang, 
+                        totalTonase: 0, 
+                        totalPenjualan: 0, 
+                        totalKemitraan: 0, 
+                        totalBiaya: 0,
+                        details: []
+                    };
+                }
+                labaMap[key].totalTonase += tonase;
+                labaMap[key].totalPenjualan += totalPenjualan;
+                labaMap[key].details.push({
+                    noNota,
+                    tanggal,
+                    kemitraan,
+                    kandang,
+                    bakul,
+                    tonase,
+                    hargaJual,
+                    totalPenjualan,
+                    laba
+                });
+            }
+        });
+
+        // ===== RENDER REKAP LABA =====
+        const tbody = document.getElementById('labaBody');
+        const keys = Object.keys(labaMap);
+        
+        if (keys.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
+            document.getElementById('rincianWrapper').style.display = 'none';
+            return;
         }
+        
+        let grandTotalLaba = 0;
+        let grandTotalTonase = 0;
+        let grandTotalPenjualan = 0;
+        let grandTotalKemitraan = 0;
+        let grandTotalBiaya = 0;
+        
+        tbody.innerHTML = keys.sort().map(key => {
+            const item = labaMap[key];
+            const laba = item.totalPenjualan - (item.totalKemitraan + item.totalBiaya);
+            grandTotalLaba += laba;
+            grandTotalTonase += item.totalTonase;
+            grandTotalPenjualan += item.totalPenjualan;
+            grandTotalKemitraan += item.totalKemitraan;
+            grandTotalBiaya += item.totalBiaya;
+            
+            return `
+                <tr>
+                    <td><strong>${item.kemitraan}</strong></td>
+                    <td>${item.kandang}</td>
+                    <td class="text-right">${item.totalTonase.toFixed(1)}</td>
+                    <td class="text-right">Rp ${item.totalPenjualan.toLocaleString('id-ID')}</td>
+                    <td class="text-right">Rp ${item.totalKemitraan.toLocaleString('id-ID')}</td>
+                    <td class="text-right">Rp ${item.totalBiaya.toLocaleString('id-ID')}</td>
+                    <td class="text-right ${laba >= 0 ? 'text-success' : 'text-danger'}">
+                        Rp ${laba.toLocaleString('id-ID')}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        // Grand Total
+        tbody.innerHTML += `
+            <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
+                <td colspan="2" class="text-right">GRAND TOTAL</td>
+                <td class="text-right">${grandTotalTonase.toFixed(1)}</td>
+                <td class="text-right">Rp ${grandTotalPenjualan.toLocaleString('id-ID')}</td>
+                <td class="text-right">Rp ${grandTotalKemitraan.toLocaleString('id-ID')}</td>
+                <td class="text-right">Rp ${grandTotalBiaya.toLocaleString('id-ID')}</td>
+                <td class="text-right ${grandTotalLaba >= 0 ? 'text-success' : 'text-danger'}">
+                    Rp ${grandTotalLaba.toLocaleString('id-ID')}
+                </td>
+            </tr>
+        `;
+
+        // ===== RENDER RINCIAN PENJUALAN PER BAKUL =====
+        const rincianBody = document.getElementById('rincianBody');
+        const allDetails = [];
+        
+        Object.values(labaMap).forEach(item => {
+            item.details.forEach(d => {
+                allDetails.push(d);
+            });
+        });
+
+        if (allDetails.length === 0) {
+            rincianBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada rincian penjualan</td></tr>';
+        } else {
+            // Urutkan berdasarkan tanggal terbaru
+            allDetails.sort((a, b) => (a.tanggal < b.tanggal) ? 1 : -1);
+            
+            rincianBody.innerHTML = allDetails.map(d => `
+                <tr>
+                    <td><strong>${d.noNota}</strong></td>
+                    <td>${d.tanggal}</td>
+                    <td>${d.kemitraan}</td>
+                    <td>${d.kandang}</td>
+                    <td>${d.bakul}</td>
+                    <td class="text-right">${d.tonase.toFixed(1)}</td>
+                    <td class="text-right">Rp ${d.hargaJual.toLocaleString('id-ID')}</td>
+                    <td class="text-right">Rp ${d.totalPenjualan.toLocaleString('id-ID')}</td>
+                    <td class="text-right ${d.laba >= 0 ? 'text-success' : 'text-danger'}">
+                        Rp ${d.laba.toLocaleString('id-ID')}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+    } catch (error) {
+        console.error('Error loadLaba:', error);
+        document.getElementById('loadingLaba').textContent = '❌ Gagal memuat data laba: ' + error.message;
+    }
+}
 
         // ============ MASTER HARGA ============
         function renderMasterHarga() {
