@@ -681,7 +681,6 @@
 
         <!-- FORM -->
         <form id="inputForm">
-            <!-- ===== TANGGAL ===== -->
             <div class="form-group">
                 <label class="required">Tanggal Transaksi</label>
                 <input type="date" id="tanggal" required>
@@ -783,7 +782,7 @@
 
     <script>
         // ============ KONFIGURASI ============
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyhRlFR1LqAASUVu1ZHdSJxOXg4DWhxU2wZgK9iiF6B4bwhD--a3ByVJMFhE_WgSqk/exec';
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby1GnDS-v-Au8M9LlH8DUNvFeR3YsHIPjwTl8efe_wNu7ExgMNfCz92qh9ynO3Xa6cG/exec';
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
 
@@ -943,7 +942,6 @@
             showAlert('⏳ Menyimpan data…', 'info');
 
             try {
-                // Kirim data ke Web App (hanya 6 field)
                 await fetch(WEB_APP_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -961,7 +959,6 @@
                 showAlert('✅ Data berhasil dikirim!', 'success');
                 document.getElementById('inputForm').reset();
                 document.getElementById('totalPenjualan').value = '';
-                // Set tanggal ke hari ini lagi setelah reset
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('tanggal').value = today;
 
