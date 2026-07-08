@@ -1005,6 +1005,7 @@
 
     <script>
         // ============ KONFIGURASI ============
+        // GANTI DENGAN URL WEB APP ANDA!
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyhRlFR1LqAASUVu1ZHdSJxOXg4DWhxU2wZgK9iiF6B4bwhD--a3ByVJMFhE_WgSqk/exec';
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
@@ -1354,9 +1355,9 @@
             }
 
             try {
-                await fetch(WEB_APP_URL, {
+                // Kirim data ke Web App (TANPA mode: 'no-cors')
+                const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'updateAllHarga',
@@ -1370,10 +1371,20 @@
                     })
                 });
 
-                alert('✅ Semua data berhasil diupdate!');
-                await loadAllData();
+                // Baca respons dari server
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ ' + result.message);
+                    // Refresh data setelah update
+                    await loadAllData();
+                } else {
+                    alert('❌ Gagal update: ' + (result.error || 'Unknown error'));
+                }
+
             } catch (error) {
-                alert('❌ Gagal update: ' + error.message);
+                alert('❌ Error: ' + error.message);
+                console.error('Update error:', error);
             } finally {
                 if (btnElement) {
                     btnElement.disabled = false;
@@ -1421,9 +1432,8 @@
             alertDiv.style.display = 'block';
 
             try {
-                await fetch(WEB_APP_URL, {
+                const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'tambahMaster',
@@ -1436,12 +1446,20 @@
                         jumlahPegawai
                     })
                 });
-                alertDiv.className = 'alert-box success';
-                alertDiv.textContent = '✅ Data master berhasil ditambahkan!';
-                setTimeout(() => {
-                    tutupModalTambahMaster();
-                    loadAllData();
-                }, 1500);
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alertDiv.className = 'alert-box success';
+                    alertDiv.textContent = '✅ ' + result.message;
+                    setTimeout(() => {
+                        tutupModalTambahMaster();
+                        loadAllData();
+                    }, 1500);
+                } else {
+                    alertDiv.className = 'alert-box error';
+                    alertDiv.textContent = '❌ ' + (result.error || 'Gagal menyimpan');
+                }
             } catch (error) {
                 alertDiv.className = 'alert-box error';
                 alertDiv.textContent = '❌ Error: ' + error.message;
@@ -1508,9 +1526,8 @@
             alertDiv.style.display = 'block';
 
             try {
-                await fetch(WEB_APP_URL, {
+                const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'updateTransaksi',
@@ -1528,12 +1545,19 @@
                     })
                 });
 
-                alertDiv.className = 'alert-box success';
-                alertDiv.textContent = '✅ Data berhasil diupdate!';
-                setTimeout(() => {
-                    tutupModalEdit();
-                    loadAllData();
-                }, 1500);
+                const result = await response.json();
+
+                if (result.success) {
+                    alertDiv.className = 'alert-box success';
+                    alertDiv.textContent = '✅ ' + result.message;
+                    setTimeout(() => {
+                        tutupModalEdit();
+                        loadAllData();
+                    }, 1500);
+                } else {
+                    alertDiv.className = 'alert-box error';
+                    alertDiv.textContent = '❌ ' + (result.error || 'Gagal update');
+                }
             } catch (error) {
                 alertDiv.className = 'alert-box error';
                 alertDiv.textContent = '❌ Error: ' + error.message;
@@ -1548,9 +1572,8 @@
             if (!confirm('Yakin ingin menghapus data ini? Tindakan tidak bisa dibatalkan!')) return;
 
             try {
-                await fetch(WEB_APP_URL, {
+                const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'hapusData',
@@ -1558,8 +1581,14 @@
                     })
                 });
 
-                alert('✅ Data berhasil dihapus!');
-                loadAllData();
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ Data berhasil dihapus!');
+                    loadAllData();
+                } else {
+                    alert('❌ Gagal hapus data: ' + (result.error || 'Unknown error'));
+                }
             } catch (error) {
                 alert('❌ Gagal hapus data: ' + error.message);
             }
