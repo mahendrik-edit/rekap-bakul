@@ -188,7 +188,7 @@
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadRekap()">🔄 Refresh</button>
                 </div>
-                <div id="loadingRekap" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat数据…</div>
+                <div id="loadingRekap" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data...</div>
                 <div class="table-wrapper" id="rekapWrapper" style="display:none;">
                     <table>
                         <thead>
@@ -215,7 +215,7 @@
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadPenjualanNota()">🔄 Refresh</button>
                 </div>
-                <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+                <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data...</div>
                 <div class="table-wrapper" id="penjualanWrapper" style="display:none;">
                     <table>
                         <thead>
@@ -241,7 +241,7 @@
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
                 </div>
-                <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+                <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data...</div>
                 <div class="table-wrapper" id="labaWrapper" style="display:none;">
                     <h4 style="margin:12px 0 8px;">📊 Rekap Laba per Nota</h4>
                     <table>
@@ -299,7 +299,7 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="masterBody"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr></tbody>
+                        <tbody id="masterBody"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data...</td></tr></tbody>
                     </table>
                 </div>
                 <div style="text-align:center;margin-top:12px;">
@@ -362,16 +362,16 @@
 
     <script>
         // ============ KONFIGURASI ============
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxnw0UVgZg808wD8BVHH0rt4aSrVR9Wu4IU1AoBNclALq1xnVlAtZTtcyrVHgT33uF_/exec';
-        const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
-        const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
-        const PASSWORD = 'pass4all';
-        let masterData = [];
-        let isVerified = false;
+        var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxnw0UVgZg808wD8BVHH0rt4aSrVR9Wu4IU1AoBNclALq1xnVlAtZTtcyrVHgT33uF_/exec';
+        var SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
+        var API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
+        var PASSWORD = 'pass4all';
+        var masterData = [];
+        var isVerified = false;
 
         // ============ SESSION MANAGEMENT ============
         function checkSession() {
-            const session = localStorage.getItem('pemilikSession');
+            var session = localStorage.getItem('pemilikSession');
             if (session === 'true') {
                 isVerified = true;
                 document.getElementById('passwordOverlay').classList.remove('active');
@@ -392,8 +392,8 @@
         }
 
         function verifyPassword() {
-            const input = document.getElementById('passwordInput');
-            const error = document.getElementById('passwordError');
+            var input = document.getElementById('passwordInput');
+            var error = document.getElementById('passwordError');
             if (input.value === PASSWORD) {
                 isVerified = true;
                 saveSession();
@@ -422,10 +422,19 @@
 
         // ============ TABS ============
         function openTab(tabId) {
-            document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            var panels = document.querySelectorAll('.tab-panel');
+            var btns = document.querySelectorAll('.tab-btn');
+            for (var i = 0; i < panels.length; i++) {
+                panels[i].classList.remove('active');
+            }
+            for (var j = 0; j < btns.length; j++) {
+                btns[j].classList.remove('active');
+            }
             document.getElementById(tabId).classList.add('active');
-            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+            var btn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
+            if (btn) {
+                btn.classList.add('active');
+            }
             
             if (tabId === 'tabRekap') loadRekap();
             else if (tabId === 'tabLaba') loadLaba();
@@ -434,69 +443,96 @@
 
         // ============ SET DEFAULT TANGGAL ============
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
+            var tanggalInput = document.getElementById('tanggal');
+            if (tanggalInput) {
+                tanggalInput.value = new Date().toISOString().split('T')[0];
+            }
         });
 
         // ============ AMBIL DATA MASTER ============
         async function ambilMaster() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/MASTER_HARGA?key=${API_KEY}`;
+            var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/MASTER_HARGA?key=' + API_KEY;
             try {
-                const response = await fetch(url);
-                const data = await response.json();
-                return data.values && data.values.length > 1 ? data.values.slice(1) : [];
-            } catch (error) { console.error(error); return []; }
+                var response = await fetch(url);
+                var data = await response.json();
+                if (data.values && data.values.length > 1) {
+                    return data.values.slice(1);
+                }
+                return [];
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
         }
 
         async function loadMaster() {
             masterData = await ambilMaster();
-            const kemitraanSelect = document.getElementById('kemitraan');
-            const kemitraanList = [...new Set(masterData.map(row => row[0]))];
+            var kemitraanSelect = document.getElementById('kemitraan');
+            var kemitraanList = [];
+            for (var i = 0; i < masterData.length; i++) {
+                if (masterData[i][0] && kemitraanList.indexOf(masterData[i][0]) === -1) {
+                    kemitraanList.push(masterData[i][0]);
+                }
+            }
             kemitraanSelect.innerHTML = '<option value="">Pilih Kemitraan</option>';
-            kemitraanList.forEach(k => {
-                const option = document.createElement('option');
-                option.value = k;
-                option.textContent = k;
+            for (var j = 0; j < kemitraanList.length; j++) {
+                var option = document.createElement('option');
+                option.value = kemitraanList[j];
+                option.textContent = kemitraanList[j];
                 kemitraanSelect.appendChild(option);
-            });
+            }
             renderMasterHarga();
         }
 
         // ============ UPDATE KANDANG & HARGA ============
         document.getElementById('kemitraan').addEventListener('change', function() {
-            const kemitraan = this.value;
-            const kandangSelect = document.getElementById('kandang');
-            if (!kemitraan) { kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>'; return; }
-            const filtered = masterData.filter(row => row[0] === kemitraan);
+            var kemitraan = this.value;
+            var kandangSelect = document.getElementById('kandang');
+            if (!kemitraan) {
+                kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>';
+                return;
+            }
+            var filtered = [];
+            for (var i = 0; i < masterData.length; i++) {
+                if (masterData[i][0] === kemitraan) {
+                    filtered.push(masterData[i]);
+                }
+            }
             kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>';
-            filtered.forEach(row => {
-                const option = document.createElement('option');
-                option.value = row[1];
-                option.textContent = row[1];
-                option.dataset.hargaBeli = row[2] || 0;
-                option.dataset.biayaMakan = row[4] || 0;
-                option.dataset.jasaAngkut = row[5] || 10000;
-                option.dataset.jumlahPegawai = row[6] || 1;
+            for (var j = 0; j < filtered.length; j++) {
+                var option = document.createElement('option');
+                option.value = filtered[j][1];
+                option.textContent = filtered[j][1];
+                option.dataset.hargaBeli = filtered[j][2] || 0;
+                option.dataset.biayaMakan = filtered[j][4] || 0;
+                option.dataset.jasaAngkut = filtered[j][5] || 10000;
+                option.dataset.jumlahPegawai = filtered[j][6] || 1;
                 kandangSelect.appendChild(option);
-            });
+            }
         });
 
         document.getElementById('kandang').addEventListener('change', function() {
-            const opt = this.options[this.selectedIndex];
-            document.getElementById('hargaKemitraan').value = opt?.dataset?.hargaBeli || 0;
-            document.getElementById('biayaMakan').value = opt?.dataset?.biayaMakan || 0;
-            document.getElementById('jasaAngkut').value = opt?.dataset?.jasaAngkut || 10000;
-            document.getElementById('jumlahPegawai').value = opt?.dataset?.jumlahPegawai || 1;
+            var opt = this.options[this.selectedIndex];
+            var hargaBeli = opt?.dataset?.hargaBeli || 0;
+            var biayaMakan = opt?.dataset?.biayaMakan || 0;
+            var jasaAngkut = opt?.dataset?.jasaAngkut || 10000;
+            var jumlahPegawai = opt?.dataset?.jumlahPegawai || 1;
+            document.getElementById('hargaKemitraan').value = hargaBeli;
+            document.getElementById('biayaMakan').value = biayaMakan;
+            document.getElementById('jasaAngkut').value = jasaAngkut;
+            document.getElementById('jumlahPegawai').value = jumlahPegawai;
             hitungTotal();
         });
 
         function hitungTotal() {
-            const tonase = parseFloat(document.getElementById('tonase').value) || 0;
-            const hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value) || 0;
-            const biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
-            const jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 10000;
-            const totalKemitraan = tonase * hargaKemitraan;
-            const biayaPerPegawai = biayaMakan + ((tonase / 100) * jasaAngkut);
-            const totalBiaya = biayaPerPegawai * (parseInt(document.getElementById('jumlahPegawai').value) || 1);
+            var tonase = parseFloat(document.getElementById('tonase').value) || 0;
+            var hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value) || 0;
+            var biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
+            var jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 10000;
+            var jumlahPegawai = parseInt(document.getElementById('jumlahPegawai').value) || 1;
+            var totalKemitraan = tonase * hargaKemitraan;
+            var biayaPerPegawai = biayaMakan + ((tonase / 100) * jasaAngkut);
+            var totalBiaya = biayaPerPegawai * jumlahPegawai;
             document.getElementById('totalKemitraanDisplay').textContent = totalKemitraan.toLocaleString('id-ID');
             document.getElementById('totalBiayaDisplay').textContent = totalBiaya.toLocaleString('id-ID');
         }
@@ -508,41 +544,52 @@
         document.getElementById('jumlahPegawai').addEventListener('input', hitungTotal);
 
         function showAlert(msg, type) {
-            const el = document.getElementById('alertMessage');
+            var el = document.getElementById('alertMessage');
             el.className = 'alert-box ' + type;
             el.textContent = msg;
             el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 5000);
+            setTimeout(function() {
+                el.style.display = 'none';
+            }, 5000);
         }
 
         // ============ BUAT NOTA ============
         async function simpanNota(e) {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const tanggal = document.getElementById('tanggal').value;
-            const kemitraan = document.getElementById('kemitraan').value;
-            const kandang = document.getElementById('kandang').value;
-            const tonase = parseFloat(document.getElementById('tonase').value);
-            const hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value);
-            const biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
-            const jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 10000;
-            const jumlahPegawai = parseInt(document.getElementById('jumlahPegawai').value) || 1;
+            var btn = document.getElementById('submitBtn');
+            var tanggal = document.getElementById('tanggal').value;
+            var kemitraan = document.getElementById('kemitraan').value;
+            var kandang = document.getElementById('kandang').value;
+            var tonase = parseFloat(document.getElementById('tonase').value);
+            var hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value);
+            var biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
+            var jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 10000;
+            var jumlahPegawai = parseInt(document.getElementById('jumlahPegawai').value) || 1;
 
             if (!tanggal || !kemitraan || !kandang || !tonase || !hargaKemitraan) {
-                showAlert('⚠️ Data belum lengkap!', 'error'); return;
+                showAlert('⚠️ Data belum lengkap!', 'error');
+                return;
             }
 
-            btn.disabled = true; btn.textContent = '⏳ Menyimpan…';
+            btn.disabled = true;
+            btn.textContent = '⏳ Menyimpan...';
             showAlert('⏳ Menyimpan nota...', 'info');
 
             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST',
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'buatNota',
-                        tanggal, kemitraan, kandang, tonase, hargaKemitraan,
-                        biayaMakan, jasaAngkut, jumlahPegawai
+                        tanggal: tanggal,
+                        kemitraan: kemitraan,
+                        kandang: kandang,
+                        tonase: tonase,
+                        hargaKemitraan: hargaKemitraan,
+                        biayaMakan: biayaMakan,
+                        jasaAngkut: jasaAngkut,
+                        jumlahPegawai: jumlahPegawai
                     })
                 });
                 showAlert('✅ Nota berhasil dibuat!', 'success');
@@ -553,41 +600,45 @@
             } catch (error) {
                 showAlert('❌ Error: ' + error.message, 'error');
             } finally {
-                btn.disabled = false; btn.textContent = '💾 Buat Nota';
+                btn.disabled = false;
+                btn.textContent = '💾 Buat Nota';
             }
         }
         document.getElementById('formNota').addEventListener('submit', simpanNota);
 
         // ============ REKAP NOTA ============
         async function loadRekap() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
+            var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
             try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const rows = data.values && data.values.length > 1 ? data.values.slice(1) : [];
+                var response = await fetch(url);
+                var data = await response.json();
+                var rows = data.values && data.values.length > 1 ? data.values.slice(1) : [];
                 document.getElementById('loadingRekap').style.display = 'none';
                 document.getElementById('rekapWrapper').style.display = 'block';
-                const tbody = document.getElementById('rekapBody');
+                var tbody = document.getElementById('rekapBody');
                 if (rows.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada nota</td></tr>';
                     return;
                 }
-                tbody.innerHTML = rows.map(row => `
-                    <tr>
-                        <td><strong>${row[0]||''}</strong></td>
-                        <td>${row[1]||''}</td>
-                        <td>${row[2]||''}</td>
-                        <td>${row[3]||''}</td>
-                        <td class="text-right">${row[4]||0}</td>
-                        <td class="text-right">Rp ${Number(row[6]||0).toLocaleString('id-ID')}</td>
-                        <td class="text-right">${row[10]||0}</td>
-                        <td><span style="color:${row[11]==='CLOSED'?'var(--ios-green)':'var(--ios-orange)'}">${row[11]||'OPEN'}</span></td>
-                        <td class="text-center">
-                            <button class="btn btn-warning btn-sm" onclick="bukaEditNota('${row[0]}')">✏️</button>
-                            <button class="btn btn-danger btn-sm" onclick="hapusNota('${row[0]}')">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
+                var html = '';
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    var statusColor = row[11] === 'CLOSED' ? 'var(--ios-green)' : 'var(--ios-orange)';
+                    html += '<tr>';
+                    html += '<td><strong>' + (row[0] || '') + '</strong></td>';
+                    html += '<td>' + (row[1] || '') + '</td>';
+                    html += '<td>' + (row[2] || '') + '</td>';
+                    html += '<td>' + (row[3] || '') + '</td>';
+                    html += '<td class="text-right">' + (row[4] || 0) + '</td>';
+                    html += '<td class="text-right">Rp ' + Number(row[6] || 0).toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">' + (row[10] || 0) + '</td>';
+                    html += '<td><span style="color:' + statusColor + '">' + (row[11] || 'OPEN') + '</span></td>';
+                    html += '<td class="text-center">';
+                    html += '<button class="btn btn-warning btn-sm" onclick="bukaEditNota(\'' + row[0] + '\')">✏️</button> ';
+                    html += '<button class="btn btn-danger btn-sm" onclick="hapusNota(\'' + row[0] + '\')">🗑️</button>';
+                    html += '</td></tr>';
+                }
+                tbody.innerHTML = html;
             } catch (error) {
                 console.error(error);
                 document.getElementById('loadingRekap').textContent = '❌ Gagal memuat data';
@@ -596,13 +647,22 @@
 
         // ============ EDIT NOTA ============
         async function bukaEditNota(noNota) {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
+            var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
             try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const rows = data.values || [];
-                const nota = rows.find(row => row[0] === noNota);
-                if (!nota) { alert('Nota tidak ditemukan!'); return; }
+                var response = await fetch(url);
+                var data = await response.json();
+                var rows = data.values || [];
+                var nota = null;
+                for (var i = 0; i < rows.length; i++) {
+                    if (rows[i][0] === noNota) {
+                        nota = rows[i];
+                        break;
+                    }
+                }
+                if (!nota) {
+                    alert('Nota tidak ditemukan!');
+                    return;
+                }
                 document.getElementById('editNoNota').value = noNota;
                 document.getElementById('editTanggal').value = nota[1] || '';
                 document.getElementById('editKemitraan').value = nota[2] || '';
@@ -610,7 +670,7 @@
                 document.getElementById('editTonase').value = nota[4] || 0;
                 document.getElementById('editHargaKemitraan').value = nota[5] || 0;
                 document.getElementById('editBiayaMakan').value = nota[7] || 0;
-                const tonase = parseFloat(nota[4]) || 1;
+                var tonase = parseFloat(nota[4]) || 1;
                 document.getElementById('editJasaAngkut').value = (parseFloat(nota[8]) || 0) / (tonase / 100) || 10000;
                 document.getElementById('editJumlahPegawai').value = nota[9] || 1;
                 document.getElementById('modalEditNota').classList.add('active');
@@ -627,15 +687,15 @@
 
         document.getElementById('formEditNota').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const btn = this.querySelector('button[type="submit"]');
-            const noNota = document.getElementById('editNoNota').value;
-            const tanggal = document.getElementById('editTanggal').value;
-            const tonase = parseFloat(document.getElementById('editTonase').value);
-            const hargaKemitraan = parseFloat(document.getElementById('editHargaKemitraan').value);
-            const biayaMakan = parseFloat(document.getElementById('editBiayaMakan').value) || 0;
-            const jasaAngkut = parseFloat(document.getElementById('editJasaAngkut').value) || 10000;
-            const jumlahPegawai = parseInt(document.getElementById('editJumlahPegawai').value) || 1;
-            const alertDiv = document.getElementById('alertEdit');
+            var btn = this.querySelector('button[type="submit"]');
+            var noNota = document.getElementById('editNoNota').value;
+            var tanggal = document.getElementById('editTanggal').value;
+            var tonase = parseFloat(document.getElementById('editTonase').value);
+            var hargaKemitraan = parseFloat(document.getElementById('editHargaKemitraan').value);
+            var biayaMakan = parseFloat(document.getElementById('editBiayaMakan').value) || 0;
+            var jasaAngkut = parseFloat(document.getElementById('editJasaAngkut').value) || 10000;
+            var jumlahPegawai = parseInt(document.getElementById('editJumlahPegawai').value) || 1;
+            var alertDiv = document.getElementById('alertEdit');
 
             if (!tanggal || !tonase || !hargaKemitraan) {
                 alertDiv.className = 'alert-box error';
@@ -644,37 +704,40 @@
                 return;
             }
 
-            btn.disabled = true; btn.textContent = '⏳ Menyimpan…';
+            btn.disabled = true;
+            btn.textContent = '⏳ Menyimpan...';
             alertDiv.className = 'alert-box info';
             alertDiv.textContent = '⏳ Menyimpan perubahan...';
             alertDiv.style.display = 'block';
 
             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST',
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'editNota',
-                        noNota,
-                        tanggal,
-                        tonase,
-                        hargaKemitraan,
-                        biayaMakan,
-                        jasaAngkut,
-                        jumlahPegawai
+                        noNota: noNota,
+                        tanggal: tanggal,
+                        tonase: tonase,
+                        hargaKemitraan: hargaKemitraan,
+                        biayaMakan: biayaMakan,
+                        jasaAngkut: jasaAngkut,
+                        jumlahPegawai: jumlahPegawai
                     })
                 });
                 alertDiv.className = 'alert-box success';
                 alertDiv.textContent = '✅ Nota berhasil diupdate!';
-                setTimeout(() => {
+                setTimeout(function() {
                     closeModal('modalEditNota');
                     loadRekap();
                 }, 1500);
             } catch (error) {
                 alertDiv.className = 'alert-box error';
-                alertDiv.textContent = '❌ Error: ' + error.message';
+                alertDiv.textContent = '❌ Error: ' + error.message;
             } finally {
-                btn.disabled = false; btn.textContent = '💾 Simpan Perubahan';
+                btn.disabled = false;
+                btn.textContent = '💾 Simpan Perubahan';
             }
         });
 
@@ -683,11 +746,12 @@
             if (!confirm('Yakin ingin menghapus nota ' + noNota + '? Semua data distribusi akan terhapus!')) return;
             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST',
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'hapusNota',
-                        noNota
+                        noNota: noNota
                     })
                 });
                 alert('✅ Nota berhasil dihapus!');
@@ -699,76 +763,77 @@
 
         // ============ REKAP PENJUALAN PER NOTA ============
         async function loadPenjualanNota() {
-            const urlBakul = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_BAKUL?key=${API_KEY}`;
-            const urlNota = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
+            var urlBakul = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_BAKUL?key=' + API_KEY;
+            var urlNota = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
             
             try {
-                const [resBakul, resNota] = await Promise.all([fetch(urlBakul), fetch(urlNota)]);
-                const bakulData = await resBakul.json();
-                const notaData = await resNota.json();
+                var [resBakul, resNota] = await Promise.all([fetch(urlBakul), fetch(urlNota)]);
+                var bakulData = await resBakul.json();
+                var notaData = await resNota.json();
                 
-                const bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
-                const notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
+                var bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
+                var notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
                 
-                const notaMap = {};
-                notaRows.forEach(row => {
+                var notaMap = {};
+                for (var i = 0; i < notaRows.length; i++) {
+                    var row = notaRows[i];
                     notaMap[row[0]] = {
                         kemitraan: row[2] || 'Unknown',
                         kandang: row[3] || 'Unknown',
                         tanggal: row[1] || ''
                     };
-                });
+                }
                 
                 document.getElementById('loadingPenjualan').style.display = 'none';
                 document.getElementById('penjualanWrapper').style.display = 'block';
                 
-                const tbody = document.getElementById('penjualanBody');
+                var tbody = document.getElementById('penjualanBody');
                 
                 if (bakulRows.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data penjualan</td></tr>';
                     return;
                 }
                 
-                bakulRows.sort((a, b) => (a[0] || '').localeCompare(b[0] || ''));
+                bakulRows.sort(function(a, b) {
+                    return (a[0] || '').localeCompare(b[0] || '');
+                });
                 
-                let grandTotalTonase = 0;
-                let grandTotalPenjualan = 0;
-                
-                tbody.innerHTML = bakulRows.map(row => {
-                    const noNota = row[0] || '';
-                    const bakul = row[1] || 'Unknown';
-                    const tonase = parseFloat(row[2]) || 0;
-                    const hargaJual = parseFloat(row[3]) || 0;
-                    const totalPenjualan = parseFloat(row[4]) || 0;
-                    const tanggal = row[6] || '';
-                    const notaInfo = notaMap[noNota] || { kemitraan: 'Unknown', kandang: 'Unknown', tanggal: tanggal };
+                var grandTotalTonase = 0;
+                var grandTotalPenjualan = 0;
+                var html = '';
+                for (var j = 0; j < bakulRows.length; j++) {
+                    var row = bakulRows[j];
+                    var noNota = row[0] || '';
+                    var bakul = row[1] || 'Unknown';
+                    var tonase = parseFloat(row[2]) || 0;
+                    var hargaJual = parseFloat(row[3]) || 0;
+                    var totalPenjualan = parseFloat(row[4]) || 0;
+                    var tanggal = row[6] || '';
+                    var notaInfo = notaMap[noNota] || { kemitraan: 'Unknown', kandang: 'Unknown', tanggal: tanggal };
                     
                     grandTotalTonase += tonase;
                     grandTotalPenjualan += totalPenjualan;
                     
-                    return `
-                        <tr>
-                            <td><strong>${noNota}</strong></td>
-                            <td>${notaInfo.tanggal || tanggal}</td>
-                            <td>${notaInfo.kemitraan}</td>
-                            <td>${notaInfo.kandang}</td>
-                            <td>${bakul}</td>
-                            <td class="text-right">${tonase.toFixed(1)}</td>
-                            <td class="text-right">Rp ${hargaJual.toLocaleString('id-ID')}</td>
-                            <td class="text-right">Rp ${totalPenjualan.toLocaleString('id-ID')}</td>
-                        </tr>
-                    `;
-                }).join('');
+                    html += '<tr>';
+                    html += '<td><strong>' + noNota + '</strong></td>';
+                    html += '<td>' + (notaInfo.tanggal || tanggal) + '</td>';
+                    html += '<td>' + notaInfo.kemitraan + '</td>';
+                    html += '<td>' + notaInfo.kandang + '</td>';
+                    html += '<td>' + bakul + '</td>';
+                    html += '<td class="text-right">' + tonase.toFixed(1) + '</td>';
+                    html += '<td class="text-right">Rp ' + hargaJual.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">Rp ' + totalPenjualan.toLocaleString('id-ID') + '</td>';
+                    html += '</tr>';
+                }
+                tbody.innerHTML = html;
                 
-                tbody.innerHTML += `
-                    <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
-                        <td colspan="4" class="text-right">GRAND TOTAL</td>
-                        <td></td>
-                        <td class="text-right">${grandTotalTonase.toFixed(1)}</td>
-                        <td></td>
-                        <td class="text-right">Rp ${grandTotalPenjualan.toLocaleString('id-ID')}</td>
-                    </tr>
-                `;
+                tbody.innerHTML += '<tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">';
+                tbody.innerHTML += '<td colspan="4" class="text-right">GRAND TOTAL</td>';
+                tbody.innerHTML += '<td></td>';
+                tbody.innerHTML += '<td class="text-right">' + grandTotalTonase.toFixed(1) + '</td>';
+                tbody.innerHTML += '<td></td>';
+                tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</td>';
+                tbody.innerHTML += '</tr>';
                 
             } catch (error) {
                 console.error('Error loadPenjualanNota:', error);
@@ -778,29 +843,30 @@
 
         // ============ REKAP LABA ============
         async function loadLaba() {
-            const urlNota = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
-            const urlBakul = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_BAKUL?key=${API_KEY}`;
+            var urlNota = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
+            var urlBakul = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_BAKUL?key=' + API_KEY;
             
             try {
-                const [resNota, resBakul] = await Promise.all([fetch(urlNota), fetch(urlBakul)]);
-                const notaData = await resNota.json();
-                const bakulData = await resBakul.json();
+                var [resNota, resBakul] = await Promise.all([fetch(urlNota), fetch(urlBakul)]);
+                var notaData = await resNota.json();
+                var bakulData = await resBakul.json();
                 
-                const notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
-                const bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
+                var notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
+                var bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
 
                 document.getElementById('loadingLaba').style.display = 'none';
                 document.getElementById('labaWrapper').style.display = 'block';
                 document.getElementById('rincianWrapper').style.display = 'block';
 
-                const labaMap = {};
+                var labaMap = {};
                 
-                notaRows.forEach(nota => {
-                    const noNota = nota[0];
-                    const kemitraan = nota[2] || 'Unknown';
-                    const kandang = nota[3] || 'Unknown';
-                    const totalKemitraan = parseFloat(nota[6]) || 0;
-                    const totalBiaya = parseFloat(nota[12]) || 0;
+                for (var i = 0; i < notaRows.length; i++) {
+                    var nota = notaRows[i];
+                    var noNota = nota[0];
+                    var kemitraan = nota[2] || 'Unknown';
+                    var kandang = nota[3] || 'Unknown';
+                    var totalKemitraan = parseFloat(nota[6]) || 0;
+                    var totalBiaya = parseFloat(nota[12]) || 0;
                     
                     labaMap[noNota] = {
                         noNota: noNota,
@@ -813,36 +879,37 @@
                         totalBiaya: totalBiaya,
                         details: []
                     };
-                });
+                }
 
-                bakulRows.forEach(row => {
-                    const noNota = row[0];
-                    const bakul = row[1] || 'Unknown';
-                    const tonase = parseFloat(row[2]) || 0;
-                    const hargaJual = parseFloat(row[3]) || 0;
-                    const totalPenjualan = parseFloat(row[4]) || 0;
-                    const laba = parseFloat(row[5]) || 0;
-                    const tanggal = row[6] || '';
+                for (var j = 0; j < bakulRows.length; j++) {
+                    var row = bakulRows[j];
+                    var noNota = row[0];
+                    var bakul = row[1] || 'Unknown';
+                    var tonase = parseFloat(row[2]) || 0;
+                    var hargaJual = parseFloat(row[3]) || 0;
+                    var totalPenjualan = parseFloat(row[4]) || 0;
+                    var laba = parseFloat(row[5]) || 0;
+                    var tanggal = row[6] || '';
                     
                     if (labaMap[noNota]) {
                         labaMap[noNota].totalTonase += tonase;
                         labaMap[noNota].totalPenjualan += totalPenjualan;
                         labaMap[noNota].details.push({
-                            noNota,
-                            tanggal,
+                            noNota: noNota,
+                            tanggal: tanggal,
                             kemitraan: labaMap[noNota].kemitraan,
                             kandang: labaMap[noNota].kandang,
-                            bakul,
-                            tonase,
-                            hargaJual,
-                            totalPenjualan,
-                            laba
+                            bakul: bakul,
+                            tonase: tonase,
+                            hargaJual: hargaJual,
+                            totalPenjualan: totalPenjualan,
+                            laba: laba
                         });
                     }
-                });
+                }
 
-                const tbody = document.getElementById('labaBody');
-                const keys = Object.keys(labaMap);
+                var tbody = document.getElementById('labaBody');
+                var keys = Object.keys(labaMap);
                 
                 if (keys.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
@@ -850,76 +917,82 @@
                     return;
                 }
                 
-                let grandTotalLaba = 0;
-                let grandTotalTonase = 0;
-                let grandTotalPenjualan = 0;
-                let grandTotalKemitraan = 0;
-                let grandTotalBiaya = 0;
+                var grandTotalLaba = 0;
+                var grandTotalTonase = 0;
+                var grandTotalPenjualan = 0;
+                var grandTotalKemitraan = 0;
+                var grandTotalBiaya = 0;
+                var html = '';
                 
-                tbody.innerHTML = keys.sort().map(key => {
-                    const item = labaMap[key];
-                    const laba = item.totalPenjualan - (item.totalKemitraan + item.totalBiaya);
+                for (var k = 0; k < keys.length; k++) {
+                    var key = keys[k];
+                    var item = labaMap[key];
+                    var laba = item.totalPenjualan - (item.totalKemitraan + item.totalBiaya);
                     grandTotalLaba += laba;
                     grandTotalTonase += item.totalTonase;
                     grandTotalPenjualan += item.totalPenjualan;
                     grandTotalKemitraan += item.totalKemitraan;
                     grandTotalBiaya += item.totalBiaya;
                     
-                    return `
-                        <tr>
-                            <td><strong>${item.noNota}</strong></td>
-                            <td>${item.tanggal}</td>
-                            <td>${item.kemitraan}</td>
-                            <td>${item.kandang}</td>
-                            <td class="text-right">${item.totalTonase.toFixed(1)}</td>
-                            <td class="text-right">Rp ${item.totalPenjualan.toLocaleString('id-ID')}</td>
-                            <td class="text-right">Rp ${item.totalKemitraan.toLocaleString('id-ID')}</td>
-                            <td class="text-right">Rp ${item.totalBiaya.toLocaleString('id-ID')}</td>
-                            <td class="text-right ${laba >= 0 ? 'text-success' : 'text-danger'}">
-                                Rp ${laba.toLocaleString('id-ID')}
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
+                    var labaClass = laba >= 0 ? 'text-success' : 'text-danger';
+                    html += '<tr>';
+                    html += '<td><strong>' + item.noNota + '</strong></td>';
+                    html += '<td>' + item.tanggal + '</td>';
+                    html += '<td>' + item.kemitraan + '</td>';
+                    html += '<td>' + item.kandang + '</td>';
+                    html += '<td class="text-right">' + item.totalTonase.toFixed(1) + '</td>';
+                    html += '<td class="text-right">Rp ' + item.totalPenjualan.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">Rp ' + item.totalKemitraan.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">Rp ' + item.totalBiaya.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right ' + labaClass + '">Rp ' + laba.toLocaleString('id-ID') + '</td>';
+                    html += '</tr>';
+                }
+                tbody.innerHTML = html;
+                
+                var grandClass = grandTotalLaba >= 0 ? 'text-success' : 'text-danger';
+                tbody.innerHTML += '<tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">';
+                tbody.innerHTML += '<td colspan="4" class="text-right">GRAND TOTAL</td>';
+                tbody.innerHTML += '<td class="text-right">' + grandTotalTonase.toFixed(1) + '</td>';
+                tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</td>';
+                tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</td>';
+                tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</td>';
+                tbody.innerHTML += '<td class="text-right ' + grandClass + '">Rp ' + grandTotalLaba.toLocaleString('id-ID') + '</td>';
+                tbody.innerHTML += '</tr>';
 
-                tbody.innerHTML += `
-                    <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
-                        <td colspan="4" class="text-right">GRAND TOTAL</td>
-                        <td class="text-right">${grandTotalTonase.toFixed(1)}</td>
-                        <td class="text-right">Rp ${grandTotalPenjualan.toLocaleString('id-ID')}</td>
-                        <td class="text-right">Rp ${grandTotalKemitraan.toLocaleString('id-ID')}</td>
-                        <td class="text-right">Rp ${grandTotalBiaya.toLocaleString('id-ID')}</td>
-                        <td class="text-right ${grandTotalLaba >= 0 ? 'text-success' : 'text-danger'}">
-                            Rp ${grandTotalLaba.toLocaleString('id-ID')}
-                        </td>
-                    </tr>
-                `;
-
-                const rincianBody = document.getElementById('rincianBody');
-                const allDetails = [];
-                Object.values(labaMap).forEach(item => {
-                    item.details.forEach(d => allDetails.push(d));
-                });
+                // Rincian
+                var rincianBody = document.getElementById('rincianBody');
+                var allDetails = [];
+                var keys2 = Object.keys(labaMap);
+                for (var m = 0; m < keys2.length; m++) {
+                    var item2 = labaMap[keys2[m]];
+                    for (var n = 0; n < item2.details.length; n++) {
+                        allDetails.push(item2.details[n]);
+                    }
+                }
 
                 if (allDetails.length === 0) {
                     rincianBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada rincian penjualan</td></tr>';
                 } else {
-                    allDetails.sort((a, b) => (a.tanggal < b.tanggal) ? 1 : -1);
-                    rincianBody.innerHTML = allDetails.map(d => `
-                        <tr>
-                            <td><strong>${d.noNota}</strong></td>
-                            <td>${d.tanggal}</td>
-                            <td>${d.kemitraan}</td>
-                            <td>${d.kandang}</td>
-                            <td>${d.bakul}</td>
-                            <td class="text-right">${d.tonase.toFixed(1)}</td>
-                            <td class="text-right">Rp ${d.hargaJual.toLocaleString('id-ID')}</td>
-                            <td class="text-right">Rp ${d.totalPenjualan.toLocaleString('id-ID')}</td>
-                            <td class="text-right ${d.laba >= 0 ? 'text-success' : 'text-danger'}">
-                                Rp ${d.laba.toLocaleString('id-ID')}
-                            </td>
-                        </tr>
-                    `).join('');
+                    allDetails.sort(function(a, b) {
+                        return (a.tanggal < b.tanggal) ? 1 : -1;
+                    });
+                    var html2 = '';
+                    for (var p = 0; p < allDetails.length; p++) {
+                        var d = allDetails[p];
+                        var labaClass2 = d.laba >= 0 ? 'text-success' : 'text-danger';
+                        html2 += '<tr>';
+                        html2 += '<td><strong>' + d.noNota + '</strong></td>';
+                        html2 += '<td>' + d.tanggal + '</td>';
+                        html2 += '<td>' + d.kemitraan + '</td>';
+                        html2 += '<td>' + d.kandang + '</td>';
+                        html2 += '<td>' + d.bakul + '</td>';
+                        html2 += '<td class="text-right">' + d.tonase.toFixed(1) + '</td>';
+                        html2 += '<td class="text-right">Rp ' + d.hargaJual.toLocaleString('id-ID') + '</td>';
+                        html2 += '<td class="text-right">Rp ' + d.totalPenjualan.toLocaleString('id-ID') + '</td>';
+                        html2 += '<td class="text-right ' + labaClass2 + '">Rp ' + d.laba.toLocaleString('id-ID') + '</td>';
+                        html2 += '</tr>';
+                    }
+                    rincianBody.innerHTML = html2;
                 }
 
             } catch (error) {
@@ -930,62 +1003,101 @@
 
         // ============ MASTER HARGA ============
         function renderMasterHarga() {
-            const tbody = document.getElementById('masterBody');
+            var tbody = document.getElementById('masterBody');
             if (!masterData || masterData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Belum ada数据 master</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Belum ada data master</td></tr>';
                 return;
             }
-            tbody.innerHTML = masterData.map(row => {
-                const id = (name) => `harga_${name}_${row[0]}_${row[1]}`.replace(/[^a-zA-Z0-9_]/g, '_');
-                return `<tr><td>${row[0]}</td><td>${row[1]}</td>
-                    <td><input type="number" id="${id('beli')}" value="${row[2]||0}" step="any"></td>
-                    <td><input type="number" id="${id('makan')}" value="${row[4]||0}" step="any"></td>
-                    <td><input type="number" id="${id('angkut')}" value="${row[5]||10000}" step="any"></td>
-                    <td><input type="number" id="${id('pegawai')}" value="${row[6]||1}" step="1" min="0"></td>
-                    <td><button class="btn btn-success btn-sm" onclick="updateAllHarga('${row[0]}','${row[1]}', this)">💾 Update</button></td></tr>`;
-            }).join('');
+            var html = '';
+            for (var i = 0; i < masterData.length; i++) {
+                var row = masterData[i];
+                var idBeli = 'harga_beli_' + row[0] + '_' + row[1];
+                var idMakan = 'harga_makan_' + row[0] + '_' + row[1];
+                var idAngkut = 'harga_angkut_' + row[0] + '_' + row[1];
+                var idPegawai = 'harga_pegawai_' + row[0] + '_' + row[1];
+                idBeli = idBeli.replace(/[^a-zA-Z0-9_]/g, '_');
+                idMakan = idMakan.replace(/[^a-zA-Z0-9_]/g, '_');
+                idAngkut = idAngkut.replace(/[^a-zA-Z0-9_]/g, '_');
+                idPegawai = idPegawai.replace(/[^a-zA-Z0-9_]/g, '_');
+                
+                html += '<tr>';
+                html += '<td>' + (row[0] || '') + '</td>';
+                html += '<td>' + (row[1] || '') + '</td>';
+                html += '<td><input type="number" id="' + idBeli + '" value="' + (row[2] || 0) + '" step="any"></td>';
+                html += '<td><input type="number" id="' + idMakan + '" value="' + (row[4] || 0) + '" step="any"></td>';
+                html += '<td><input type="number" id="' + idAngkut + '" value="' + (row[5] || 10000) + '" step="any"></td>';
+                html += '<td><input type="number" id="' + idPegawai + '" value="' + (row[6] || 1) + '" step="1" min="0"></td>';
+                html += '<td><button class="btn btn-success btn-sm" onclick="updateAllHarga(\'' + row[0] + '\',\'' + row[1] + '\', this)">💾 Update</button></td>';
+                html += '</tr>';
+            }
+            tbody.innerHTML = html;
         }
 
         async function updateAllHarga(kemitraan, kandang, btn) {
-            const id = (name) => `harga_${name}_${kemitraan}_${kandang}`.replace(/[^a-zA-Z0-9_]/g, '_');
-            const data = {
-                kemitraan, kandang,
-                hargaBeli: parseFloat(document.getElementById(id('beli'))?.value) || 0,
-                biayaMakan: parseFloat(document.getElementById(id('makan'))?.value) || 0,
-                jasaAngkut: parseFloat(document.getElementById(id('angkut'))?.value) || 10000,
-                jumlahPegawai: parseInt(document.getElementById(id('pegawai'))?.value) || 1
+            var idBeli = 'harga_beli_' + kemitraan + '_' + kandang;
+            var idMakan = 'harga_makan_' + kemitraan + '_' + kandang;
+            var idAngkut = 'harga_angkut_' + kemitraan + '_' + kandang;
+            var idPegawai = 'harga_pegawai_' + kemitraan + '_' + kandang;
+            idBeli = idBeli.replace(/[^a-zA-Z0-9_]/g, '_');
+            idMakan = idMakan.replace(/[^a-zA-Z0-9_]/g, '_');
+            idAngkut = idAngkut.replace(/[^a-zA-Z0-9_]/g, '_');
+            idPegawai = idPegawai.replace(/[^a-zA-Z0-9_]/g, '_');
+            
+            var data = {
+                kemitraan: kemitraan,
+                kandang: kandang,
+                hargaBeli: parseFloat(document.getElementById(idBeli)?.value) || 0,
+                biayaMakan: parseFloat(document.getElementById(idMakan)?.value) || 0,
+                jasaAngkut: parseFloat(document.getElementById(idAngkut)?.value) || 10000,
+                jumlahPegawai: parseInt(document.getElementById(idPegawai)?.value) || 1
             };
-            if (btn) { btn.disabled = true; btn.textContent = '⏳…'; }
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳...';
+            }
             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST',
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'updateAllHarga', ...data })
                 });
                 alert('✅ Harga berhasil diupdate!');
                 await loadMaster();
-            } catch (error) { alert('❌ Error: ' + error.message); }
-            finally { if (btn) { btn.disabled = false; btn.textContent = '💾 Update'; } }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = '💾 Update';
+                }
+            }
         }
 
         function bukaModalTambahMaster() {
-            const kemitraan = prompt('Masukkan nama Kemitraan baru:');
+            var kemitraan = prompt('Masukkan nama Kemitraan baru:');
             if (!kemitraan) return;
-            const kandang = prompt('Masukkan nama Kandang baru:');
+            var kandang = prompt('Masukkan nama Kandang baru:');
             if (!kandang) return;
             fetch(WEB_APP_URL, {
-                method: 'POST', mode: 'no-cors',
+                method: 'POST',
+                mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'tambahMaster',
-                    kemitraan, kandang,
+                    kemitraan: kemitraan,
+                    kandang: kandang,
                     hargaBeli: 0,
                     biayaMakan: 0,
                     jasaAngkut: 10000,
                     jumlahPegawai: 1
                 })
-            }).then(() => { alert('✅ Master berhasil ditambahkan!'); loadMaster(); })
-              .catch(err => alert('❌ Error: ' + err.message));
+            }).then(function() {
+                alert('✅ Master berhasil ditambahkan!');
+                loadMaster();
+            }).catch(function(err) {
+                alert('❌ Error: ' + err.message);
+            });
         }
 
         // ============ LOAD ALL DATA ============
@@ -998,10 +1110,10 @@
                 await loadPenjualanNota();
             } catch (error) {
                 console.error('Error loading data:', error);
-                // Tampilkan pesan error di halaman
-                document.getElementById('loadingRekap').textContent = '❌ Gagal memuat data: ' + error.message;
-                document.getElementById('loadingLaba').textContent = '❌ Gagal memuat data: ' + error.message;
-                document.getElementById('loadingPenjualan').textContent = '❌ Gagal memuat data: ' + error.message;
+                var loadingEls = document.querySelectorAll('#loadingRekap, #loadingLaba, #loadingPenjualan');
+                for (var i = 0; i < loadingEls.length; i++) {
+                    loadingEls[i].textContent = '❌ Gagal memuat data: ' + error.message;
+                }
             }
         }
 
@@ -1014,7 +1126,6 @@
                 document.getElementById('logoutBtn').style.display = 'none';
                 document.getElementById('passwordInput').focus();
             } else {
-                // Jika session aktif, load data setelah elemen siap
                 setTimeout(function() {
                     loadAllData();
                 }, 100);
