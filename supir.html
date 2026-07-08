@@ -17,15 +17,16 @@
             --ios-transition: all 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
         }
         body { font-family: var(--ios-font); background: var(--ios-gray-bg); min-height: 100vh; padding: 16px; display: flex; align-items: flex-start; justify-content: center; color: #1C1C1E; }
-        .container { max-width: 800px; width: 100%; background: var(--ios-white); border-radius: var(--ios-radius); padding: 24px 20px 32px; box-shadow: var(--ios-shadow); margin: 0 auto; }
+        .container { max-width: 900px; width: 100%; background: var(--ios-white); border-radius: var(--ios-radius); padding: 24px 20px 32px; box-shadow: var(--ios-shadow); margin: 0 auto; }
         .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .back-link { display: inline-flex; align-items: center; gap: 4px; color: var(--ios-blue); text-decoration: none; font-weight: 500; font-size: 15px; }
         .back-link:hover { opacity: 0.7; }
         .back-link svg { width: 18px; height: 18px; fill: currentColor; }
         h1 { font-size: 24px; font-weight: 700; color: #1C1C1E; }
         .badge-role { background: var(--ios-blue); color: white; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .subtitle { font-size: 14px; color: var(--ios-gray); margin-bottom: 20px; border-left: 3px solid var(--ios-blue); padding-left: 12px; }
+
         .form-group { margin-bottom: 16px; }
         label { display: block; font-size: 14px; font-weight: 600; color: #1C1C1E; margin-bottom: 4px; }
         .required::after { content: " *"; color: var(--ios-red); }
@@ -33,20 +34,23 @@
         input:focus, select:focus { border-color: var(--ios-blue); background: var(--ios-white); box-shadow: 0 0 0 3px rgba(0,122,255,0.15); }
         input[readonly] { background: #E5E5EA; color: var(--ios-gray); }
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .btn { width: 100%; padding: 14px; background: var(--ios-blue); color: white; border: none; border-radius: var(--ios-radius-sm); font-size: 17px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); margin-top: 10px; }
+        .btn { padding: 12px 20px; background: var(--ios-blue); color: white; border: none; border-radius: var(--ios-radius-sm); font-size: 16px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); font-family: var(--ios-font); }
         .btn:hover { background: var(--ios-blue-hover); }
         .btn:disabled { opacity: 0.6; pointer-events: none; }
         .btn-success { background: var(--ios-green); }
         .btn-success:hover { background: #2DB84E; }
+        .btn-warning { background: var(--ios-orange); }
+        .btn-warning:hover { background: #E68600; }
         .btn-danger { background: var(--ios-red); }
         .btn-danger:hover { background: #D63031; }
-        .btn-sm { padding: 6px 14px; font-size: 13px; width: auto; margin-top: 0; }
+        .btn-sm { padding: 4px 12px; font-size: 13px; }
+        .btn-block { width: 100%; }
         .alert-box { padding: 12px 14px; border-radius: var(--ios-radius-sm); margin-top: 14px; display: none; font-size: 14px; font-weight: 500; }
         .alert-box.success { background: rgba(52,199,89,0.12); color: #1A7A3A; border-left: 4px solid var(--ios-green); display: block; }
         .alert-box.error { background: rgba(255,59,48,0.10); color: #B8221A; border-left: 4px solid var(--ios-red); display: block; }
         .alert-box.info { background: rgba(0,122,255,0.10); color: #0055B3; border-left: 4px solid var(--ios-blue); display: block; }
 
-        /* BAKUL */
+        /* BAKUL SECTION */
         .bakul-section { background: var(--ios-gray-light); border-radius: var(--ios-radius-sm); padding: 16px; margin: 16px 0; }
         .bakul-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
         .bakul-item { display: grid; grid-template-columns: 1fr 0.8fr 0.8fr 0.5fr; gap: 10px; margin-bottom: 10px; align-items: center; }
@@ -60,12 +64,20 @@
         .table-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid #E5E5EA; }
         .table-section h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
         .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
-        th { background: var(--ios-gray-light); padding: 8px 10px; text-align: left; font-size: 12px; font-weight: 600; }
-        td { padding: 8px 10px; border-bottom: 1px solid #E5E5EA; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        th { background: var(--ios-gray-light); padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; border-bottom: 1px solid #E5E5EA; }
+        td { padding: 10px 12px; border-bottom: 1px solid #E5E5EA; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
-        .sisa-info { font-weight: 600; color: var(--ios-blue); }
+        .text-success { color: var(--ios-green); font-weight: 600; }
+        .text-danger { color: var(--ios-red); font-weight: 600; }
+
+        /* MODAL EDIT */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--ios-white); border-radius: var(--ios-radius); padding: 28px 24px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--ios-shadow); }
+        .modal-box h2 { font-size: 20px; margin-bottom: 16px; }
+        .modal-close { float: right; font-size: 24px; font-weight: 300; color: var(--ios-gray); cursor: pointer; background: none; border: none; }
 
         @media (max-width: 600px) {
             .row { grid-template-columns: 1fr; gap: 0; }
@@ -79,6 +91,7 @@
 </head>
 <body>
     <div class="container">
+        <!-- HEADER -->
         <div class="header">
             <div class="header-left">
                 <a href="index.html" class="back-link">
@@ -89,8 +102,9 @@
                 <span class="badge-role">Supir</span>
             </div>
         </div>
-        <p class="subtitle">Distribusikan nota ke bakul</p>
+        <p class="subtitle">Distribusikan nota ke bakul atau revisi data yang sudah ada</p>
 
+        <!-- FORM DISTRIBUSI -->
         <form id="formDistribusi">
             <div class="row">
                 <div class="form-group">
@@ -115,7 +129,7 @@
                 <div id="bakulContainer">
                     <div class="bakul-item" data-index="0">
                         <input type="text" class="bakul-nama" placeholder="Nama Bakul">
-                        <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase (Kg)">
+                        <input type="number" class="bakul-tonase" step="any" placeholder="Tonase (Kg)">
                         <input type="number" class="bakul-harga" step="any" placeholder="Harga Jual">
                         <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
                     </div>
@@ -128,44 +142,84 @@
                 <p><strong>Total Penjualan:</strong> <span id="totalPenjualanDisplay">Rp 0</span></p>
             </div>
 
-            <button type="submit" class="btn btn-success" id="submitBtn">💾 Simpan Distribusi</button>
+            <button type="submit" class="btn btn-success btn-block" id="submitBtn">💾 Simpan Distribusi</button>
             <div id="alertMessage" class="alert-box"></div>
         </form>
 
+        <!-- TABEL DATA TERBARU -->
         <div class="table-section">
             <h3>📋 Data Distribusi Terbaru</h3>
             <div id="loadingData" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
             <div id="tableWrapper" class="table-wrapper" style="display:none;">
                 <table>
-                    <thead><tr><th>No Nota</th><th>Tanggal</th><th>Bakul</th><th class="text-right">Tonase</th><th class="text-right">Harga Jual</th><th class="text-right">Total</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>No Nota</th>
+                            <th>Tanggal</th>
+                            <th>Bakul</th>
+                            <th class="text-right">Tonase</th>
+                            <th class="text-right">Harga Jual</th>
+                            <th class="text-right">Total</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <!-- MODAL EDIT -->
+    <div class="modal-overlay" id="modalEdit">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('modalEdit')">✕</button>
+            <h2>✏️ Edit Data Bakul</h2>
+            <form id="formEdit">
+                <input type="hidden" id="editRowIndex">
+                <input type="hidden" id="editNoNota">
+                <div class="form-group">
+                    <label>Nama Bakul</label>
+                    <input type="text" id="editNama" required>
+                </div>
+                <div class="form-group">
+                    <label>Tonase (Kg)</label>
+                    <input type="number" id="editTonase" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label>Harga Jual</label>
+                    <input type="number" id="editHargaJual" step="any" required>
+                </div>
+                <button type="submit" class="btn btn-warning btn-block">💾 Simpan Perubahan</button>
+                <div id="alertEdit" class="alert-box"></div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        // ============ KONFIGURASI ============
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxgRByPIk2PVkmLN63bekgHtcwGjP6-QSY7eKIuiw60xv5pEoNRcbAAx7L-FNYzwHb_/exec';
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
-        let daftarNota = [];
 
+        let daftarNota = [];
+        let bakulIndex = 1;
+
+        // ============ SET DEFAULT TANGGAL ============
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
         });
 
+        // ============ AMBIL DATA NOTA ============
         async function ambilNota() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                if (data.values && data.values.length > 1) {
-                    return data.values.slice(1);
-                }
-                return [];
+                return data.values && data.values.length > 1 ? data.values.slice(1) : [];
             } catch (error) { console.error(error); return []; }
         }
 
+        // ============ AMBIL DATA DISTRIBUSI ============
         async function ambilDistribusi() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_BAKUL?key=${API_KEY}`;
             try {
@@ -175,6 +229,7 @@
             } catch (error) { console.error(error); return []; }
         }
 
+        // ============ LOAD NOTA ============
         async function loadNota() {
             const data = await ambilNota();
             daftarNota = data;
@@ -195,7 +250,7 @@
             document.getElementById('sisaTonase').value = (opt?.dataset?.sisa || 0) + ' Kg';
         });
 
-        let bakulIndex = 1;
+        // ============ BAKUL ============
         function tambahBakul() {
             const container = document.getElementById('bakulContainer');
             const div = document.createElement('div');
@@ -203,8 +258,8 @@
             div.dataset.index = bakulIndex;
             div.innerHTML = `
                 <input type="text" class="bakul-nama" placeholder="Nama Bakul">
-                <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase (Kg)">
-                <input type="number" class="bakul-harga" step="100" placeholder="Harga Jual">
+                <input type="number" class="bakul-tonase" step="any" placeholder="Tonase (Kg)">
+                <input type="number" class="bakul-harga" step="any" placeholder="Harga Jual">
                 <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
             `;
             container.appendChild(div);
@@ -222,6 +277,7 @@
             hitungTotal();
         }
 
+        // ============ HITUNG TOTAL ============
         function hitungTotal() {
             let totalTonase = 0, totalPenjualan = 0;
             document.querySelectorAll('.bakul-item').forEach(item => {
@@ -236,6 +292,7 @@
 
         document.querySelectorAll('.bakul-item input').forEach(inp => inp.addEventListener('input', hitungTotal));
 
+        // ============ ALERT ============
         function showAlert(msg, type) {
             const el = document.getElementById('alertMessage');
             el.className = 'alert-box ' + type;
@@ -244,6 +301,7 @@
             setTimeout(() => el.style.display = 'none', 5000);
         }
 
+        // ============ TAMPILKAN DISTRIBUSI ============
         async function tampilkanDistribusi() {
             const data = await ambilDistribusi();
             const loading = document.getElementById('loadingData');
@@ -253,18 +311,102 @@
             if (data.length > 0) {
                 wrapper.style.display = 'block';
                 const lastData = data.slice(-15);
-                tbody.innerHTML = lastData.map(row => `
-                    <tr><td>${row[0]||''}</td><td>${row[6]||''}</td><td>${row[1]||''}</td>
-                    <td class="text-right">${row[2]||''}</td>
-                    <td class="text-right">Rp ${Number(row[3]).toLocaleString('id-ID')||0}</td>
-                    <td class="text-right">Rp ${Number(row[4]).toLocaleString('id-ID')||0}</td></tr>
-                `).join('');
+                tbody.innerHTML = lastData.map((row, index) => {
+                    const rowIndex = index + 2; // baris di sheet
+                    return `
+                        <tr>
+                            <td><strong>${row[0]||''}</strong></td>
+                            <td>${row[6]||''}</td>
+                            <td>${row[1]||''}</td>
+                            <td class="text-right">${row[2]||''}</td>
+                            <td class="text-right">Rp ${Number(row[3]).toLocaleString('id-ID')||0}</td>
+                            <td class="text-right">Rp ${Number(row[4]).toLocaleString('id-ID')||0}</td>
+                            <td class="text-center">
+                                <button class="btn btn-warning btn-sm" onclick="bukaEdit(${rowIndex}, '${row[0]}', '${row[1]}', ${row[2]||0}, ${row[3]||0})">✏️</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
             } else {
                 wrapper.style.display = 'block';
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data</td></tr>';
             }
         }
 
+        // ============ BUKA MODAL EDIT ============
+        function bukaEdit(rowIndex, noNota, nama, tonase, hargaJual) {
+            document.getElementById('editRowIndex').value = rowIndex;
+            document.getElementById('editNoNota').value = noNota;
+            document.getElementById('editNama').value = nama;
+            document.getElementById('editTonase').value = tonase;
+            document.getElementById('editHargaJual').value = hargaJual;
+            document.getElementById('modalEdit').classList.add('active');
+            document.getElementById('alertEdit').className = 'alert-box';
+            document.getElementById('alertEdit').style.display = 'none';
+        }
+
+        // ============ CLOSE MODAL ============
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // ============ SIMPAN EDIT ============
+        document.getElementById('formEdit').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const rowIndex = parseInt(document.getElementById('editRowIndex').value);
+            const noNota = document.getElementById('editNoNota').value;
+            const nama = document.getElementById('editNama').value.trim();
+            const tonase = parseFloat(document.getElementById('editTonase').value);
+            const hargaJual = parseFloat(document.getElementById('editHargaJual').value);
+            const alertDiv = document.getElementById('alertEdit');
+
+            if (!nama || !tonase || !hargaJual) {
+                alertDiv.className = 'alert-box error';
+                alertDiv.textContent = '⚠️ Semua field wajib diisi!';
+                alertDiv.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Menyimpan…';
+            alertDiv.className = 'alert-box info';
+            alertDiv.textContent = '⏳ Menyimpan perubahan...';
+            alertDiv.style.display = 'block';
+
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'editDistribusi',
+                        rowIndex: rowIndex,
+                        noNota: noNota,
+                        nama: nama,
+                        tonase: tonase,
+                        hargaJual: hargaJual
+                    })
+                });
+
+                alertDiv.className = 'alert-box success';
+                alertDiv.textContent = '✅ Data berhasil diupdate!';
+                setTimeout(() => {
+                    closeModal('modalEdit');
+                    tampilkanDistribusi();
+                    loadNota();
+                }, 1500);
+
+            } catch (error) {
+                alertDiv.className = 'alert-box error';
+                alertDiv.textContent = '❌ Error: ' + error.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 Simpan Perubahan';
+            }
+        });
+
+        // ============ SIMPAN DISTRIBUSI ============
         async function simpanDistribusi(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -292,7 +434,8 @@
 
             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST',
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'distribusiBakul',
@@ -305,7 +448,18 @@
                 document.getElementById('formDistribusi').reset();
                 document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
                 document.getElementById('sisaTonase').value = '0 Kg';
-                document.querySelectorAll('.bakul-item input').forEach(inp => inp.value = '');
+                // Reset bakul ke 1
+                const container = document.getElementById('bakulContainer');
+                container.innerHTML = `
+                    <div class="bakul-item" data-index="0">
+                        <input type="text" class="bakul-nama" placeholder="Nama Bakul">
+                        <input type="number" class="bakul-tonase" step="any" placeholder="Tonase (Kg)">
+                        <input type="number" class="bakul-harga" step="any" placeholder="Harga Jual">
+                        <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
+                    </div>
+                `;
+                bakulIndex = 1;
+                document.querySelectorAll('.bakul-item input').forEach(inp => inp.addEventListener('input', hitungTotal));
                 hitungTotal();
                 loadNota();
                 setTimeout(tampilkanDistribusi, 2000);
@@ -318,6 +472,7 @@
 
         document.getElementById('formDistribusi').addEventListener('submit', simpanDistribusi);
 
+        // ============ INIT ============
         window.onload = async function() {
             await loadNota();
             await tampilkanDistribusi();
