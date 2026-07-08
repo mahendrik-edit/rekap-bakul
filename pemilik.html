@@ -611,7 +611,7 @@
             margin-bottom: 14px;
         }
         .master-price-section .table-wrapper {
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
         }
         .master-price-section table {
@@ -872,7 +872,7 @@
         </div>
 
         <!-- ============================================================
-        BAGIAN EDIT HARGA MASTER (DENGAN BIAYA)
+        BAGIAN EDIT HARGA MASTER (SATU TOMBOL UPDATE)
         ============================================================ -->
         <div class="master-price-section">
             <h3>✏️ Kelola Harga Master &amp; Biaya</h3>
@@ -1101,7 +1101,6 @@
             const transaksi = await ambilTransaksi();
             const master = await ambilMaster();
 
-            // Header: No, Tanggal, Kemitraan, Kandang, Bakul, Tonase, HargaBeli, HargaJual, TotalPenjualan, TotalBiaya, Laba, BiayaMakanTotal, JasaAngkutTotal, Setoran
             const rows = transaksi.slice(1);
             allData = rows.map((row, index) => ({
                 rowIndex: index + 2,
@@ -1123,7 +1122,6 @@
 
             masterData = master.slice(1);
 
-            // Isi dropdown filter
             const kemitraanSet = new Set(allData.map(d => d.kemitraan).filter(Boolean));
             const kandangSet = new Set(allData.map(d => d.kandang).filter(Boolean));
 
@@ -1229,7 +1227,6 @@
 
         // ============ RENDER CHARTS ============
         function renderCharts() {
-            // Chart 1: Laba Harian
             const today = new Date();
             const last7Days = [];
             for (let i = 6; i >= 0; i--) {
@@ -1270,7 +1267,6 @@
                 }
             });
 
-            // Chart 2: Laba per Kemitraan
             const kemitraanMap = {};
             filteredData.forEach(d => {
                 if (!kemitraanMap[d.kemitraan]) kemitraanMap[d.kemitraan] = 0;
@@ -1306,7 +1302,7 @@
             });
         }
 
-        // ============ RENDER MASTER HARGA (DENGAN BIAYA) ============
+        // ============ RENDER MASTER HARGA (SATU TOMBOL) ============
         function renderMasterHarga() {
             const tbody = document.getElementById('masterBody');
             if (!masterData || masterData.length === 0) {
@@ -1326,47 +1322,63 @@
                             <td class="text-right"><input type="number" id="${id('makan')}" value="${row[4] || 0}" step="1000"></td>
                             <td class="text-right"><input type="number" id="${id('angkut')}" value="${row[5] || 0}" step="1000"></td>
                             <td class="text-right"><input type="number" id="${id('pegawai')}" value="${row[6] || 1}" step="1" min="0"></td>
-                            <td class="text-center" style="white-space:nowrap;">
-                                <button class="btn btn-success btn-sm" onclick="updateHarga('${row[0]}','${row[1]}','hargaBeli',document.getElementById('${id('beli')}').value, this)">💾</button>
-                                <button class="btn btn-success btn-sm" onclick="updateHarga('${row[0]}','${row[1]}','hargaJual',document.getElementById('${id('jual')}').value, this)">💾</button>
-                                <button class="btn btn-sm" onclick="updateHarga('${row[0]}','${row[1]}','biayaMakan',document.getElementById('${id('makan')}').value, this)">🍽️</button>
-                                <button class="btn btn-sm" onclick="updateHarga('${row[0]}','${row[1]}','jasaAngkut',document.getElementById('${id('angkut')}').value, this)">🚛</button>
-                                <button class="btn btn-sm" onclick="updateHarga('${row[0]}','${row[1]}','jumlahPegawai',document.getElementById('${id('pegawai')}').value, this)">👥</button>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm" onclick="updateAllHarga('${row[0]}','${row[1]}', this)">
+                                    💾 Update Semua
+                                </button>
                             </td>
                         </tr>
                     `;
             }).join('');
         }
 
-        // ============ UPDATE HARGA MASTER ============
-        async function updateHarga(kemitraan, kandang, kolom, hargaBaru, btnElement) {
-            if (!kemitraan || !kandang || !kolom || hargaBaru === undefined) {
+        // ============ UPDATE SEMUA HARGA (SATU TOMBOL) ============
+        async function updateAllHarga(kemitraan, kandang, btnElement) {
+            const id = (name) => `harga_${name}_${kemitraan}_${kandang}`.replace(/[^a-zA-Z0-9_]/g, '_');
+
+            const hargaBeli = document.getElementById(id('beli'))?.value;
+            const hargaJual = document.getElementById(id('jual'))?.value;
+            const biayaMakan = document.getElementById(id('makan'))?.value;
+            const jasaAngkut = document.getElementById(id('angkut'))?.value;
+            const jumlahPegawai = document.getElementById(id('pegawai'))?.value;
+
+            if (!kemitraan || !kandang) {
                 alert('Data tidak lengkap!');
                 return;
             }
+
             const originalText = btnElement?.textContent || 'Update';
-            if (btnElement) { btnElement.disabled = true;
-                btnElement.textContent = '⏳…'; }
+            if (btnElement) {
+                btnElement.disabled = true;
+                btnElement.textContent = '⏳…';
+            }
+
             try {
                 await fetch(WEB_APP_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        action: 'updateHarga',
-                        kemitraan,
-                        kandang,
-                        kolom,
-                        hargaBaru: parseFloat(hargaBaru)
+                        action: 'updateAllHarga',
+                        kemitraan: kemitraan,
+                        kandang: kandang,
+                        hargaBeli: parseFloat(hargaBeli) || 0,
+                        hargaJual: parseFloat(hargaJual) || 0,
+                        biayaMakan: parseFloat(biayaMakan) || 0,
+                        jasaAngkut: parseFloat(jasaAngkut) || 0,
+                        jumlahPegawai: parseInt(jumlahPegawai) || 1
                     })
                 });
-                alert('✅ Harga berhasil diupdate!');
+
+                alert('✅ Semua data berhasil diupdate!');
                 await loadAllData();
             } catch (error) {
                 alert('❌ Gagal update: ' + error.message);
             } finally {
-                if (btnElement) { btnElement.disabled = false;
-                    btnElement.textContent = originalText; }
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.textContent = originalText;
+                }
             }
         }
 
