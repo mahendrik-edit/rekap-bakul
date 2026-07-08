@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Rekap Dagang - Broker Ayam</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-    </script>
     <style>
         /* ============================================================
-           RESET & VARIABEL (SAMA SEPERTI SEBELUMNYA)
+           RESET & VARIABEL
            ============================================================ */
         * {
             margin: 0;
@@ -40,7 +38,7 @@
             min-height: 100vh;
             padding: 16px;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             color: #1C1C1E;
             -webkit-font-smoothing: antialiased;
@@ -57,200 +55,77 @@
             color: #FFFFFF;
         }
         .container {
-            max-width: 720px;
+            max-width: 480px;
             width: 100%;
             background: var(--ios-white);
             border-radius: var(--ios-radius);
-            padding: 28px 24px 32px;
-            box-shadow: var(--ios-shadow);
+            padding: 32px 24px 28px;
+            box-shadow: var(--ios-shadow-lg);
+            text-align: center;
             transition: var(--ios-transition);
             position: relative;
+            overflow: hidden;
         }
-
-        /* ============================================================
-           NOTIFIKASI POP-UP (TOAST)
-           ============================================================ */
-        #toastContainer {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 360px;
-            width: 100%;
-            pointer-events: none;
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ios-blue), var(--ios-green), var(--ios-blue));
+            background-size: 200% 100%;
+            animation: gradientMove 4s ease-in-out infinite;
         }
-        .toast {
-            background: var(--ios-white);
-            color: #1C1C1E;
-            padding: 14px 18px;
-            border-radius: var(--ios-radius-sm);
-            box-shadow: var(--ios-shadow-lg);
-            border-left: 4px solid var(--ios-blue);
-            animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            pointer-events: auto;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: var(--ios-transition);
-        }
-        .toast.success {
-            border-left-color: var(--ios-green);
-        }
-        .toast.warning {
-            border-left-color: var(--ios-orange);
-        }
-        .toast.error {
-            border-left-color: var(--ios-red);
-        }
-        .toast .toast-icon {
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-        .toast .toast-close {
-            margin-left: auto;
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: var(--ios-gray);
-            padding: 0 4px;
-        }
-        .toast .toast-close:hover {
-            color: #1C1C1E;
-        }
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(60px);
+        @keyframes gradientMove {
+            0%,
+            100% {
+                background-position: 0% 50%;
             }
-            to {
-                opacity: 1;
-                transform: translateX(0);
+            50% {
+                background-position: 100% 50%;
             }
         }
-        @keyframes slideOutRight {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(60px);
-            }
-        }
-        .toast.hide {
-            animation: slideOutRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        body.dark-mode .toast {
-            background: #2C2C2E;
-            color: #FFFFFF;
-        }
-
-        /* ============================================================
-           HEADER, HERO, STATS, MENU (SAMA SEPERTI SEBELUMNYA)
-           ============================================================ */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, var(--ios-blue), var(--ios-purple));
-            border-radius: 12px;
+        .logo-wrapper {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #007AFF, #0055CC);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-        }
-        .header-title h1 {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-        .header-title .sub {
-            font-size: 12px;
-            color: var(--ios-gray);
-            font-weight: 400;
-        }
-        .theme-toggle {
-            background: var(--ios-gray-light);
-            border: none;
-            border-radius: 30px;
-            padding: 6px 14px;
-            font-size: 18px;
-            cursor: pointer;
+            margin: 0 auto 12px;
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
             transition: var(--ios-transition);
-            font-family: var(--ios-font);
         }
-        .theme-toggle:hover {
-            transform: scale(1.05);
+        .logo-wrapper:hover {
+            transform: scale(1.04) rotate(-4deg);
+            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.4);
         }
-        .hero {
-            text-align: center;
-            padding: 20px 0 12px;
-            position: relative;
+        .logo-wrapper svg {
+            width: 36px;
+            height: 36px;
+            fill: white;
         }
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 20%;
-            right: 20%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--ios-blue), var(--ios-green), transparent);
-            border-radius: 2px;
-        }
-        .hero-icon {
-            font-size: 56px;
-            display: block;
-            margin-bottom: 8px;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-8px);
-            }
-        }
-        .hero h2 {
+        h1 {
             font-size: 28px;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.6px;
+            color: #1C1C1E;
+            margin-bottom: 4px;
         }
-        .hero h2 .highlight {
-            background: linear-gradient(135deg, var(--ios-blue), var(--ios-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            color: var(--ios-gray);
-            margin-top: 4px;
+        .subtitle {
             font-size: 15px;
+            color: var(--ios-gray);
+            font-weight: 400;
+            margin-bottom: 28px;
             line-height: 1.5;
         }
+
+        /* ===== STATS MINI ===== */
         .stats-mini {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin: 20px 0 24px;
         }
@@ -265,15 +140,9 @@
             transform: translateY(-2px);
         }
         .stat-mini-item .num {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--ios-blue);
-        }
-        .stat-mini-item .lbl {
-            font-size: 11px;
-            color: var(--ios-gray);
-            font-weight: 500;
-            margin-top: 2px;
         }
         .stat-mini-item .num.green {
             color: var(--ios-green);
@@ -281,9 +150,19 @@
         .stat-mini-item .num.orange {
             color: var(--ios-orange);
         }
-        .stat-mini-item .num.purple {
-            color: var(--ios-purple);
+        .stat-mini-item .lbl {
+            font-size: 11px;
+            color: var(--ios-gray);
+            font-weight: 500;
+            margin-top: 2px;
         }
+        .loading-text {
+            font-size: 12px;
+            color: var(--ios-gray);
+            font-weight: 400;
+        }
+
+        /* ===== MENU CARD ===== */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -352,75 +231,20 @@
             opacity: 1;
             transform: translateX(4px);
         }
-        .chart-mini-wrapper {
-            background: var(--ios-gray-light);
-            border-radius: var(--ios-radius-sm);
-            padding: 16px;
-            margin: 16px 0 20px;
-        }
-        .chart-mini-wrapper h4 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--ios-gray);
-        }
-        .chart-mini-wrapper canvas {
-            max-height: 120px;
-            width: 100% !important;
-        }
-        .partnership-section {
-            margin: 16px 0 20px;
-        }
-        .partnership-section h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--ios-gray);
-            margin-bottom: 8px;
-        }
-        .partnership-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .tag {
-            background: var(--ios-gray-light);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            transition: var(--ios-transition);
-            border: 1px solid transparent;
-            cursor: default;
-        }
-        .tag:hover {
-            border-color: var(--ios-blue);
-            background: var(--ios-white);
-        }
-        .tag .count {
-            font-weight: 400;
-            color: var(--ios-gray);
-            font-size: 11px;
-            margin-left: 4px;
-        }
+
+        /* ===== FOOTER ===== */
         .footer {
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--ios-gray-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid #E5E5EA;
             font-size: 12px;
             color: var(--ios-gray);
-        }
-        .footer .version {
-            font-weight: 500;
+            letter-spacing: 0.2px;
         }
         .footer .heart {
             color: var(--ios-red);
             display: inline-block;
-            animation: heartBeat 2s ease-in-out infinite;
+            animation: heartBeat 1.8s ease-in-out infinite;
         }
         @keyframes heartBeat {
             0%,
@@ -428,186 +252,112 @@
                 transform: scale(1);
             }
             50% {
-                transform: scale(1.15);
+                transform: scale(1.2);
             }
         }
 
-        /* ============================================================
-           FEED AKTIVITAS (BARU)
-           ============================================================ */
-        .activity-section {
-            margin: 16px 0 20px;
-            padding: 16px;
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
             background: var(--ios-gray-light);
-            border-radius: var(--ios-radius-sm);
-        }
-        .activity-section .header-activity {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .activity-section h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--ios-gray);
-        }
-        .activity-section .btn-clear {
-            background: none;
             border: none;
-            color: var(--ios-gray);
-            font-size: 12px;
-            cursor: pointer;
-            font-family: var(--ios-font);
-            padding: 4px 8px;
-            border-radius: 6px;
-            transition: var(--ios-transition);
-        }
-        .activity-section .btn-clear:hover {
-            background: rgba(0, 0, 0, 0.05);
-            color: var(--ios-red);
-        }
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            padding: 6px 10px;
-            background: var(--ios-white);
-            border-radius: 8px;
-            transition: var(--ios-transition);
-            border-left: 3px solid var(--ios-blue);
-        }
-        .activity-item .act-icon {
+            border-radius: 30px;
+            padding: 4px 12px;
             font-size: 16px;
-            flex-shrink: 0;
+            cursor: pointer;
+            transition: var(--ios-transition);
+            font-family: var(--ios-font);
+            position: absolute;
+            top: 16px;
+            right: 16px;
         }
-        .activity-item .act-text {
-            flex: 1;
-            color: #1C1C1E;
-        }
-        .activity-item .act-time {
-            font-size: 11px;
-            color: var(--ios-gray);
-            flex-shrink: 0;
-        }
-        .activity-item .act-text .highlight-name {
-            font-weight: 600;
-        }
-        .activity-item.green {
-            border-left-color: var(--ios-green);
-        }
-        .activity-item.orange {
-            border-left-color: var(--ios-orange);
-        }
-        .activity-item.purple {
-            border-left-color: var(--ios-purple);
-        }
-        .activity-item.red {
-            border-left-color: var(--ios-red);
+        .theme-toggle:hover {
+            transform: scale(1.05);
         }
 
-        body.dark-mode .activity-item {
-            background: #2C2C2E;
-        }
-        body.dark-mode .activity-item .act-text {
-            color: #FFFFFF;
-        }
-        body.dark-mode .activity-section .btn-clear:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 600px) {
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 500px) {
             .container {
-                padding: 20px 16px 24px;
-                border-radius: 16px;
+                padding: 24px 16px 24px;
+                border-radius: 18px;
             }
-            .hero h2 {
+            .logo-wrapper {
+                width: 60px;
+                height: 60px;
+            }
+            .logo-wrapper svg {
+                width: 30px;
+                height: 30px;
+            }
+            h1 {
                 font-size: 24px;
             }
             .stats-mini {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
             }
             .stat-mini-item .num {
-                font-size: 18px;
+                font-size: 17px;
             }
             .menu-grid {
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
             .menu-card {
-                padding: 16px;
+                padding: 14px 16px;
             }
-            .header-title h1 {
-                font-size: 18px;
+            .menu-card .icon {
+                font-size: 28px;
             }
-            .logo {
-                width: 38px;
-                height: 38px;
-                font-size: 20px;
+            .menu-card .title {
+                font-size: 15px;
             }
-            .partnership-tags {
-                gap: 6px;
-            }
-            .tag {
+            .menu-card .desc {
                 font-size: 12px;
-                padding: 4px 12px;
             }
-            #toastContainer {
+            .menu-card .badge {
+                font-size: 9px;
+                padding: 1px 10px;
                 top: 10px;
                 right: 10px;
-                left: 10px;
-                max-width: 100%;
             }
-            .toast {
-                font-size: 13px;
-                padding: 12px 14px;
-            }
-            .activity-item {
-                font-size: 12px;
-                padding: 4px 8px;
+            .theme-toggle {
+                top: 12px;
+                right: 12px;
+                font-size: 14px;
+                padding: 3px 10px;
             }
         }
-        @media (max-width: 400px) {
-            .stats-mini {
-                grid-template-columns: 1fr 1fr;
-                gap: 6px;
+        @media (max-width: 380px) {
+            .container {
+                padding: 18px 12px 20px;
             }
-            .stat-mini-item {
-                padding: 10px 6px;
-            }
-            .stat-mini-item .num {
-                font-size: 16px;
-            }
-            .hero h2 {
+            h1 {
                 font-size: 20px;
             }
-            .hero-icon {
-                font-size: 44px;
+            .stats-mini {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+            .stat-mini-item .num {
+                font-size: 15px;
+            }
+            .stat-mini-item .lbl {
+                font-size: 10px;
+            }
+            .logo-wrapper {
+                width: 50px;
+                height: 50px;
+            }
+            .logo-wrapper svg {
+                width: 24px;
+                height: 24px;
             }
         }
 
-        /* ============================================================
-           DARK MODE OVERRIDES
-           ============================================================ */
+        /* Dark mode overrides */
         body.dark-mode .menu-card:hover {
             border-color: var(--ios-blue);
             box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15);
-        }
-        body.dark-mode .tag:hover {
-            background: var(--ios-white);
-            border-color: var(--ios-blue);
         }
         body.dark-mode .stat-mini-item:hover {
             background: #3A3A3C;
@@ -616,115 +366,66 @@
             background: #3A3A3C;
             color: white;
         }
-        body.dark-mode .activity-section {
-            background: #2C2C2E;
-        }
-        body.dark-mode .activity-item {
-            background: #1C1C1E;
-        }
-        body.dark-mode .activity-item .act-text {
-            color: #FFFFFF;
+        body.dark-mode .footer {
+            border-top-color: #3A3A3C;
         }
     </style>
 </head>
 <body>
-    <!-- ===== TOAST CONTAINER ===== -->
-    <div id="toastContainer"></div>
-
     <div class="container">
-        <!-- ===== HEADER ===== -->
-        <div class="header">
-            <div class="header-left">
-                <div class="logo">🐔</div>
-                <div class="header-title">
-                    <h1>Rekap Dagang</h1>
-                    <div class="sub">Broker Ayam · v2.1</div>
-                </div>
-            </div>
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-                🌙
-            </button>
+        <!-- THEME TOGGLE -->
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            🌙
+        </button>
+
+        <!-- LOGO -->
+        <div class="logo-wrapper">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+            </svg>
         </div>
 
-        <!-- ===== HERO ===== -->
-        <div class="hero">
-            <span class="hero-icon">🐓</span>
-            <h2>
-                Kelola <span class="highlight">Kemitraan</span><br>
-                &amp; Pantau <span class="highlight">Distribusi</span>
-            </h2>
-            <p>Catat transaksi, lihat laporan,<br>dan maksimalkan laba dengan mudah.</p>
-        </div>
+        <h1>Rekap Dagang</h1>
+        <p class="subtitle">Sistem pencatatan keuangan kemitraan</p>
 
-        <!-- ===== STATS MINI ===== -->
-        <div class="stats-mini" id="statsMini">
+        <!-- STATS MINI (DATA REAL-TIME) -->
+        <div class="stats-mini">
             <div class="stat-mini-item">
-                <div class="num" id="statAyam">1.234</div>
-                <div class="lbl">🐓 Ayam (kg)</div>
+                <div class="num" id="statTonase">-</div>
+                <div class="lbl">🐓 Tonase (kg)</div>
             </div>
             <div class="stat-mini-item">
-                <div class="num green" id="statPendapatan">Rp 45,2M</div>
+                <div class="num green" id="statPendapatan">-</div>
                 <div class="lbl">💰 Pendapatan</div>
             </div>
             <div class="stat-mini-item">
-                <div class="num orange" id="statTransaksi">12</div>
+                <div class="num orange" id="statTransaksi">-</div>
                 <div class="lbl">📦 Transaksi</div>
-            </div>
-            <div class="stat-mini-item">
-                <div class="num purple" id="statKemitraan">3</div>
-                <div class="lbl">🤝 Kemitraan</div>
             </div>
         </div>
 
-        <!-- ===== MENU ===== -->
+        <!-- MENU -->
         <div class="menu-grid">
             <a href="supir.html" class="menu-card supir">
                 <span class="badge">Supir</span>
                 <span class="icon">📝</span>
-                <div class="title">Input Transaksi</div>
-                <div class="desc">Catat pengiriman ayam</div>
+                <div class="title">Input Data</div>
+                <div class="desc">Untuk supir mengisi transaksi harian</div>
                 <span class="arrow">→</span>
             </a>
             <a href="pemilik.html" class="menu-card pemilik">
                 <span class="badge">Pemilik</span>
                 <span class="icon">📊</span>
-                <div class="title">Dashboard</div>
-                <div class="desc">Lihat laporan &amp; kelola data</div>
+                <div class="title">Laporan</div>
+                <div class="desc">Untuk pemilik melihat rekap &amp; kelola harga</div>
                 <span class="arrow">→</span>
             </a>
         </div>
 
-        <!-- ===== MINI CHART ===== -->
-        <div class="chart-mini-wrapper">
-            <h4>📈 Tren Pendapatan 7 Hari Terakhir</h4>
-            <canvas id="miniChart"></canvas>
-        </div>
-
-        <!-- ===== FEED AKTIVITAS (BARU) ===== -->
-        <div class="activity-section" id="activitySection">
-            <div class="header-activity">
-                <h4>🔄 Aktivitas Terbaru</h4>
-                <button class="btn-clear" onclick="clearActivities()">Hapus semua</button>
-            </div>
-            <div class="activity-list" id="activityList">
-                <!-- Aktivitas akan diisi oleh JavaScript -->
-            </div>
-        </div>
-
-        <!-- ===== PARTNERSHIP ===== -->
-        <div class="partnership-section">
-            <h4>🤝 Kemitraan Aktif</h4>
-            <div class="partnership-tags" id="partnershipTags">
-                <span class="tag">SAUD <span class="count">(3 kandang)</span></span>
-                <span class="tag">MITRA JAYA <span class="count">(2 kandang)</span></span>
-                <span class="tag">BERKAH <span class="count">(1 kandang)</span></span>
-            </div>
-        </div>
-
-        <!-- ===== FOOTER ===== -->
+        <!-- FOOTER -->
         <div class="footer">
-            <span>© 2026 Rekap Dagang</span>
-            <span class="version">Dibuat dengan <span class="heart">❤</span></span>
+            © 2026 Rekap Dagang &nbsp;·&nbsp; Dibuat dengan <span class="heart">❤</span>
         </div>
     </div>
 
@@ -738,239 +439,62 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
         }
+
+        // Load saved theme
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
             document.querySelector('.theme-toggle').textContent = '☀️';
         }
 
         // ============================================================
-        // 2. MINI CHART (Chart.js)
+        // 2. AMBIL DATA REAL-TIME DARI GOOGLE SHEETS
         // ============================================================
-        const ctx = document.getElementById('miniChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-                datasets: [{
-                    label: 'Pendapatan (Rp)',
-                    data: [3500000, 4200000, 3800000, 5100000, 4900000, 5600000, 6100000],
-                    borderColor: '#007AFF',
-                    backgroundColor: 'rgba(0,122,255,0.08)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#007AFF',
-                    pointBorderColor: 'white',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(0,0,0,0.04)' },
-                        ticks: {
-                            callback: function(value) {
-                                if (value >= 1000000) return (value / 1000000) + 'M';
-                                return value;
-                            }
-                        }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-
-        // ============================================================
-        // 3. COUNTER ANIMATION
-        // ============================================================
-        function animateCounter(element, target, suffix = '') {
-            let current = 0;
-            const duration = 1500;
-            const steps = 60;
-            const increment = target / steps;
-            const stepTime = duration / steps;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                if (Number.isInteger(target)) {
-                    element.textContent = Math.floor(current) + suffix;
-                } else {
-                    element.textContent = current.toFixed(1) + suffix;
-                }
-            }, stepTime);
-        }
-
-        window.addEventListener('load', function() {
-            const ayamEl = document.getElementById('statAyam');
-            const pendapatanEl = document.getElementById('statPendapatan');
-            const transaksiEl = document.getElementById('statTransaksi');
-            const kemitraanEl = document.getElementById('statKemitraan');
-
-            const targetAyam = 1234;
-            const targetPendapatan = 45200000;
-            const targetTransaksi = 12;
-            const targetKemitraan = 3;
-
-            animateCounter(ayamEl, targetAyam, ' kg');
-            animateCounter(transaksiEl, targetTransaksi, '');
-            animateCounter(kemitraanEl, targetKemitraan, '');
-
-            let currentPendapatan = 0;
-            const durationPendapatan = 1500;
-            const stepsPendapatan = 60;
-            const incrementPendapatan = targetPendapatan / stepsPendapatan;
-            const stepTimePendapatan = durationPendapatan / stepsPendapatan;
-            const timerPendapatan = setInterval(() => {
-                currentPendapatan += incrementPendapatan;
-                if (currentPendapatan >= targetPendapatan) {
-                    currentPendapatan = targetPendapatan;
-                    clearInterval(timerPendapatan);
-                }
-                pendapatanEl.textContent = 'Rp ' + Math.floor(currentPendapatan).toLocaleString('id-ID');
-            }, stepTimePendapatan);
-
-            // ============================================================
-            // 4. NOTIFIKASI & FEED AKTIVITAS
-            // ============================================================
-            loadActivities();
-            // Simulasi notifikasi masuk (untuk demo)
-            setTimeout(() => {
-                showToast('📝 Transaksi baru dari Bu Atul (47,1 kg)', 'success');
-                addActivity('Bu Atul', 'menambahkan transaksi 47,1 kg', 'green');
-            }, 3000);
-
-            setTimeout(() => {
-                showToast('🔄 Harga kemitraan SAUD diupdate', 'warning');
-                addActivity('Pemilik', 'mengupdate harga kemitraan SAUD', 'orange');
-            }, 8000);
-
-            setTimeout(() => {
-                showToast('🐔 Kemitraan baru: BERKAH ditambahkan', 'success');
-                addActivity('Sistem', 'menambahkan kemitraan baru: BERKAH', 'purple');
-            }, 13000);
-        });
-
-        // ============================================================
-        // 5. FUNGSI NOTIFIKASI (TOAST)
-        // ============================================================
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-
-            const iconMap = {
-                success: '✅',
-                warning: '⚠️',
-                error: '❌',
-                info: 'ℹ️'
-            };
-            toast.innerHTML = `
-                    <span class="toast-icon">${iconMap[type] || 'ℹ️'}</span>
-                    <span>${message}</span>
-                    <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
-                `;
-            container.appendChild(toast);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                toast.classList.add('hide');
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
-        }
-
-        // ============================================================
-        // 6. FUNGSI FEED AKTIVITAS
-        // ============================================================
-        function loadActivities() {
-            const activities = JSON.parse(localStorage.getItem('activities') || '[]');
-            const list = document.getElementById('activityList');
-            if (activities.length === 0) {
-                list.innerHTML =
-                    `<div class="activity-item" style="border-left-color:var(--ios-gray);justify-content:center;color:var(--ios-gray);font-style:italic;background:transparent;">Belum ada aktivitas</div>`;
-                return;
-            }
-            list.innerHTML = activities.slice(-10).reverse().map(act => `
-                    <div class="activity-item ${act.color || ''}">
-                        <span class="act-icon">${act.icon || '🔄'}</span>
-                        <span class="act-text"><span class="highlight-name">${act.actor}</span> ${act.action}</span>
-                        <span class="act-time">${act.time}</span>
-                    </div>
-                `).join('');
-        }
-
-        function addActivity(actor, action, color = 'blue', icon = '🔄') {
-            const activities = JSON.parse(localStorage.getItem('activities') || '[]');
-            const now = new Date();
-            const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            activities.push({
-                actor: actor,
-                action: action,
-                time: time,
-                color: color,
-                icon: icon,
-                timestamp: now.getTime()
-            });
-            localStorage.setItem('activities', JSON.stringify(activities));
-            loadActivities();
-            // Scroll ke aktivitas terbaru
-            const list = document.getElementById('activityList');
-            if (list) list.scrollTop = 0;
-        }
-
-        function clearActivities() {
-            if (confirm('Hapus semua aktivitas?')) {
-                localStorage.removeItem('activities');
-                loadActivities();
-                showToast('🗑️ Semua aktivitas telah dihapus', 'info');
-            }
-        }
-
-        // ============================================================
-        // 7. AMBIL DATA DARI GOOGLE SHEETS (Opsional)
-        // ============================================================
-        // Jika ingin data real-time, aktifkan kode di bawah ini
-        /*
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
 
-        async function loadRealStats() {
+        async function loadData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_TRANSAKSI?key=${API_KEY}`;
             try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_TRANSAKSI?key=${API_KEY}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 const rows = data.values || [];
-                let totalTonase = 0, totalPendapatan = 0;
-                for (let i = 1; i < rows.length; i++) {
-                    totalTonase += parseFloat(rows[i][5]) || 0;
-                    totalPendapatan += parseFloat(rows[i][8]) || 0;
-                }
-                document.getElementById('statAyam').textContent = totalTonase.toFixed(0) + ' kg';
+
+                // Header: No, Tanggal, Kemitraan, Kandang, Bakul, Tonase, HargaBeli, HargaJual, TotalPenjualan, TotalBiaya, Laba, BiayaMakanTotal, JasaAngkutTotal, Setoran
+                // Ambil data mulai dari baris 2 (index 1)
+                const transaksi = rows.slice(1);
+
+                let totalTonase = 0;
+                let totalPendapatan = 0;
+
+                transaksi.forEach(row => {
+                    const tonase = parseFloat(row[5]) || 0;
+                    const pendapatan = parseFloat(row[8]) || 0; // Total Penjualan
+                    totalTonase += tonase;
+                    totalPendapatan += pendapatan;
+                });
+
+                const totalTransaksi = transaksi.length;
+
+                // Update elemen HTML
+                document.getElementById('statTonase').textContent = totalTonase.toFixed(1) + ' kg';
                 document.getElementById('statPendapatan').textContent = 'Rp ' + totalPendapatan.toLocaleString('id-ID');
-                document.getElementById('statTransaksi').textContent = rows.length - 1;
-            } catch (e) {
-                console.log('Gunakan data statis untuk demo');
+                document.getElementById('statTransaksi').textContent = totalTransaksi;
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Tampilkan pesan error jika gagal
+                document.getElementById('statTonase').textContent = '⚠️ Error';
+                document.getElementById('statPendapatan').textContent = '⚠️ Error';
+                document.getElementById('statTransaksi').textContent = '⚠️ Error';
             }
         }
-        // loadRealStats();
-        */
+
+        // ============================================================
+        // 3. LOAD DATA SAAT HALAMAN DIMUAT
+        // ============================================================
+        window.onload = function() {
+            loadData();
+        };
     </script>
 </body>
 </html>
