@@ -39,7 +39,6 @@
         .btn-sm { padding: 4px 12px; font-size: 13px; }
         .btn-block { width: 100%; }
 
-        /* TABS */
         .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 1px solid #E5E5EA; padding-bottom: 12px; }
         .tab-btn { padding: 10px 20px; background: transparent; border: none; border-radius: var(--ios-radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); font-family: var(--ios-font); color: var(--ios-gray); }
         .tab-btn:hover { background: var(--ios-gray-light); }
@@ -59,7 +58,6 @@
         .alert-box.error { background: rgba(255,59,48,0.10); color: #B8221A; border-left: 4px solid var(--ios-red); display: block; }
         .alert-box.info { background: rgba(0,122,255,0.10); color: #0055B3; border-left: 4px solid var(--ios-blue); display: block; }
 
-        /* TABEL */
         .table-wrapper { overflow-x: auto; margin-top: 12px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
         th { background: var(--ios-gray-light); padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; border-bottom: 1px solid #E5E5EA; }
@@ -69,14 +67,12 @@
         .text-success { color: var(--ios-green); font-weight: 600; }
         .text-danger { color: var(--ios-red); font-weight: 600; }
 
-        /* MODAL */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: var(--ios-white); border-radius: var(--ios-radius); padding: 28px 24px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--ios-shadow); }
         .modal-box h2 { font-size: 20px; margin-bottom: 16px; }
         .modal-close { float: right; font-size: 24px; font-weight: 300; color: var(--ios-gray); cursor: pointer; background: none; border: none; }
 
-        /* PASSWORD OVERLAY */
         .password-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
         .password-overlay.active { display: flex; }
         .password-box { background: var(--ios-white); border-radius: var(--ios-radius); padding: 32px 28px; max-width: 380px; width: 100%; text-align: center; box-shadow: var(--ios-shadow); }
@@ -219,7 +215,7 @@
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadPenjualanNota()">🔄 Refresh</button>
                 </div>
-                <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+                <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat数据…</div>
                 <div class="table-wrapper" id="penjualanWrapper" style="display:none;">
                     <table>
                         <thead>
@@ -232,7 +228,6 @@
                                 <th class="text-right">Tonase</th>
                                 <th class="text-right">Harga Jual</th>
                                 <th class="text-right">Total Penjualan</th>
-                                <th class="text-right">Laba</th>
                             </tr>
                         </thead>
                         <tbody id="penjualanBody"></tbody>
@@ -242,16 +237,18 @@
 
             <!-- TAB 4: REKAP LABA -->
             <div class="tab-panel" id="tabLaba">
-                <p class="subtitle">Rekap laba per kemitraan & kandang dengan rincian penjualan</p>
+                <p class="subtitle">Rekap laba per nota dengan rincian penjualan</p>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
                 </div>
                 <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
                 <div class="table-wrapper" id="labaWrapper" style="display:none;">
-                    <h4 style="margin:12px 0 8px;">📊 Rekap Laba per Kemitraan & Kandang</h4>
+                    <h4 style="margin:12px 0 8px;">📊 Rekap Laba per Nota</h4>
                     <table>
                         <thead>
                             <tr>
+                                <th>No Nota</th>
+                                <th>Tanggal</th>
                                 <th>Kemitraan</th>
                                 <th>Kandang</th>
                                 <th class="text-right">Total Tonase</th>
@@ -291,8 +288,18 @@
                 <p class="subtitle">Kelola harga master</p>
                 <div class="table-wrapper">
                     <table>
-                        <thead><tr><th>Kemitraan</th><th>Kandang</th><th>Harga Beli</th><th>Harga Jual</th><th>Biaya Makan</th><th>Jasa Angkut/100kg</th><th>Pegawai</th><th>Aksi</th></tr></thead>
-                        <tbody id="masterBody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr></tbody>
+                        <thead>
+                            <tr>
+                                <th>Kemitraan</th>
+                                <th>Kandang</th>
+                                <th>Harga Beli</th>
+                                <th>Biaya Makan</th>
+                                <th>Jasa Angkut/100kg</th>
+                                <th>Pegawai</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masterBody"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr></tbody>
                     </table>
                 </div>
                 <div style="text-align:center;margin-top:12px;">
@@ -355,7 +362,7 @@
 
     <script>
         // ============ KONFIGURASI ============
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxkzcTYe2XFm2BudkidEdpeV2w9_gVn6c0Ku2SS6CnAEGPRnFjPNvHLQusnWf_F_QQb/exec';
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxgRByPIk2PVkmLN63bekgHtcwGjP6-QSY7eKIuiw60xv5pEoNRcbAAx7L-FNYzwHb_/exec';
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
         const PASSWORD = 'pass4all';
@@ -384,7 +391,6 @@
             localStorage.removeItem('pemilikSession');
         }
 
-        // ============ LOGIN ============
         function verifyPassword() {
             const input = document.getElementById('passwordInput');
             const error = document.getElementById('passwordError');
@@ -402,7 +408,6 @@
             }
         }
 
-        // ============ LOGOUT ============
         function logout() {
             if (confirm('Yakin ingin logout?')) {
                 isVerified = false;
@@ -719,7 +724,7 @@
                 const tbody = document.getElementById('penjualanBody');
                 
                 if (bakulRows.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data penjualan</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data penjualan</td></tr>';
                     return;
                 }
                 
@@ -727,7 +732,6 @@
                 
                 let grandTotalTonase = 0;
                 let grandTotalPenjualan = 0;
-                let grandTotalLaba = 0;
                 
                 tbody.innerHTML = bakulRows.map(row => {
                     const noNota = row[0] || '';
@@ -735,13 +739,11 @@
                     const tonase = parseFloat(row[2]) || 0;
                     const hargaJual = parseFloat(row[3]) || 0;
                     const totalPenjualan = parseFloat(row[4]) || 0;
-                    const laba = parseFloat(row[5]) || 0;
                     const tanggal = row[6] || '';
                     const notaInfo = notaMap[noNota] || { kemitraan: 'Unknown', kandang: 'Unknown', tanggal: tanggal };
                     
                     grandTotalTonase += tonase;
                     grandTotalPenjualan += totalPenjualan;
-                    grandTotalLaba += laba;
                     
                     return `
                         <tr>
@@ -753,13 +755,11 @@
                             <td class="text-right">${tonase.toFixed(1)}</td>
                             <td class="text-right">Rp ${hargaJual.toLocaleString('id-ID')}</td>
                             <td class="text-right">Rp ${totalPenjualan.toLocaleString('id-ID')}</td>
-                            <td class="text-right ${laba >= 0 ? 'text-success' : 'text-danger'}">
-                                Rp ${laba.toLocaleString('id-ID')}
-                            </td>
                         </tr>
                     `;
                 }).join('');
                 
+                // Grand Total
                 tbody.innerHTML += `
                     <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
                         <td colspan="4" class="text-right">GRAND TOTAL</td>
@@ -767,9 +767,6 @@
                         <td class="text-right">${grandTotalTonase.toFixed(1)}</td>
                         <td></td>
                         <td class="text-right">Rp ${grandTotalPenjualan.toLocaleString('id-ID')}</td>
-                        <td class="text-right ${grandTotalLaba >= 0 ? 'text-success' : 'text-danger'}">
-                            Rp ${grandTotalLaba.toLocaleString('id-ID')}
-                        </td>
                     </tr>
                 `;
                 
@@ -796,6 +793,7 @@
                 document.getElementById('labaWrapper').style.display = 'block';
                 document.getElementById('rincianWrapper').style.display = 'block';
 
+                // ===== REKAP LABA PER NOTA =====
                 const labaMap = {};
                 
                 notaRows.forEach(nota => {
@@ -804,21 +802,18 @@
                     const kandang = nota[3] || 'Unknown';
                     const totalKemitraan = parseFloat(nota[6]) || 0;
                     const biayaOperasional = parseFloat(nota[11]) || 0;
-                    const key = kemitraan + '|' + kandang;
                     
-                    if (!labaMap[key]) {
-                        labaMap[key] = { 
-                            kemitraan, 
-                            kandang, 
-                            totalTonase: 0, 
-                            totalPenjualan: 0, 
-                            totalKemitraan: 0, 
-                            totalBiaya: 0,
-                            details: []
-                        };
-                    }
-                    labaMap[key].totalKemitraan += totalKemitraan;
-                    labaMap[key].totalBiaya += biayaOperasional;
+                    labaMap[noNota] = {
+                        noNota: noNota,
+                        tanggal: nota[1] || '',
+                        kemitraan: kemitraan,
+                        kandang: kandang,
+                        totalTonase: 0,
+                        totalPenjualan: 0,
+                        totalKemitraan: totalKemitraan,
+                        totalBiaya: biayaOperasional,
+                        details: []
+                    };
                 });
 
                 bakulRows.forEach(row => {
@@ -830,25 +825,14 @@
                     const laba = parseFloat(row[5]) || 0;
                     const tanggal = row[6] || '';
                     
-                    let kemitraan = 'Unknown';
-                    let kandang = 'Unknown';
-                    for (let n of notaRows) {
-                        if (n[0] === noNota) {
-                            kemitraan = n[2] || 'Unknown';
-                            kandang = n[3] || 'Unknown';
-                            break;
-                        }
-                    }
-                    
-                    const key = kemitraan + '|' + kandang;
-                    if (labaMap[key]) {
-                        labaMap[key].totalTonase += tonase;
-                        labaMap[key].totalPenjualan += totalPenjualan;
-                        labaMap[key].details.push({
+                    if (labaMap[noNota]) {
+                        labaMap[noNota].totalTonase += tonase;
+                        labaMap[noNota].totalPenjualan += totalPenjualan;
+                        labaMap[noNota].details.push({
                             noNota,
                             tanggal,
-                            kemitraan,
-                            kandang,
+                            kemitraan: labaMap[noNota].kemitraan,
+                            kandang: labaMap[noNota].kandang,
                             bakul,
                             tonase,
                             hargaJual,
@@ -862,7 +846,7 @@
                 const keys = Object.keys(labaMap);
                 
                 if (keys.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
                     document.getElementById('rincianWrapper').style.display = 'none';
                     return;
                 }
@@ -884,7 +868,9 @@
                     
                     return `
                         <tr>
-                            <td><strong>${item.kemitraan}</strong></td>
+                            <td><strong>${item.noNota}</strong></td>
+                            <td>${item.tanggal}</td>
+                            <td>${item.kemitraan}</td>
                             <td>${item.kandang}</td>
                             <td class="text-right">${item.totalTonase.toFixed(1)}</td>
                             <td class="text-right">Rp ${item.totalPenjualan.toLocaleString('id-ID')}</td>
@@ -897,9 +883,10 @@
                     `;
                 }).join('');
 
+                // Grand Total
                 tbody.innerHTML += `
                     <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
-                        <td colspan="2" class="text-right">GRAND TOTAL</td>
+                        <td colspan="4" class="text-right">GRAND TOTAL</td>
                         <td class="text-right">${grandTotalTonase.toFixed(1)}</td>
                         <td class="text-right">Rp ${grandTotalPenjualan.toLocaleString('id-ID')}</td>
                         <td class="text-right">Rp ${grandTotalKemitraan.toLocaleString('id-ID')}</td>
@@ -910,6 +897,7 @@
                     </tr>
                 `;
 
+                // ===== RINCIAN PENJUALAN PER BAKUL =====
                 const rincianBody = document.getElementById('rincianBody');
                 const allDetails = [];
                 Object.values(labaMap).forEach(item => {
@@ -947,14 +935,13 @@
         function renderMasterHarga() {
             const tbody = document.getElementById('masterBody');
             if (!masterData || masterData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Belum ada data master</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Belum ada data master</td></tr>';
                 return;
             }
             tbody.innerHTML = masterData.map(row => {
                 const id = (name) => `harga_${name}_${row[0]}_${row[1]}`.replace(/[^a-zA-Z0-9_]/g, '_');
                 return `<tr><td>${row[0]}</td><td>${row[1]}</td>
                     <td><input type="number" id="${id('beli')}" value="${row[2]||0}" step="any"></td>
-                    <td><input type="number" id="${id('jual')}" value="${row[3]||0}" step="any"></td>
                     <td><input type="number" id="${id('makan')}" value="${row[4]||0}" step="any"></td>
                     <td><input type="number" id="${id('angkut')}" value="${row[5]||10000}" step="any"></td>
                     <td><input type="number" id="${id('pegawai')}" value="${row[6]||1}" step="1" min="0"></td>
@@ -967,7 +954,6 @@
             const data = {
                 kemitraan, kandang,
                 hargaBeli: parseFloat(document.getElementById(id('beli'))?.value) || 0,
-                hargaJual: parseFloat(document.getElementById(id('jual'))?.value) || 0,
                 biayaMakan: parseFloat(document.getElementById(id('makan'))?.value) || 0,
                 jasaAngkut: parseFloat(document.getElementById(id('angkut'))?.value) || 10000,
                 jumlahPegawai: parseInt(document.getElementById(id('pegawai'))?.value) || 1
@@ -996,7 +982,10 @@
                 body: JSON.stringify({
                     action: 'tambahMaster',
                     kemitraan, kandang,
-                    hargaBeli: 0, hargaJual: 0, biayaMakan: 0, jasaAngkut: 10000, jumlahPegawai: 1
+                    hargaBeli: 0,
+                    biayaMakan: 0,
+                    jasaAngkut: 10000,
+                    jumlahPegawai: 1
                 })
             }).then(() => { alert('✅ Master berhasil ditambahkan!'); loadMaster(); })
               .catch(err => alert('❌ Error: ' + err.message));
