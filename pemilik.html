@@ -27,6 +27,18 @@
         .badge-role { background: var(--ios-green); color: white; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .subtitle { font-size: 14px; color: var(--ios-gray); margin-bottom: 20px; border-left: 3px solid var(--ios-blue); padding-left: 12px; }
 
+        .btn { padding: 12px 20px; background: var(--ios-blue); color: white; border: none; border-radius: var(--ios-radius-sm); font-size: 16px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); font-family: var(--ios-font); }
+        .btn:hover { background: var(--ios-blue-hover); }
+        .btn:disabled { opacity: 0.6; pointer-events: none; }
+        .btn-success { background: var(--ios-green); }
+        .btn-success:hover { background: #2DB84E; }
+        .btn-warning { background: var(--ios-orange); }
+        .btn-warning:hover { background: #E68600; }
+        .btn-danger { background: var(--ios-red); }
+        .btn-danger:hover { background: #D63031; }
+        .btn-sm { padding: 4px 12px; font-size: 13px; }
+        .btn-block { width: 100%; }
+
         /* TABS */
         .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 1px solid #E5E5EA; padding-bottom: 12px; }
         .tab-btn { padding: 10px 20px; background: transparent; border: none; border-radius: var(--ios-radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); font-family: var(--ios-font); color: var(--ios-gray); }
@@ -42,17 +54,6 @@
         input:focus, select:focus { border-color: var(--ios-blue); background: var(--ios-white); box-shadow: 0 0 0 3px rgba(0,122,255,0.15); }
         input[readonly] { background: #E5E5EA; color: var(--ios-gray); }
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .btn { padding: 12px 20px; background: var(--ios-blue); color: white; border: none; border-radius: var(--ios-radius-sm); font-size: 16px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); font-family: var(--ios-font); }
-        .btn:hover { background: var(--ios-blue-hover); }
-        .btn:disabled { opacity: 0.6; pointer-events: none; }
-        .btn-success { background: var(--ios-green); }
-        .btn-success:hover { background: #2DB84E; }
-        .btn-warning { background: var(--ios-orange); }
-        .btn-warning:hover { background: #E68600; }
-        .btn-danger { background: var(--ios-red); }
-        .btn-danger:hover { background: #D63031; }
-        .btn-sm { padding: 4px 12px; font-size: 13px; }
-        .btn-block { width: 100%; }
         .alert-box { padding: 12px 14px; border-radius: var(--ios-radius-sm); margin-top: 14px; display: none; font-size: 14px; font-weight: 500; }
         .alert-box.success { background: rgba(52,199,89,0.12); color: #1A7A3A; border-left: 4px solid var(--ios-green); display: block; }
         .alert-box.error { background: rgba(255,59,48,0.10); color: #B8221A; border-left: 4px solid var(--ios-red); display: block; }
@@ -98,259 +99,262 @@
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="header-left">
-                <a href="index.html" class="back-link">
-                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-                    Kembali
-                </a>
-                <h1>📊 Manajemen Nota</h1>
-                <span class="badge-role">Pemilik</span>
-            </div>
-        </div>
-        <p class="subtitle">Buat nota, rekap, edit, dan lihat laba</p>
-
         <!-- PASSWORD OVERLAY -->
         <div class="password-overlay" id="passwordOverlay">
             <div class="password-box">
-                <h2>🔐 Akses Rekap & Edit</h2>
-                <p>Masukkan password untuk melihat rekap dan edit nota</p>
+                <h2>🔐 Akses Pemilik</h2>
+                <p>Masukkan password untuk mengakses manajemen nota</p>
                 <input type="password" id="passwordInput" placeholder="Password" onkeydown="if(event.key==='Enter') verifyPassword()">
-                <button class="btn btn-success" onclick="verifyPassword()">Verifikasi</button>
+                <button class="btn btn-success" onclick="verifyPassword()">Login</button>
                 <div class="password-error" id="passwordError">❌ Password salah! Coba lagi.</div>
             </div>
         </div>
 
-        <!-- TABS -->
-        <div class="tab-nav">
-            <button class="tab-btn active" data-tab="tabBuat" onclick="openTab('tabBuat')">📝 Buat Nota</button>
-            <button class="tab-btn" data-tab="tabRekap" onclick="openTab('tabRekap')">📋 Rekap Nota</button>
-            <button class="tab-btn" data-tab="tabPenjualanNota" onclick="openTab('tabPenjualanNota')">🧾 Rekap Penjualan</button>
-            <button class="tab-btn" data-tab="tabLaba" onclick="openTab('tabLaba')">💰 Rekap Laba</button>
-            <button class="tab-btn" data-tab="tabMaster" onclick="openTab('tabMaster')">⚙️ Master</button>
+        <!-- KONTEN UTAMA -->
+        <div id="mainContent" style="display:none;">
+            <!-- HEADER -->
+            <div class="header">
+                <div class="header-left">
+                    <a href="index.html" class="back-link">
+                        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        Kembali
+                    </a>
+                    <h1>📊 Manajemen Nota</h1>
+                    <span class="badge-role">Pemilik</span>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="logout()" id="logoutBtn" style="display:none;">🚪 Logout</button>
+            </div>
+            <p class="subtitle">Buat nota, rekap, edit, dan lihat laba</p>
+
+            <!-- TABS -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="tabBuat" onclick="openTab('tabBuat')">📝 Buat Nota</button>
+                <button class="tab-btn" data-tab="tabRekap" onclick="openTab('tabRekap')">📋 Rekap Nota</button>
+                <button class="tab-btn" data-tab="tabPenjualanNota" onclick="openTab('tabPenjualanNota')">🧾 Rekap Penjualan</button>
+                <button class="tab-btn" data-tab="tabLaba" onclick="openTab('tabLaba')">💰 Rekap Laba</button>
+                <button class="tab-btn" data-tab="tabMaster" onclick="openTab('tabMaster')">⚙️ Master</button>
+            </div>
+
+            <!-- TAB 1: BUAT NOTA -->
+            <div class="tab-panel active" id="tabBuat">
+                <p class="subtitle">Buat nota induk baru</p>
+                <form id="formNota">
+                    <div class="form-group">
+                        <label class="required">Tanggal</label>
+                        <input type="date" id="tanggal" required>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="required">Kemitraan</label>
+                            <select id="kemitraan" required><option value="">Pilih</option></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Kandang</label>
+                            <select id="kandang" required><option value="">Pilih</option></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="required">Tonase Total (Kg)</label>
+                            <input type="number" id="tonase" step="any" required placeholder="0.0">
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Harga Kemitraan / Kg</label>
+                            <input type="number" id="hargaKemitraan" step="any" required placeholder="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Biaya Makan (Flat)</label>
+                            <input type="number" id="biayaMakan" step="any" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Jasa Angkut (per 100Kg)</label>
+                            <input type="number" id="jasaAngkut" step="any" placeholder="10000" value="10000">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah Pegawai</label>
+                        <input type="number" id="jumlahPegawai" placeholder="1" min="1" value="1">
+                    </div>
+                    <div style="background:var(--ios-gray-light);padding:16px;border-radius:var(--ios-radius-sm);margin:16px 0;">
+                        <p><strong>Total Kemitraan:</strong> Rp <span id="totalKemitraanDisplay">0</span></p>
+                        <p><strong>Biaya Operasional:</strong> Rp <span id="biayaOperasionalDisplay">0</span></p>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block" id="submitBtn">💾 Buat Nota</button>
+                    <div id="alertMessage" class="alert-box"></div>
+                </form>
+            </div>
+
+            <!-- TAB 2: REKAP NOTA -->
+            <div class="tab-panel" id="tabRekap">
+                <p class="subtitle">Daftar semua nota yang sudah dibuat</p>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+                    <button class="btn btn-sm btn-success" onclick="loadRekap()">🔄 Refresh</button>
+                </div>
+                <div id="loadingRekap" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+                <div class="table-wrapper" id="rekapWrapper" style="display:none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No Nota</th>
+                                <th>Tanggal</th>
+                                <th>Kemitraan</th>
+                                <th>Kandang</th>
+                                <th class="text-right">Tonase</th>
+                                <th class="text-right">Total Kemitraan</th>
+                                <th class="text-right">Sisa</th>
+                                <th>Status</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rekapBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: REKAP PENJUALAN PER NOTA -->
+            <div class="tab-panel" id="tabPenjualanNota">
+                <p class="subtitle">Rekap penjualan per nomor nota dengan rincian ke bakul</p>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+                    <button class="btn btn-sm btn-success" onclick="loadPenjualanNota()">🔄 Refresh</button>
+                </div>
+                <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+                <div class="table-wrapper" id="penjualanWrapper" style="display:none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No Nota</th>
+                                <th>Tanggal</th>
+                                <th>Kemitraan</th>
+                                <th>Kandang</th>
+                                <th>Bakul</th>
+                                <th class="text-right">Tonase</th>
+                                <th class="text-right">Harga Jual</th>
+                                <th class="text-right">Total Penjualan</th>
+                                <th class="text-right">Laba</th>
+                            </tr>
+                        </thead>
+                        <tbody id="penjualanBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 4: REKAP LABA -->
+            <div class="tab-panel" id="tabLaba">
+                <p class="subtitle">Rekap laba per kemitraan & kandang dengan rincian penjualan</p>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+                    <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
+                </div>
+                <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+                <div class="table-wrapper" id="labaWrapper" style="display:none;">
+                    <h4 style="margin:12px 0 8px;">📊 Rekap Laba per Kemitraan & Kandang</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kemitraan</th>
+                                <th>Kandang</th>
+                                <th class="text-right">Total Tonase</th>
+                                <th class="text-right">Total Penjualan</th>
+                                <th class="text-right">Total Kemitraan</th>
+                                <th class="text-right">Total Biaya</th>
+                                <th class="text-right">Total Laba</th>
+                            </tr>
+                        </thead>
+                        <tbody id="labaBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-wrapper" id="rincianWrapper" style="display:none; margin-top:24px;">
+                    <h4 style="margin:12px 0 8px;">🧾 Rincian Penjualan per Bakul</h4>
+                    <p style="color:var(--ios-gray);font-size:13px;margin-bottom:8px;">Detail penjualan dari setiap nota yang sudah didistribusikan</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No Nota</th>
+                                <th>Tanggal</th>
+                                <th>Kemitraan</th>
+                                <th>Kandang</th>
+                                <th>Bakul</th>
+                                <th class="text-right">Tonase</th>
+                                <th class="text-right">Harga Jual</th>
+                                <th class="text-right">Total Penjualan</th>
+                                <th class="text-right">Laba</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rincianBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 5: MASTER -->
+            <div class="tab-panel" id="tabMaster">
+                <p class="subtitle">Kelola harga master</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Kemitraan</th><th>Kandang</th><th>Harga Beli</th><th>Harga Jual</th><th>Biaya Makan</th><th>Jasa Angkut/100kg</th><th>Pegawai</th><th>Aksi</th></tr></thead>
+                        <tbody id="masterBody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr></tbody>
+                    </table>
+                </div>
+                <div style="text-align:center;margin-top:12px;">
+                    <button class="btn btn-warning btn-sm" onclick="bukaModalTambahMaster()">➕ Tambah Kemitraan/Kandang</button>
+                </div>
+            </div>
         </div>
 
-        <!-- TAB 1: BUAT NOTA -->
-        <div class="tab-panel active" id="tabBuat">
-            <p class="subtitle">Buat nota induk baru</p>
-            <form id="formNota">
-                <div class="form-group">
-                    <label class="required">Tanggal</label>
-                    <input type="date" id="tanggal" required>
-                </div>
-                <div class="row">
+        <!-- MODAL EDIT NOTA -->
+        <div class="modal-overlay" id="modalEditNota">
+            <div class="modal-box">
+                <button class="modal-close" onclick="closeModal('modalEditNota')">✕</button>
+                <h2>✏️ Edit Nota</h2>
+                <form id="formEditNota">
+                    <input type="hidden" id="editNoNota">
                     <div class="form-group">
-                        <label class="required">Kemitraan</label>
-                        <select id="kemitraan" required><option value="">Pilih</option></select>
+                        <label>Tanggal</label>
+                        <input type="date" id="editTanggal">
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Kemitraan</label>
+                            <input type="text" id="editKemitraan" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Kandang</label>
+                            <input type="text" id="editKandang" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Tonase Total</label>
+                            <input type="number" id="editTonase" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Kemitraan</label>
+                            <input type="number" id="editHargaKemitraan" step="any">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Biaya Makan</label>
+                            <input type="number" id="editBiayaMakan" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>Jasa Angkut (per 100Kg)</label>
+                            <input type="number" id="editJasaAngkut" step="any">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label class="required">Kandang</label>
-                        <select id="kandang" required><option value="">Pilih</option></select>
+                        <label>Jumlah Pegawai</label>
+                        <input type="number" id="editJumlahPegawai" min="1">
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="required">Tonase Total (Kg)</label>
-                        <input type="number" id="tonase" step="any" required placeholder="0.0">
-                    </div>
-                    <div class="form-group">
-                        <label class="required">Harga Kemitraan / Kg</label>
-                        <input type="number" id="hargaKemitraan" step="any" required placeholder="0">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label>Biaya Makan (Flat)</label>
-                        <input type="number" id="biayaMakan" step="any" placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Jasa Angkut (per 100Kg)</label>
-                        <input type="number" id="jasaAngkut" step="any" placeholder="10000" value="10000">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Jumlah Pegawai</label>
-                    <input type="number" id="jumlahPegawai" placeholder="1" min="1" value="1">
-                </div>
-                <div style="background:var(--ios-gray-light);padding:16px;border-radius:var(--ios-radius-sm);margin:16px 0;">
-                    <p><strong>Total Kemitraan:</strong> Rp <span id="totalKemitraanDisplay">0</span></p>
-                    <p><strong>Biaya Operasional:</strong> Rp <span id="biayaOperasionalDisplay">0</span></p>
-                </div>
-                <button type="submit" class="btn btn-success btn-block" id="submitBtn">💾 Buat Nota</button>
-                <div id="alertMessage" class="alert-box"></div>
-            </form>
-        </div>
-
-        <!-- TAB 2: REKAP NOTA -->
-        <div class="tab-panel" id="tabRekap">
-            <p class="subtitle">Daftar semua nota yang sudah dibuat</p>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
-                <button class="btn btn-sm btn-success" onclick="loadRekap()">🔄 Refresh</button>
+                    <button type="submit" class="btn btn-success btn-block">💾 Simpan Perubahan</button>
+                    <div id="alertEdit" class="alert-box"></div>
+                </form>
             </div>
-            <div id="loadingRekap" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
-            <div class="table-wrapper" id="rekapWrapper" style="display:none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No Nota</th>
-                            <th>Tanggal</th>
-                            <th>Kemitraan</th>
-                            <th>Kandang</th>
-                            <th class="text-right">Tonase</th>
-                            <th class="text-right">Total Kemitraan</th>
-                            <th class="text-right">Sisa</th>
-                            <th>Status</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rekapBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TAB 3: REKAP PENJUALAN PER NOTA -->
-        <div class="tab-panel" id="tabPenjualanNota">
-            <p class="subtitle">Rekap penjualan per nomor nota dengan rincian ke bakul</p>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
-                <button class="btn btn-sm btn-success" onclick="loadPenjualanNota()">🔄 Refresh</button>
-            </div>
-            <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
-            <div class="table-wrapper" id="penjualanWrapper" style="display:none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No Nota</th>
-                            <th>Tanggal</th>
-                            <th>Kemitraan</th>
-                            <th>Kandang</th>
-                            <th>Bakul</th>
-                            <th class="text-right">Tonase</th>
-                            <th class="text-right">Harga Jual</th>
-                            <th class="text-right">Total Penjualan</th>
-                            <th class="text-right">Laba</th>
-                        </tr>
-                    </thead>
-                    <tbody id="penjualanBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TAB 4: REKAP LABA -->
-        <div class="tab-panel" id="tabLaba">
-            <p class="subtitle">Rekap laba per kemitraan & kandang dengan rincian penjualan</p>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
-                <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
-            </div>
-            <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
-            <div class="table-wrapper" id="labaWrapper" style="display:none;">
-                <h4 style="margin:12px 0 8px;">📊 Rekap Laba per Kemitraan & Kandang</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Kemitraan</th>
-                            <th>Kandang</th>
-                            <th class="text-right">Total Tonase</th>
-                            <th class="text-right">Total Penjualan</th>
-                            <th class="text-right">Total Kemitraan</th>
-                            <th class="text-right">Total Biaya</th>
-                            <th class="text-right">Total Laba</th>
-                        </tr>
-                    </thead>
-                    <tbody id="labaBody"></tbody>
-                </table>
-            </div>
-            <div class="table-wrapper" id="rincianWrapper" style="display:none; margin-top:24px;">
-                <h4 style="margin:12px 0 8px;">🧾 Rincian Penjualan per Bakul</h4>
-                <p style="color:var(--ios-gray);font-size:13px;margin-bottom:8px;">Detail penjualan dari setiap nota yang sudah didistribusikan</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No Nota</th>
-                            <th>Tanggal</th>
-                            <th>Kemitraan</th>
-                            <th>Kandang</th>
-                            <th>Bakul</th>
-                            <th class="text-right">Tonase</th>
-                            <th class="text-right">Harga Jual</th>
-                            <th class="text-right">Total Penjualan</th>
-                            <th class="text-right">Laba</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rincianBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TAB 5: MASTER -->
-        <div class="tab-panel" id="tabMaster">
-            <p class="subtitle">Kelola harga master</p>
-            <div class="table-wrapper">
-                <table>
-                    <thead><tr><th>Kemitraan</th><th>Kandang</th><th>Harga Beli</th><th>Harga Jual</th><th>Biaya Makan</th><th>Jasa Angkut/100kg</th><th>Pegawai</th><th>Aksi</th></tr></thead>
-                    <tbody id="masterBody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr></tbody>
-                </table>
-            </div>
-            <div style="text-align:center;margin-top:12px;">
-                <button class="btn btn-warning btn-sm" onclick="bukaModalTambahMaster()">➕ Tambah Kemitraan/Kandang</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL EDIT NOTA -->
-    <div class="modal-overlay" id="modalEditNota">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeModal('modalEditNota')">✕</button>
-            <h2>✏️ Edit Nota</h2>
-            <form id="formEditNota">
-                <input type="hidden" id="editNoNota">
-                <div class="form-group">
-                    <label>Tanggal</label>
-                    <input type="date" id="editTanggal">
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label>Kemitraan</label>
-                        <input type="text" id="editKemitraan" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>Kandang</label>
-                        <input type="text" id="editKandang" readonly>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label>Tonase Total</label>
-                        <input type="number" id="editTonase" step="any">
-                    </div>
-                    <div class="form-group">
-                        <label>Harga Kemitraan</label>
-                        <input type="number" id="editHargaKemitraan" step="any">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label>Biaya Makan</label>
-                        <input type="number" id="editBiayaMakan" step="any">
-                    </div>
-                    <div class="form-group">
-                        <label>Jasa Angkut (per 100Kg)</label>
-                        <input type="number" id="editJasaAngkut" step="any">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Jumlah Pegawai</label>
-                    <input type="number" id="editJumlahPegawai" min="1">
-                </div>
-                <button type="submit" class="btn btn-success btn-block">💾 Simpan Perubahan</button>
-                <div id="alertEdit" class="alert-box"></div>
-            </form>
         </div>
     </div>
 
     <script>
         // ============ KONFIGURASI ============
-        // WEB APP URL BARU
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxgRByPIk2PVkmLN63bekgHtcwGjP6-QSY7eKIuiw60xv5pEoNRcbAAx7L-FNYzwHb_/exec';
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
@@ -358,17 +362,39 @@
         let masterData = [];
         let isVerified = false;
 
-        // ============ PASSWORD ============
+        // ============ SESSION MANAGEMENT ============
+        function checkSession() {
+            const session = localStorage.getItem('pemilikSession');
+            if (session === 'true') {
+                isVerified = true;
+                document.getElementById('passwordOverlay').classList.remove('active');
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+                loadAllData();
+                return true;
+            }
+            return false;
+        }
+
+        function saveSession() {
+            localStorage.setItem('pemilikSession', 'true');
+        }
+
+        function clearSession() {
+            localStorage.removeItem('pemilikSession');
+        }
+
+        // ============ LOGIN ============
         function verifyPassword() {
             const input = document.getElementById('passwordInput');
             const error = document.getElementById('passwordError');
             if (input.value === PASSWORD) {
                 isVerified = true;
-                localStorage.setItem('pemilikVerified', 'true');
+                saveSession();
                 document.getElementById('passwordOverlay').classList.remove('active');
-                loadRekap();
-                loadLaba();
-                loadPenjualanNota();
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+                loadAllData();
             } else {
                 error.style.display = 'block';
                 input.value = '';
@@ -376,15 +402,17 @@
             }
         }
 
-        function requirePassword() {
-            if (!isVerified) {
+        // ============ LOGOUT ============
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                isVerified = false;
+                clearSession();
                 document.getElementById('passwordOverlay').classList.add('active');
+                document.getElementById('mainContent').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'none';
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordError').style.display = 'none';
-                document.getElementById('passwordInput').focus();
-                return false;
             }
-            return true;
         }
 
         // ============ TABS ============
@@ -394,13 +422,9 @@
             document.getElementById(tabId).classList.add('active');
             document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
             
-            if (tabId === 'tabRekap' || tabId === 'tabLaba' || tabId === 'tabPenjualanNota') {
-                if (requirePassword()) {
-                    if (tabId === 'tabRekap') loadRekap();
-                    else if (tabId === 'tabLaba') loadLaba();
-                    else if (tabId === 'tabPenjualanNota') loadPenjualanNota();
-                }
-            }
+            if (tabId === 'tabRekap') loadRekap();
+            else if (tabId === 'tabLaba') loadLaba();
+            else if (tabId === 'tabPenjualanNota') loadPenjualanNota();
         }
 
         // ============ SET DEFAULT TANGGAL ============
@@ -530,7 +554,6 @@
 
         // ============ REKAP NOTA ============
         async function loadRekap() {
-            if (!requirePassword()) return;
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
             try {
                 const response = await fetch(url);
@@ -567,7 +590,6 @@
 
         // ============ EDIT NOTA ============
         async function bukaEditNota(noNota) {
-            if (!requirePassword()) return;
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
             try {
                 const response = await fetch(url);
@@ -582,7 +604,6 @@
                 document.getElementById('editTonase').value = nota[4] || 0;
                 document.getElementById('editHargaKemitraan').value = nota[5] || 0;
                 document.getElementById('editBiayaMakan').value = nota[7] || 0;
-                // Jasa angkut per 100kg = total jasa angkut / (tonase/100)
                 const tonase = parseFloat(nota[4]) || 1;
                 document.getElementById('editJasaAngkut').value = (parseFloat(nota[8]) || 0) / (tonase / 100) || 10000;
                 document.getElementById('editJumlahPegawai').value = nota[9] || 1;
@@ -653,7 +674,6 @@
 
         // ============ HAPUS NOTA ============
         async function hapusNota(noNota) {
-            if (!requirePassword()) return;
             if (!confirm('Yakin ingin menghapus nota ' + noNota + '? Semua data distribusi akan terhapus!')) return;
             try {
                 await fetch(WEB_APP_URL, {
@@ -673,8 +693,6 @@
 
         // ============ REKAP PENJUALAN PER NOTA ============
         async function loadPenjualanNota() {
-            if (!requirePassword()) return;
-            
             const urlBakul = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_BAKUL?key=${API_KEY}`;
             const urlNota = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
             
@@ -742,7 +760,6 @@
                     `;
                 }).join('');
                 
-                // Grand Total
                 tbody.innerHTML += `
                     <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
                         <td colspan="4" class="text-right">GRAND TOTAL</td>
@@ -764,8 +781,6 @@
 
         // ============ REKAP LABA ============
         async function loadLaba() {
-            if (!requirePassword()) return;
-            
             const urlNota = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_NOTA?key=${API_KEY}`;
             const urlBakul = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_BAKUL?key=${API_KEY}`;
             
@@ -987,13 +1002,22 @@
               .catch(err => alert('❌ Error: ' + err.message));
         }
 
-        // ============ INIT ============
-        window.onload = async function() {
+        // ============ LOAD ALL DATA ============
+        async function loadAllData() {
             await loadMaster();
             hitungTotal();
-            const saved = localStorage.getItem('pemilikVerified');
-            if (saved === 'true') {
-                isVerified = true;
+            loadRekap();
+            loadLaba();
+            loadPenjualanNota();
+        }
+
+        // ============ INIT ============
+        window.onload = function() {
+            if (!checkSession()) {
+                document.getElementById('passwordOverlay').classList.add('active');
+                document.getElementById('mainContent').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('passwordInput').focus();
             }
         };
     </script>
