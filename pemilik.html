@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Dashboard Broker Ayam</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-    </script>
+    <title>Pemilik - Input Nota</title>
     <style>
-        /* ============================================================
-           RESET & VARIABEL iOS
-           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -22,13 +17,11 @@
             --ios-red: #FF3B30;
             --ios-green: #34C759;
             --ios-orange: #FF9500;
-            --ios-purple: #AF52DE;
             --ios-gray: #8E8E93;
             --ios-gray-light: #F2F2F7;
             --ios-gray-bg: #F2F2F7;
             --ios-white: #FFFFFF;
             --ios-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            --ios-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
             --ios-radius: 16px;
             --ios-radius-sm: 10px;
             --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
@@ -43,10 +36,9 @@
             align-items: flex-start;
             justify-content: center;
             color: #1C1C1E;
-            -webkit-font-smoothing: antialiased;
         }
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             width: 100%;
             background: var(--ios-white);
             border-radius: var(--ios-radius);
@@ -54,8 +46,6 @@
             box-shadow: var(--ios-shadow);
             margin: 0 auto;
         }
-
-        /* ===== HEADER ===== */
         .header {
             display: flex;
             align-items: center;
@@ -68,7 +58,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
         }
         .back-link {
             display: inline-flex;
@@ -78,8 +67,6 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 15px;
-            transition: var(--ios-transition);
-            padding: 6px 0;
         }
         .back-link:hover {
             opacity: 0.7;
@@ -90,19 +77,9 @@
             fill: currentColor;
         }
         h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            letter-spacing: -0.5px;
             color: #1C1C1E;
-        }
-        .subtitle {
-            font-size: 15px;
-            color: var(--ios-gray);
-            font-weight: 400;
-            margin-bottom: 24px;
-            border-left: 3px solid var(--ios-blue);
-            padding-left: 12px;
-            line-height: 1.4;
         }
         .badge-role {
             background: var(--ios-green);
@@ -111,334 +88,30 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            letter-spacing: 0.3px;
         }
-        .btn-logout {
-            background: var(--ios-red);
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: var(--ios-radius-sm);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-            font-family: var(--ios-font);
-        }
-        .btn-logout:hover {
-            opacity: 0.8;
-        }
-
-        /* ===== CARD GRID METRIK ===== */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        .card-item {
-            background: var(--ios-gray-light);
-            padding: 16px 12px;
-            border-radius: var(--ios-radius-sm);
-            text-align: center;
-            transition: var(--ios-transition);
-        }
-        .card-item:hover {
-            background: #E8E8ED;
-        }
-        .card-item .label {
-            font-size: 12px;
-            color: var(--ios-gray);
-            font-weight: 500;
-            letter-spacing: 0.2px;
-        }
-        .card-item .value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1C1C1E;
-            margin-top: 4px;
-        }
-        .card-item .value.positive {
-            color: var(--ios-green);
-        }
-        .card-item .value.negative {
-            color: var(--ios-red);
-        }
-        .card-item .value.blue {
-            color: var(--ios-blue);
-        }
-        .card-item .value.purple {
-            color: var(--ios-purple);
-        }
-
-        /* ===== FILTER & SEARCH ===== */
-        .filter-section {
-            background: var(--ios-gray-light);
-            border-radius: var(--ios-radius-sm);
-            padding: 16px 18px;
-            margin-bottom: 24px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            gap: 14px;
-        }
-        .filter-group {
-            flex: 1 1 150px;
-            min-width: 120px;
-        }
-        .filter-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--ios-gray);
-            margin-bottom: 4px;
-            letter-spacing: 0.2px;
-            text-transform: uppercase;
-        }
-        .filter-group input,
-        .filter-group select {
-            width: 100%;
-            padding: 10px 12px;
-            background: var(--ios-white);
-            border: 1.5px solid #E5E5EA;
-            border-radius: var(--ios-radius-sm);
+        .subtitle {
             font-size: 14px;
-            font-family: var(--ios-font);
-            transition: var(--ios-transition);
-            outline: none;
-            color: #1C1C1E;
-        }
-        .filter-group input:focus,
-        .filter-group select:focus {
-            border-color: var(--ios-blue);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-        }
-        .filter-group .btn-reset {
-            background: var(--ios-red);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: var(--ios-radius-sm);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-            width: 100%;
-        }
-        .filter-group .btn-reset:hover {
-            opacity: 0.8;
-        }
-
-        /* ===== CHART ===== */
-        .chart-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 24px;
-        }
-        .chart-card {
-            background: var(--ios-gray-light);
-            border-radius: var(--ios-radius-sm);
-            padding: 16px;
-        }
-        .chart-card h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1C1C1E;
-            margin-bottom: 10px;
-            letter-spacing: -0.2px;
-        }
-        .chart-card canvas {
-            width: 100% !important;
-            max-height: 200px;
-        }
-
-        /* ===== TABEL ===== */
-        .card {
-            background: var(--ios-gray-light);
-            border-radius: var(--ios-radius-sm);
-            padding: 18px 16px;
-            margin-bottom: 20px;
-        }
-        .card .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .card h3 {
-            font-size: 17px;
-            font-weight: 600;
-            color: #1C1C1E;
-            letter-spacing: -0.2px;
-        }
-        .card .btn-export {
-            background: var(--ios-blue);
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: var(--ios-radius-sm);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-            font-family: var(--ios-font);
-        }
-        .card .btn-export:hover {
-            background: var(--ios-blue-hover);
-        }
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: var(--ios-radius-sm);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            min-width: 750px;
-        }
-        th {
-            background: var(--ios-white);
-            color: #1C1C1E;
-            font-weight: 600;
-            padding: 10px 12px;
-            text-align: left;
-            font-size: 12px;
-            border-bottom: 1px solid #E5E5EA;
-            white-space: nowrap;
-        }
-        td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #E5E5EA;
-            color: #1C1C1E;
-            vertical-align: middle;
-            font-size: 13px;
-        }
-        tr:last-child td {
-            border-bottom: none;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-success {
-            color: var(--ios-green);
-            font-weight: 600;
-        }
-        .text-danger {
-            color: var(--ios-red);
-            font-weight: 600;
-        }
-
-        /* ===== TOMBOL AKSI ===== */
-        .btn-action {
-            padding: 4px 10px;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-            font-family: var(--ios-font);
-            margin: 0 2px;
-        }
-        .btn-edit {
-            background: var(--ios-orange);
-            color: white;
-        }
-        .btn-edit:hover {
-            background: #E68600;
-        }
-        .btn-delete {
-            background: var(--ios-red);
-            color: white;
-        }
-        .btn-delete:hover {
-            background: #D63031;
-        }
-
-        /* ===== MODAL ===== */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: var(--ios-white);
-            border-radius: var(--ios-radius);
-            padding: 28px 24px 32px;
-            max-width: 480px;
-            width: 100%;
-            box-shadow: var(--ios-shadow-lg);
-            position: relative;
-            animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .modal-close {
-            position: absolute;
-            top: 16px;
-            right: 18px;
-            font-size: 24px;
-            font-weight: 300;
             color: var(--ios-gray);
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 4px;
-            transition: var(--ios-transition);
-        }
-        .modal-close:hover {
-            color: #1C1C1E;
-            transform: rotate(90deg);
-        }
-        .modal-content h2 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1C1C1E;
-            margin-bottom: 6px;
-        }
-        .modal-content p {
-            color: var(--ios-gray);
-            font-size: 15px;
             margin-bottom: 20px;
+            border-left: 3px solid var(--ios-blue);
+            padding-left: 12px;
         }
         .form-group {
             margin-bottom: 16px;
         }
-        .form-group label {
+        label {
             display: block;
             font-size: 14px;
             font-weight: 600;
             color: #1C1C1E;
             margin-bottom: 4px;
         }
-        .form-group input {
+        .required::after {
+            content: " *";
+            color: var(--ios-red);
+        }
+        input,
+        select {
             width: 100%;
             padding: 12px 14px;
             background: var(--ios-gray-light);
@@ -448,38 +121,42 @@
             font-family: var(--ios-font);
             transition: var(--ios-transition);
             outline: none;
+            color: #1C1C1E;
         }
-        .form-group input:focus {
+        input:focus,
+        select:focus {
             border-color: var(--ios-blue);
             background: var(--ios-white);
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
         }
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
+        input[readonly] {
+            background: #E5E5EA;
+            color: var(--ios-gray);
         }
-        .btn-group .btn {
-            flex: 1;
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
         }
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 12px 20px;
+            width: 100%;
+            padding: 14px;
             background: var(--ios-blue);
             color: white;
             border: none;
             border-radius: var(--ios-radius-sm);
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
-            font-family: var(--ios-font);
             cursor: pointer;
             transition: var(--ios-transition);
+            margin-top: 10px;
         }
         .btn:hover {
             background: var(--ios-blue-hover);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            pointer-events: none;
         }
         .btn-success {
             background: var(--ios-green);
@@ -487,11 +164,11 @@
         .btn-success:hover {
             background: #2DB84E;
         }
-        .btn-danger {
-            background: var(--ios-red);
+        .btn-warning {
+            background: var(--ios-orange);
         }
-        .btn-danger:hover {
-            background: #D63031;
+        .btn-warning:hover {
+            background: #E68600;
         }
         .btn-outline {
             background: transparent;
@@ -502,8 +179,10 @@
             background: rgba(0, 122, 255, 0.06);
         }
         .btn-sm {
-            padding: 4px 12px;
+            padding: 6px 14px;
             font-size: 13px;
+            width: auto;
+            margin-top: 0;
         }
         .alert-box {
             padding: 12px 14px;
@@ -532,227 +211,126 @@
             display: block;
         }
 
-        /* ===== LOGIN OVERLAY ===== */
-        .login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            padding: 20px;
-        }
-        .login-overlay.hidden {
-            display: none;
-        }
-        .login-box {
-            background: var(--ios-white);
-            padding: 36px 28px 40px;
-            border-radius: var(--ios-radius);
-            max-width: 400px;
-            width: 100%;
-            box-shadow: var(--ios-shadow-lg);
-            text-align: center;
-        }
-        .login-box h2 {
-            color: #1C1C1E;
-            margin-bottom: 6px;
-        }
-        .login-box p {
-            color: var(--ios-gray);
-            margin-bottom: 24px;
-            font-size: 15px;
-        }
-        .login-box input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid #E5E5EA;
+        /* ===== BAKUL SECTION ===== */
+        .bakul-section {
+            background: var(--ios-gray-light);
             border-radius: var(--ios-radius-sm);
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .bakul-section h3 {
             font-size: 16px;
-            font-family: var(--ios-font);
-            margin-bottom: 16px;
-            transition: var(--ios-transition);
-            outline: none;
+            font-weight: 600;
+            margin-bottom: 12px;
         }
-        .login-box input:focus {
-            border-color: var(--ios-blue);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+        .bakul-item {
+            display: grid;
+            grid-template-columns: 1fr 0.8fr 0.8fr 0.5fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
         }
-        .login-box .btn {
-            width: 100%;
-            padding: 14px;
-            font-size: 17px;
-        }
-        .login-error {
-            color: var(--ios-red);
-            margin-top: 12px;
+        .bakul-item input {
+            padding: 8px 10px;
             font-size: 14px;
-            font-weight: 500;
-            display: none;
+        }
+        .bakul-item .btn-remove {
+            background: var(--ios-red);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--ios-transition);
+        }
+        .bakul-item .btn-remove:hover {
+            opacity: 0.8;
+        }
+        .btn-add-bakul {
+            background: var(--ios-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--ios-transition);
+            margin-top: 8px;
+        }
+        .btn-add-bakul:hover {
+            opacity: 0.8;
         }
 
         /* ===== MASTER PRICE SECTION ===== */
-        .master-price-section {
-            margin-top: 24px;
+        .master-section {
+            margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #E5E5EA;
         }
-        .master-price-section h3 {
+        .master-section h3 {
             font-size: 17px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 12px;
         }
-        .master-price-section .sub-desc {
-            color: var(--ios-gray);
-            font-size: 14px;
-            margin-bottom: 14px;
+        .master-section .table-wrapper {
+            overflow-x: auto;
         }
-        .master-price-section .table-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .master-price-section table {
-            min-width: 700px;
+        .master-section table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 13px;
+            min-width: 600px;
         }
-        .master-price-section td input[type="number"] {
-            width: 80px;
+        .master-section th {
+            background: var(--ios-gray-light);
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .master-section td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #E5E5EA;
+        }
+        .master-section td input[type="number"] {
+            width: 70px;
             padding: 4px 6px;
             border: 1px solid #E5E5EA;
             border-radius: 6px;
             font-size: 13px;
             text-align: right;
-            font-family: var(--ios-font);
-        }
-        .master-price-section td input[type="number"]:focus {
-            border-color: var(--ios-blue);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-        }
-        .btn-tambah-master {
-            margin-top: 12px;
-            background: var(--ios-orange);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: var(--ios-radius-sm);
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-            font-family: var(--ios-font);
-        }
-        .btn-tambah-master:hover {
-            background: #E68600;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
-            .filter-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filter-group {
-                flex: 1 1 auto;
-                min-width: 0;
-            }
-            .card-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-            }
-            .card-item {
-                padding: 12px 8px;
-            }
-            .card-item .value {
-                font-size: 17px;
-            }
-            .master-price-section table {
-                min-width: 600px;
-            }
-            .master-price-section td input[type="number"] {
-                width: 60px;
-            }
-        }
         @media (max-width: 600px) {
-            body {
-                padding: 12px;
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .bakul-item {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .bakul-item .btn-remove {
+                grid-column: span 2;
             }
             .container {
                 padding: 18px 14px 24px;
-                border-radius: 14px;
             }
             h1 {
-                font-size: 24px;
-            }
-            .card-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .card {
-                padding: 14px 12px;
-            }
-            table {
-                font-size: 12px;
-                min-width: 500px;
-            }
-            th,
-            td {
-                padding: 8px 10px;
-            }
-            .modal-content {
-                padding: 24px 18px 28px;
-                margin: 12px;
-                max-width: 100%;
-            }
-            .btn-group {
-                flex-direction: column;
-                gap: 8px;
+                font-size: 20px;
             }
             .header {
                 flex-direction: column;
                 align-items: flex-start;
             }
         }
-        @media (max-width: 400px) {
-            .card-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .card-item .value {
-                font-size: 15px;
-            }
-            .filter-group input,
-            .filter-group select {
-                font-size: 13px;
-                padding: 8px 10px;
-            }
-            .master-price-section td input[type="number"] {
-                width: 50px;
-                font-size: 11px;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- LAYAR LOGIN -->
-    <div class="login-overlay" id="loginOverlay">
-        <div class="login-box">
-            <h2>🔐 Akses Pemilik</h2>
-            <p>Masukkan password untuk melihat dashboard</p>
-            <input type="password" id="passwordInput" placeholder="Password" onkeydown="if(event.key==='Enter') login()">
-            <button class="btn" onclick="login()">Login</button>
-            <div class="login-error" id="loginError">❌ Password salah! Coba lagi.</div>
-        </div>
-    </div>
-
-    <!-- KONTEN UTAMA -->
-    <div class="container" id="mainContent" style="display:none;">
+    <div class="container">
         <!-- HEADER -->
         <div class="header">
             <div class="header-left">
@@ -760,595 +338,375 @@
                     <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
                     Kembali
                 </a>
-                <h1>📊 Dashboard Broker</h1>
+                <h1>📝 Input Nota</h1>
                 <span class="badge-role">Pemilik</span>
             </div>
-            <button class="btn-logout" onclick="logout()">🚪 Logout</button>
         </div>
-        <p class="subtitle">Pantau laba, transaksi, dan kelola data kemitraan ayam</p>
-
-        <!-- METRIK UTAMA -->
-        <div class="card-grid" id="summaryCards">
-            <div class="card-item">
-                <div class="label">Total Laba Bersih</div>
-                <div class="value positive" id="totalLaba">-</div>
-            </div>
-            <div class="card-item">
-                <div class="label">Rata-rata Laba / Kg</div>
-                <div class="value blue" id="rataLabaPerKg">-</div>
-            </div>
-            <div class="card-item">
-                <div class="label">Total Tonase</div>
-                <div class="value" id="totalTonase">-</div>
-            </div>
-            <div class="card-item">
-                <div class="label">Total Transaksi</div>
-                <div class="value" id="totalTransaksi">-</div>
-            </div>
-            <div class="card-item">
-                <div class="label">Total Biaya</div>
-                <div class="value negative" id="totalBiaya">-</div>
-            </div>
-            <div class="card-item">
-                <div class="label">Total Kemitraan</div>
-                <div class="value purple" id="totalKemitraan">-</div>
-            </div>
-        </div>
-
-        <!-- FILTER & SEARCH -->
-        <div class="filter-section" id="filterSection">
-            <div class="filter-group">
-                <label>Tanggal Mulai</label>
-                <input type="date" id="filterStartDate">
-            </div>
-            <div class="filter-group">
-                <label>Tanggal Akhir</label>
-                <input type="date" id="filterEndDate">
-            </div>
-            <div class="filter-group">
-                <label>Kemitraan</label>
-                <select id="filterKemitraan">
-                    <option value="">Semua</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Kandang</label>
-                <select id="filterKandang">
-                    <option value="">Semua</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Cari Bakul</label>
-                <input type="text" id="filterBakul" placeholder="Nama bakul...">
-            </div>
-            <div class="filter-group" style="flex: 0 1 auto;">
-                <label>&nbsp;</label>
-                <button class="btn-reset" onclick="resetFilters()">Reset Filter</button>
-            </div>
-        </div>
-
-        <!-- GRAFIK -->
-        <div class="chart-grid">
-            <div class="chart-card">
-                <h3>📈 Laba Harian (7 Hari Terakhir)</h3>
-                <canvas id="chartHarian"></canvas>
-            </div>
-            <div class="chart-card">
-                <h3>📊 Laba per Kemitraan</h3>
-                <canvas id="chartKemitraan"></canvas>
-            </div>
-        </div>
-
-        <!-- TABEL DATA TRANSAKSI -->
-        <div class="card">
-            <div class="card-header">
-                <h3>📋 Data Transaksi</h3>
-                <div>
-                    <button class="btn-export" onclick="exportCSV()">⬇ Ekspor CSV</button>
-                </div>
-            </div>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Kemitraan</th>
-                            <th>Kandang</th>
-                            <th>Bakul</th>
-                            <th class="text-right">Tonase</th>
-                            <th class="text-right">Harga Jual</th>
-                            <th class="text-right">Total Penjualan</th>
-                            <th class="text-right">Total Biaya</th>
-                            <th class="text-right">Laba</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <tr><td colspan="11" class="text-center" style="padding:20px;color:var(--ios-gray);">Memuat data…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <p class="subtitle">Input nota per kemitraan dan daftar bakul</p>
 
         <!-- ============================================================
-        BAGIAN EDIT HARGA MASTER (SATU TOMBOL UPDATE)
+        FORM INPUT NOTA
         ============================================================ -->
-        <div class="master-price-section">
-            <h3>✏️ Kelola Harga Master &amp; Biaya</h3>
-            <p class="sub-desc">Atur harga beli, harga jual, biaya makan, jasa angkut, dan jumlah pegawai per kemitraan/kandang.</p>
+        <form id="formNota">
+            <div class="form-group">
+                <label class="required">Tanggal</label>
+                <input type="date" id="tanggal" required>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label class="required">Kemitraan</label>
+                    <select id="kemitraan" required>
+                        <option value="">Pilih Kemitraan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required">Kandang</label>
+                    <select id="kandang" required>
+                        <option value="">Pilih Kandang</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label class="required">Tonase Total (Kg)</label>
+                    <input type="number" id="tonase" step="0.1" required placeholder="0.0">
+                </div>
+                <div class="form-group">
+                    <label class="required">Harga Kemitraan / Kg</label>
+                    <input type="number" id="hargaKemitraan" required placeholder="0" step="100">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Biaya Makan (Flat)</label>
+                    <input type="number" id="biayaMakan" placeholder="0" step="1000">
+                </div>
+                <div class="form-group">
+                    <label>Jasa Angkut / Kg</label>
+                    <input type="number" id="jasaAngkut" placeholder="10000" step="1000" value="10000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Jumlah Pegawai</label>
+                <input type="number" id="jumlahPegawai" placeholder="1" min="1" value="1">
+            </div>
+
+            <!-- DAFTAR BAKUL -->
+            <div class="bakul-section">
+                <h3>🧑‍🌾 Daftar Bakul (Pembeli)</h3>
+                <div id="bakulContainer">
+                    <div class="bakul-item" data-index="0">
+                        <input type="text" class="bakul-nama" placeholder="Nama Bakul">
+                        <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase">
+                        <input type="number" class="bakul-harga" step="100" placeholder="Harga Jual">
+                        <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add-bakul" onclick="tambahBakul()">➕ Tambah Bakul</button>
+            </div>
+
+            <!-- RINGKASAN -->
+            <div style="background:var(--ios-gray-light);padding:16px;border-radius:var(--ios-radius-sm);margin:16px 0;">
+                <p><strong>Total Kemitraan:</strong> <span id="totalKemitraanDisplay">Rp 0</span></p>
+                <p><strong>Total Penjualan:</strong> <span id="totalPenjualanDisplay">Rp 0</span></p>
+                <p><strong>Total Biaya Operasional:</strong> <span id="totalBiayaDisplay">Rp 0</span></p>
+                <p style="font-size:18px;font-weight:700;color:var(--ios-green);"><strong>Laba:</strong> <span id="labaDisplay">Rp 0</span></p>
+            </div>
+
+            <button type="submit" class="btn btn-success" id="submitBtn">💾 Simpan Nota</button>
+            <div id="alertMessage" class="alert-box"></div>
+        </form>
+
+        <!-- ============================================================
+        EDIT HARGA MASTER
+        ============================================================ -->
+        <div class="master-section">
+            <h3>✏️ Kelola Harga Master</h3>
+            <p style="color:var(--ios-gray);font-size:14px;margin-bottom:12px;">Ubah harga beli, jual, biaya makan, jasa angkut, dan jumlah pegawai.</p>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
                             <th>Kemitraan</th>
                             <th>Kandang</th>
-                            <th class="text-right">Harga Beli</th>
-                            <th class="text-right">Harga Jual</th>
-                            <th class="text-right">Biaya Makan</th>
-                            <th class="text-right">Jasa Angkut/100Kg</th>
-                            <th class="text-right">Jml Pegawai</th>
-                            <th class="text-center">Aksi</th>
+                            <th>Harga Beli</th>
+                            <th>Harga Jual</th>
+                            <th>Biaya Makan</th>
+                            <th>Jasa Angkut</th>
+                            <th>Pegawai</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="masterBody">
-                        <tr><td colspan="8" class="text-center" style="padding:20px;color:var(--ios-gray);">Memuat data…</td></tr>
+                        <tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr>
                     </tbody>
                 </table>
             </div>
             <div style="text-align:center;margin-top:12px;">
-                <button class="btn-tambah-master" onclick="bukaModalTambahMaster()">➕ Tambah Kemitraan / Kandang</button>
-            </div>
-        </div>
-
-        <!-- MODAL EDIT TRANSAKSI -->
-        <div class="modal" id="modalEdit">
-            <div class="modal-content">
-                <button class="modal-close" onclick="tutupModalEdit()">✕</button>
-                <h2>✏️ Edit Transaksi</h2>
-                <p>Ubah data transaksi yang dipilih.</p>
-                <form id="formEdit">
-                    <input type="hidden" id="editRowIndex">
-                    <div class="form-group">
-                        <label>Tanggal</label>
-                        <input type="date" id="editTanggal">
-                    </div>
-                    <div class="form-group">
-                        <label>Kemitraan</label>
-                        <input type="text" id="editKemitraan">
-                    </div>
-                    <div class="form-group">
-                        <label>Kandang</label>
-                        <input type="text" id="editKandang">
-                    </div>
-                    <div class="form-group">
-                        <label>Bakul</label>
-                        <input type="text" id="editBakul">
-                    </div>
-                    <div class="form-group">
-                        <label>Tonase (Kg)</label>
-                        <input type="number" id="editTonase" step="0.1">
-                    </div>
-                    <div class="form-group">
-                        <label>Harga Jual / Kg</label>
-                        <input type="number" id="editHargaJual">
-                    </div>
-                    <div class="form-group">
-                        <label>Harga Beli / Kg</label>
-                        <input type="number" id="editHargaBeli">
-                    </div>
-                    <div class="form-group">
-                        <label>Biaya Makan per Pegawai</label>
-                        <input type="number" id="editBiayaMakan">
-                    </div>
-                    <div class="form-group">
-                        <label>Jasa Angkut / 100Kg</label>
-                        <input type="number" id="editJasaAngkut">
-                    </div>
-                    <div class="form-group">
-                        <label>Jumlah Pegawai</label>
-                        <input type="number" id="editJumlahPegawai" step="1" min="0">
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-outline" onclick="tutupModalEdit()">Batal</button>
-                        <button type="submit" class="btn btn-success" id="btnEditSubmit">💾 Simpan Perubahan</button>
-                    </div>
-                    <div id="alertEdit" class="alert-box" style="margin-top:16px;"></div>
-                </form>
-            </div>
-        </div>
-
-        <!-- MODAL TAMBAH MASTER -->
-        <div class="modal" id="modalTambahMaster">
-            <div class="modal-content">
-                <button class="modal-close" onclick="tutupModalTambahMaster()">✕</button>
-                <h2>➕ Tambah Master</h2>
-                <p>Tambahkan Kemitraan dan Kandang baru dengan semua komponen biaya.</p>
-                <form id="formTambahMaster">
-                    <div class="form-group">
-                        <label>Kemitraan Baru</label>
-                        <input type="text" id="masterKemitraan" required placeholder="Contoh: MITRA BARU">
-                    </div>
-                    <div class="form-group">
-                        <label>Kandang Baru</label>
-                        <input type="text" id="masterKandang" required placeholder="Contoh: KANDANG X">
-                    </div>
-                    <div class="form-group">
-                        <label>Harga Beli / Kg</label>
-                        <input type="number" id="masterHargaBeli" placeholder="0" step="100">
-                    </div>
-                    <div class="form-group">
-                        <label>Harga Jual / Kg</label>
-                        <input type="number" id="masterHargaJual" placeholder="0" step="100">
-                    </div>
-                    <div class="form-group">
-                        <label>Biaya Makan per Pegawai</label>
-                        <input type="number" id="masterBiayaMakan" placeholder="0" step="1000">
-                    </div>
-                    <div class="form-group">
-                        <label>Jasa Angkut / 100Kg</label>
-                        <input type="number" id="masterJasaAngkut" placeholder="0" step="1000">
-                    </div>
-                    <div class="form-group">
-                        <label>Jumlah Pegawai</label>
-                        <input type="number" id="masterJumlahPegawai" placeholder="1" step="1" min="0">
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-outline" onclick="tutupModalTambahMaster()">Batal</button>
-                        <button type="submit" class="btn btn-success" id="btnTambahMasterSubmit">💾 Simpan</button>
-                    </div>
-                    <div id="alertTambahMaster" class="alert-box" style="margin-top:16px;"></div>
-                </form>
+                <button class="btn btn-warning btn-sm" onclick="bukaModalTambahMaster()">➕ Tambah Kemitraan/Kandang</button>
             </div>
         </div>
     </div>
 
     <script>
         // ============ KONFIGURASI ============
-        // WEB APP URL BARU
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby1GnDS-v-Au8M9LlH8DUNvFeR3YsHIPjwTl8efe_wNu7ExgMNfCz92qh9ynO3Xa6cG/exec';
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
-        const PASSWORD = 'pass4all';
 
-        // Variabel global
-        let allData = [];
-        let filteredData = [];
         let masterData = [];
-        let chartHarian = null;
-        let chartKemitraan = null;
 
-        // ============ SESSION MANAGEMENT ============
-        function isLoggedIn() {
-            return localStorage.getItem('brokerLoggedIn') === 'true';
-        }
-
-        function setLoggedIn(status) {
-            if (status) {
-                localStorage.setItem('brokerLoggedIn', 'true');
-            } else {
-                localStorage.removeItem('brokerLoggedIn');
-            }
-        }
-
-        function login() {
-            const input = document.getElementById('passwordInput');
-            const error = document.getElementById('loginError');
-            if (input.value === PASSWORD) {
-                setLoggedIn(true);
-                document.getElementById('loginOverlay').classList.add('hidden');
-                document.getElementById('mainContent').style.display = 'block';
-                loadAllData();
-            } else {
-                error.style.display = 'block';
-                input.value = '';
-                input.focus();
-            }
-        }
-
-        function logout() {
-            if (confirm('Yakin ingin logout?')) {
-                setLoggedIn(false);
-                document.getElementById('loginOverlay').classList.remove('hidden');
-                document.getElementById('mainContent').style.display = 'none';
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('loginError').style.display = 'none';
-            }
-        }
-
-        document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') login();
+        // ============ SET DEFAULT TANGGAL ============
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
         });
 
-        // ============ CEK SESSION SAAT LOAD ============
-        window.onload = function() {
-            if (isLoggedIn()) {
-                document.getElementById('loginOverlay').classList.add('hidden');
-                document.getElementById('mainContent').style.display = 'block';
-                loadAllData();
-            } else {
-                document.getElementById('loginOverlay').classList.remove('hidden');
-                document.getElementById('mainContent').style.display = 'none';
-            }
-        };
-
-        // ============ AMBIL DATA ============
-        async function ambilTransaksi() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/DATA_TRANSAKSI?key=${API_KEY}`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                return data.values || [];
-            } catch (error) {
-                console.error('Error ambil transaksi:', error);
-                return [];
-            }
-        }
-
+        // ============ AMBIL DATA MASTER ============
         async function ambilMaster() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/MASTER_HARGA?key=${API_KEY}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                return data.values || [];
+                if (data.values && data.values.length > 1) {
+                    return data.values.slice(1);
+                }
+                return [];
             } catch (error) {
                 console.error('Error ambil master:', error);
                 return [];
             }
         }
 
-        // ============ LOAD ALL DATA ============
-        async function loadAllData() {
-            const transaksi = await ambilTransaksi();
-            const master = await ambilMaster();
-
-            const rows = transaksi.slice(1);
-            allData = rows.map((row, index) => ({
-                rowIndex: index + 2,
-                no: row[0] || '',
-                tanggal: row[1] || '',
-                kemitraan: row[2] || '',
-                kandang: row[3] || '',
-                bakul: row[4] || '',
-                tonase: parseFloat(row[5]) || 0,
-                hargaBeli: parseFloat(row[6]) || 0,
-                hargaJual: parseFloat(row[7]) || 0,
-                totalPenjualan: parseFloat(row[8]) || 0,
-                totalBiaya: parseFloat(row[9]) || 0,
-                laba: parseFloat(row[10]) || 0,
-                biayaMakanTotal: parseFloat(row[11]) || 0,
-                jasaAngkutTotal: parseFloat(row[12]) || 0,
-                setoran: parseFloat(row[13]) || 0
-            }));
-
-            masterData = master.slice(1);
-
-            const kemitraanSet = new Set(allData.map(d => d.kemitraan).filter(Boolean));
-            const kandangSet = new Set(allData.map(d => d.kandang).filter(Boolean));
-
-            const filterKemitraan = document.getElementById('filterKemitraan');
-            const filterKandang = document.getElementById('filterKandang');
-            const currentKemitraan = filterKemitraan.value;
-            const currentKandang = filterKandang.value;
-
-            filterKemitraan.innerHTML = '<option value="">Semua</option>' +
-                [...kemitraanSet].sort().map(k => `<option value="${k}">${k}</option>`).join('');
-            filterKandang.innerHTML = '<option value="">Semua</option>' +
-                [...kandangSet].sort().map(k => `<option value="${k}">${k}</option>`).join('');
-
-            if (currentKemitraan) filterKemitraan.value = currentKemitraan;
-            if (currentKandang) filterKandang.value = currentKandang;
-
-            applyFilters();
+        // ============ LOAD MASTER ============
+        async function loadMaster() {
+            const data = await ambilMaster();
+            masterData = data;
+            const kemitraanSelect = document.getElementById('kemitraan');
+            const kemitraanList = [...new Set(data.map(row => row[0]))];
+            kemitraanSelect.innerHTML = '<option value="">Pilih Kemitraan</option>';
+            kemitraanList.forEach(k => {
+                const option = document.createElement('option');
+                option.value = k;
+                option.textContent = k;
+                kemitraanSelect.appendChild(option);
+            });
             renderMasterHarga();
         }
 
-        // ============ FILTER DATA ============
-        function applyFilters() {
-            const startDate = document.getElementById('filterStartDate').value;
-            const endDate = document.getElementById('filterEndDate').value;
-            const kemitraan = document.getElementById('filterKemitraan').value;
-            const kandang = document.getElementById('filterKandang').value;
-            const searchBakul = document.getElementById('filterBakul').value.toLowerCase().trim();
+        // ============ UPDATE KANDANG & HARGA ============
+        document.getElementById('kemitraan').addEventListener('change', function() {
+            const kemitraan = this.value;
+            const kandangSelect = document.getElementById('kandang');
+            if (!kemitraan) {
+                kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>';
+                return;
+            }
+            const filtered = masterData.filter(row => row[0] === kemitraan);
+            kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>';
+            filtered.forEach(row => {
+                const option = document.createElement('option');
+                option.value = row[1];
+                option.textContent = row[1];
+                option.dataset.hargaBeli = row[2] || 0;
+                option.dataset.biayaMakan = row[4] || 0;
+                option.dataset.jasaAngkut = row[5] || 10000;
+                option.dataset.jumlahPegawai = row[6] || 1;
+                kandangSelect.appendChild(option);
+            });
+        });
 
-            filteredData = allData.filter(d => {
-                if (startDate && d.tanggal < startDate) return false;
-                if (endDate && d.tanggal > endDate) return false;
-                if (kemitraan && d.kemitraan !== kemitraan) return false;
-                if (kandang && d.kandang !== kandang) return false;
-                if (searchBakul && !d.bakul.toLowerCase().includes(searchBakul)) return false;
-                return true;
+        document.getElementById('kandang').addEventListener('change', function() {
+            const opt = this.options[this.selectedIndex];
+            document.getElementById('hargaKemitraan').value = opt?.dataset?.hargaBeli || 0;
+            document.getElementById('biayaMakan').value = opt?.dataset?.biayaMakan || 0;
+            document.getElementById('jasaAngkut').value = opt?.dataset?.jasaAngkut || 10000;
+            document.getElementById('jumlahPegawai').value = opt?.dataset?.jumlahPegawai || 1;
+            hitungTotal();
+        });
+
+        // ============ BAKUL ============
+        let bakulIndex = 1;
+
+        function tambahBakul() {
+            const container = document.getElementById('bakulContainer');
+            const div = document.createElement('div');
+            div.className = 'bakul-item';
+            div.dataset.index = bakulIndex;
+            div.innerHTML = `
+                <input type="text" class="bakul-nama" placeholder="Nama Bakul">
+                <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase">
+                <input type="number" class="bakul-harga" step="100" placeholder="Harga Jual">
+                <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
+            `;
+            container.appendChild(div);
+            bakulIndex++;
+            div.querySelectorAll('input').forEach(inp => inp.addEventListener('input', hitungTotal));
+        }
+
+        function hapusBakul(btn) {
+            const container = document.getElementById('bakulContainer');
+            if (container.children.length <= 1) {
+                showAlert('⚠️ Minimal harus ada 1 bakul!', 'error');
+                return;
+            }
+            btn.closest('.bakul-item').remove();
+            hitungTotal();
+        }
+
+        // ============ HITUNG TOTAL ============
+        function hitungTotal() {
+            const tonase = parseFloat(document.getElementById('tonase').value) || 0;
+            const hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value) || 0;
+            const biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
+            const jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 0;
+
+            const totalKemitraan = tonase * hargaKemitraan;
+            const totalBiayaOperasional = biayaMakan + (jasaAngkut * tonase);
+
+            let totalPenjualan = 0;
+            document.querySelectorAll('.bakul-item').forEach(item => {
+                const t = parseFloat(item.querySelector('.bakul-tonase').value) || 0;
+                const h = parseFloat(item.querySelector('.bakul-harga').value) || 0;
+                totalPenjualan += t * h;
             });
 
-            renderSummary();
-            renderTable();
-            renderCharts();
+            const laba = totalPenjualan - (totalKemitraan + totalBiayaOperasional);
+
+            document.getElementById('totalKemitraanDisplay').textContent = 'Rp ' + totalKemitraan.toLocaleString('id-ID');
+            document.getElementById('totalPenjualanDisplay').textContent = 'Rp ' + totalPenjualan.toLocaleString('id-ID');
+            document.getElementById('totalBiayaDisplay').textContent = 'Rp ' + totalBiayaOperasional.toLocaleString('id-ID');
+            document.getElementById('labaDisplay').textContent = 'Rp ' + laba.toLocaleString('id-ID');
+            document.getElementById('labaDisplay').style.color = laba >= 0 ? 'var(--ios-green)' : 'var(--ios-red)';
         }
 
-        document.getElementById('filterStartDate').addEventListener('change', applyFilters);
-        document.getElementById('filterEndDate').addEventListener('change', applyFilters);
-        document.getElementById('filterKemitraan').addEventListener('change', applyFilters);
-        document.getElementById('filterKandang').addEventListener('change', applyFilters);
-        document.getElementById('filterBakul').addEventListener('input', applyFilters);
+        document.getElementById('tonase').addEventListener('input', hitungTotal);
+        document.getElementById('hargaKemitraan').addEventListener('input', hitungTotal);
+        document.getElementById('biayaMakan').addEventListener('input', hitungTotal);
+        document.getElementById('jasaAngkut').addEventListener('input', hitungTotal);
+        document.getElementById('jumlahPegawai').addEventListener('input', hitungTotal);
 
-        function resetFilters() {
-            document.getElementById('filterStartDate').value = '';
-            document.getElementById('filterEndDate').value = '';
-            document.getElementById('filterKemitraan').value = '';
-            document.getElementById('filterKandang').value = '';
-            document.getElementById('filterBakul').value = '';
-            applyFilters();
+        // ============ ALERT ============
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.className = 'alert-box ' + type;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            setTimeout(() => { alertDiv.style.display = 'none'; }, 5000);
         }
 
-        // ============ RENDER SUMMARY ============
-        function renderSummary() {
-            const totalLaba = filteredData.reduce((s, d) => s + d.laba, 0);
-            const totalTonase = filteredData.reduce((s, d) => s + d.tonase, 0);
-            const totalBiaya = filteredData.reduce((s, d) => s + d.totalBiaya, 0);
-            const uniqueKemitraan = new Set(filteredData.map(d => d.kemitraan));
+        // ============ SIMPAN NOTA ============
+        async function simpanNota(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
 
-            document.getElementById('totalLaba').textContent = 'Rp ' + totalLaba.toLocaleString('id-ID');
-            document.getElementById('rataLabaPerKg').textContent = totalTonase > 0 ? 'Rp ' + (totalLaba / totalTonase).toFixed(
-                2) + '/kg' : 'Rp 0/kg';
-            document.getElementById('totalTonase').textContent = totalTonase.toFixed(1) + ' kg';
-            document.getElementById('totalTransaksi').textContent = filteredData.length;
-            document.getElementById('totalBiaya').textContent = 'Rp ' + totalBiaya.toLocaleString('id-ID');
-            document.getElementById('totalKemitraan').textContent = uniqueKemitraan.size;
-        }
+            const tanggal = document.getElementById('tanggal').value;
+            const kemitraan = document.getElementById('kemitraan').value;
+            const kandang = document.getElementById('kandang').value;
+            const tonase = parseFloat(document.getElementById('tonase').value);
+            const hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value);
+            const biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
+            const jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 0;
+            const jumlahPegawai = parseInt(document.getElementById('jumlahPegawai').value) || 1;
 
-        // ============ RENDER TABEL ============
-        function renderTable() {
-            const tbody = document.getElementById('tableBody');
-            if (filteredData.length === 0) {
-                tbody.innerHTML =
-                    '<tr><td colspan="11" class="text-center" style="padding:20px;color:var(--ios-gray);">Tidak ada data</td></tr>';
+            const daftarBakul = [];
+            let valid = true;
+            document.querySelectorAll('.bakul-item').forEach(item => {
+                const nama = item.querySelector('.bakul-nama').value.trim();
+                const t = parseFloat(item.querySelector('.bakul-tonase').value);
+                const h = parseFloat(item.querySelector('.bakul-harga').value);
+                if (!nama || !t || !h) valid = false;
+                daftarBakul.push({ nama, tonase: t || 0, hargaJual: h || 0 });
+            });
+
+            if (!tanggal || !kemitraan || !kandang || !tonase || !hargaKemitraan) {
+                showAlert('⚠️ Data nota belum lengkap!', 'error');
+                return;
+            }
+            if (!valid || daftarBakul.length === 0) {
+                showAlert('⚠️ Data bakul belum lengkap!', 'error');
                 return;
             }
 
-            const displayData = filteredData.slice(-50);
-            tbody.innerHTML = displayData.map(d => `
-                    <tr>
-                        <td>${d.no}</td>
-                        <td>${d.tanggal}</td>
-                        <td>${d.kemitraan}</td>
-                        <td>${d.kandang}</td>
-                        <td>${d.bakul}</td>
-                        <td class="text-right">${d.tonase.toFixed(1)}</td>
-                        <td class="text-right">Rp ${d.hargaJual.toLocaleString('id-ID')}</td>
-                        <td class="text-right">Rp ${d.totalPenjualan.toLocaleString('id-ID')}</td>
-                        <td class="text-right">Rp ${d.totalBiaya.toLocaleString('id-ID')}</td>
-                        <td class="text-right ${d.laba >= 0 ? 'text-success' : 'text-danger'}">Rp ${d.laba.toLocaleString('id-ID')}</td>
-                        <td class="text-center">
-                            <button class="btn-action btn-edit" onclick="bukaModalEdit(${d.rowIndex})">✏️</button>
-                            <button class="btn-action btn-delete" onclick="hapusData(${d.rowIndex})">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-        }
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Menyimpan…';
+            showAlert('⏳ Menyimpan nota...', 'info');
 
-        // ============ RENDER CHARTS ============
-        function renderCharts() {
-            const today = new Date();
-            const last7Days = [];
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date(today);
-                d.setDate(d.getDate() - i);
-                last7Days.push(d.toISOString().split('T')[0]);
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'simpanNota',
+                        tanggal, kemitraan, kandang, tonase, hargaKemitraan,
+                        biayaMakan, jasaAngkut, jumlahPegawai, daftarBakul
+                    })
+                });
+                showAlert('✅ Nota berhasil disimpan!', 'success');
+                document.getElementById('formNota').reset();
+                document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
+                document.getElementById('bakulContainer').innerHTML = `
+                    <div class="bakul-item" data-index="0">
+                        <input type="text" class="bakul-nama" placeholder="Nama Bakul">
+                        <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase">
+                        <input type="number" class="bakul-harga" step="100" placeholder="Harga Jual">
+                        <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
+                    </div>
+                `;
+                bakulIndex = 1;
+                document.querySelectorAll('.bakul-item input').forEach(inp => inp.addEventListener('input', hitungTotal));
+                hitungTotal();
+            } catch (error) {
+                showAlert('❌ Error: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Simpan Nota';
             }
-
-            const dailyLaba = last7Days.map(date => {
-                return filteredData.filter(d => d.tanggal === date).reduce((s, d) => s + d.laba, 0);
-            });
-
-            const ctx1 = document.getElementById('chartHarian').getContext('2d');
-            if (chartHarian) chartHarian.destroy();
-            chartHarian = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: last7Days.map(d => d.slice(5)),
-                    datasets: [{
-                        label: 'Laba (Rp)',
-                        data: dailyLaba,
-                        backgroundColor: 'rgba(0, 122, 255, 0.7)',
-                        borderColor: '#007AFF',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString('id-ID'); } }
-                        }
-                    }
-                }
-            });
-
-            const kemitraanMap = {};
-            filteredData.forEach(d => {
-                if (!kemitraanMap[d.kemitraan]) kemitraanMap[d.kemitraan] = 0;
-                kemitraanMap[d.kemitraan] += d.laba;
-            });
-            const labels = Object.keys(kemitraanMap);
-            const data = Object.values(kemitraanMap);
-
-            const ctx2 = document.getElementById('chartKemitraan').getContext('2d');
-            if (chartKemitraan) chartKemitraan.destroy();
-            chartKemitraan = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['#007AFF', '#34C759', '#FF9500', '#AF52DE', '#FF3B30',
-                            '#5AC8FA', '#FF2D92'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { font: { size: 11 }, boxWidth: 12, padding: 8 }
-                        }
-                    }
-                }
-            });
         }
 
-        // ============ RENDER MASTER HARGA (SATU TOMBOL) ============
+        document.getElementById('formNota').addEventListener('submit', simpanNota);
+
+        // ============ RENDER MASTER HARGA ============
         function renderMasterHarga() {
             const tbody = document.getElementById('masterBody');
             if (!masterData || masterData.length === 0) {
-                tbody.innerHTML =
-                    '<tr><td colspan="8" class="text-center" style="padding:20px;color:var(--ios-gray);">Belum ada data master</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Belum ada data master</td></tr>';
                 return;
             }
-
             tbody.innerHTML = masterData.map(row => {
                 const id = (name) => `harga_${name}_${row[0]}_${row[1]}`.replace(/[^a-zA-Z0-9_]/g, '_');
                 return `
-                        <tr>
-                            <td>${row[0] || ''}</td>
-                            <td>${row[1] || ''}</td>
-                            <td class="text-right"><input type="number" id="${id('beli')}" value="${row[2] || 0}" step="100"></td>
-                            <td class="text-right"><input type="number" id="${id('jual')}" value="${row[3] || 0}" step="100"></td>
-                            <td class="text-right"><input type="number" id="${id('makan')}" value="${row[4] || 0}" step="1000"></td>
-                            <td class="text-right"><input type="number" id="${id('angkut')}" value="${row[5] || 0}" step="1000"></td>
-                            <td class="text-right"><input type="number" id="${id('pegawai')}" value="${row[6] || 1}" step="1" min="0"></td>
-                            <td class="text-center">
-                                <button class="btn btn-success btn-sm" onclick="updateAllHarga('${row[0]}','${row[1]}', this)">
-                                    💾 Update Semua
-                                </button>
-                            </td>
-                        </tr>
-                    `;
+                    <tr>
+                        <td>${row[0]}</td>
+                        <td>${row[1]}</td>
+                        <td><input type="number" id="${id('beli')}" value="${row[2] || 0}" step="100"></td>
+                        <td><input type="number" id="${id('jual')}" value="${row[3] || 0}" step="100"></td>
+                        <td><input type="number" id="${id('makan')}" value="${row[4] || 0}" step="1000"></td>
+                        <td><input type="number" id="${id('angkut')}" value="${row[5] || 0}" step="1000"></td>
+                        <td><input type="number" id="${id('pegawai')}" value="${row[6] || 1}" step="1" min="0"></td>
+                        <td><button class="btn btn-success btn-sm" onclick="updateAllHarga('${row[0]}','${row[1]}', this)">💾 Update</button></td>
+                    </tr>
+                `;
             }).join('');
         }
 
-        // ============ UPDATE SEMUA HARGA (SATU TOMBOL) ============
+        // ============ UPDATE HARGA MASTER ============
         async function updateAllHarga(kemitraan, kandang, btnElement) {
             const id = (name) => `harga_${name}_${kemitraan}_${kandang}`.replace(/[^a-zA-Z0-9_]/g, '_');
+            const data = {
+                kemitraan,
+                kandang,
+                hargaBeli: parseFloat(document.getElementById(id('beli'))?.value) || 0,
+                hargaJual: parseFloat(document.getElementById(id('jual'))?.value) || 0,
+                biayaMakan: parseFloat(document.getElementById(id('makan'))?.value) || 0,
+                jasaAngkut: parseFloat(document.getElementById(id('angkut'))?.value) || 0,
+                jumlahPegawai: parseInt(document.getElementById(id('pegawai'))?.value) || 1
+            };
 
-            const hargaBeli = document.getElementById(id('beli'))?.value;
-            const hargaJual = document.getElementById(id('jual'))?.value;
-            const biayaMakan = document.getElementById(id('makan'))?.value;
-            const jasaAngkut = document.getElementById(id('angkut'))?.value;
-            const jumlahPegawai = document.getElementById(id('pegawai'))?.value;
-
-            if (!kemitraan || !kandang) {
-                alert('Data tidak lengkap!');
-                return;
-            }
-
-            const originalText = btnElement?.textContent || 'Update';
             if (btnElement) {
                 btnElement.disabled = true;
                 btnElement.textContent = '⏳…';
@@ -1359,243 +717,54 @@
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'updateAllHarga',
-                        kemitraan: kemitraan,
-                        kandang: kandang,
-                        hargaBeli: parseFloat(hargaBeli) || 0,
-                        hargaJual: parseFloat(hargaJual) || 0,
-                        biayaMakan: parseFloat(biayaMakan) || 0,
-                        jasaAngkut: parseFloat(jasaAngkut) || 0,
-                        jumlahPegawai: parseInt(jumlahPegawai) || 1
-                    })
+                    body: JSON.stringify({ action: 'updateAllHarga', ...data })
                 });
-
-                alert('✅ Data berhasil dikirim! Silakan refresh halaman untuk melihat perubahan.');
-
-                setTimeout(async () => {
-                    await loadAllData();
-                }, 2000);
-
+                alert('✅ Harga berhasil diupdate!');
+                await loadMaster();
             } catch (error) {
                 alert('❌ Error: ' + error.message);
-                console.error('Update error:', error);
             } finally {
                 if (btnElement) {
                     btnElement.disabled = false;
-                    btnElement.textContent = originalText;
+                    btnElement.textContent = '💾 Update';
                 }
             }
         }
 
         // ============ MODAL TAMBAH MASTER ============
         function bukaModalTambahMaster() {
-            document.getElementById('modalTambahMaster').classList.add('active');
-            document.getElementById('formTambahMaster').reset();
-            document.getElementById('alertTambahMaster').className = 'alert-box';
-            document.getElementById('alertTambahMaster').style.display = 'none';
+            // Simple prompt untuk tambah master
+            const kemitraan = prompt('Masukkan nama Kemitraan baru:');
+            if (!kemitraan) return;
+            const kandang = prompt('Masukkan nama Kandang baru:');
+            if (!kandang) return;
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'tambahMaster',
+                    kemitraan,
+                    kandang,
+                    hargaBeli: 0,
+                    hargaJual: 0,
+                    biayaMakan: 0,
+                    jasaAngkut: 10000,
+                    jumlahPegawai: 1
+                })
+            }).then(() => {
+                alert('✅ Master berhasil ditambahkan!');
+                loadMaster();
+            }).catch(err => alert('❌ Error: ' + err.message));
         }
 
-        function tutupModalTambahMaster() {
-            document.getElementById('modalTambahMaster').classList.remove('active');
-        }
-
-        document.getElementById('formTambahMaster').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnTambahMasterSubmit');
-            const alertDiv = document.getElementById('alertTambahMaster');
-
-            const kemitraan = document.getElementById('masterKemitraan').value.trim();
-            const kandang = document.getElementById('masterKandang').value.trim();
-            const hargaBeli = parseFloat(document.getElementById('masterHargaBeli').value) || 0;
-            const hargaJual = parseFloat(document.getElementById('masterHargaJual').value) || 0;
-            const biayaMakan = parseFloat(document.getElementById('masterBiayaMakan').value) || 0;
-            const jasaAngkut = parseFloat(document.getElementById('masterJasaAngkut').value) || 0;
-            const jumlahPegawai = parseInt(document.getElementById('masterJumlahPegawai').value) || 1;
-
-            if (!kemitraan || !kandang) {
-                alertDiv.className = 'alert-box error';
-                alertDiv.textContent = '⚠️ Kemitraan dan Kandang wajib diisi!';
-                alertDiv.style.display = 'block';
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = '⏳…';
-            alertDiv.className = 'alert-box info';
-            alertDiv.textContent = '⏳ Menyimpan…';
-            alertDiv.style.display = 'block';
-
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'tambahMaster',
-                        kemitraan,
-                        kandang,
-                        hargaBeli,
-                        hargaJual,
-                        biayaMakan,
-                        jasaAngkut,
-                        jumlahPegawai
-                    })
-                });
-                alertDiv.className = 'alert-box success';
-                alertDiv.textContent = '✅ Data master berhasil ditambahkan!';
-                setTimeout(() => {
-                    tutupModalTambahMaster();
-                    loadAllData();
-                }, 1500);
-            } catch (error) {
-                alertDiv.className = 'alert-box error';
-                alertDiv.textContent = '❌ Error: ' + error.message;
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '💾 Simpan';
-            }
-        });
-
-        // ============ EDIT DATA TRANSAKSI ============
-        function bukaModalEdit(rowIndex) {
-            const d = allData.find(item => item.rowIndex === rowIndex);
-            if (!d) return;
-
-            document.getElementById('editRowIndex').value = rowIndex;
-            document.getElementById('editTanggal').value = d.tanggal;
-            document.getElementById('editKemitraan').value = d.kemitraan;
-            document.getElementById('editKandang').value = d.kandang;
-            document.getElementById('editBakul').value = d.bakul;
-            document.getElementById('editTonase').value = d.tonase;
-            document.getElementById('editHargaJual').value = d.hargaJual;
-            document.getElementById('editHargaBeli').value = d.hargaBeli;
-            document.getElementById('editBiayaMakan').value = d.biayaMakanTotal / (d.jumlahPegawai || 1) || 0;
-            document.getElementById('editJasaAngkut').value = (d.jasaAngkutTotal / (d.tonase / 100)) || 0;
-            document.getElementById('editJumlahPegawai').value = d.jumlahPegawai || 1;
-
-            document.getElementById('modalEdit').classList.add('active');
-            document.getElementById('alertEdit').className = 'alert-box';
-            document.getElementById('alertEdit').style.display = 'none';
-        }
-
-        function tutupModalEdit() {
-            document.getElementById('modalEdit').classList.remove('active');
-        }
-
-        document.getElementById('formEdit').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnEditSubmit');
-            const alertDiv = document.getElementById('alertEdit');
-
-            const rowIndex = parseInt(document.getElementById('editRowIndex').value);
-            const tanggal = document.getElementById('editTanggal').value;
-            const kemitraan = document.getElementById('editKemitraan').value.trim();
-            const kandang = document.getElementById('editKandang').value.trim();
-            const bakul = document.getElementById('editBakul').value.trim();
-            const tonase = parseFloat(document.getElementById('editTonase').value);
-            const hargaJual = parseFloat(document.getElementById('editHargaJual').value);
-            const hargaBeli = parseFloat(document.getElementById('editHargaBeli').value);
-            const biayaMakan = parseFloat(document.getElementById('editBiayaMakan').value);
-            const jasaAngkut = parseFloat(document.getElementById('editJasaAngkut').value);
-            const jumlahPegawai = parseInt(document.getElementById('editJumlahPegawai').value) || 1;
-
-            if (!tanggal || !kemitraan || !kandang || !bakul || !tonase || !hargaJual) {
-                alertDiv.className = 'alert-box error';
-                alertDiv.textContent = '⚠️ Semua field wajib diisi!';
-                alertDiv.style.display = 'block';
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = '⏳ Menyimpan…';
-            alertDiv.className = 'alert-box info';
-            alertDiv.textContent = '⏳ Menyimpan perubahan...';
-            alertDiv.style.display = 'block';
-
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'updateTransaksi',
-                        rowIndex,
-                        tanggal,
-                        kemitraan,
-                        kandang,
-                        bakul,
-                        tonase,
-                        hargaJual,
-                        hargaBeli,
-                        biayaMakan,
-                        jasaAngkut,
-                        jumlahPegawai
-                    })
-                });
-
-                alertDiv.className = 'alert-box success';
-                alertDiv.textContent = '✅ Data berhasil diupdate!';
-                setTimeout(() => {
-                    tutupModalEdit();
-                    loadAllData();
-                }, 1500);
-            } catch (error) {
-                alertDiv.className = 'alert-box error';
-                alertDiv.textContent = '❌ Error: ' + error.message;
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '💾 Simpan Perubahan';
-            }
-        });
-
-        // ============ HAPUS DATA ============
-        async function hapusData(rowIndex) {
-            if (!confirm('Yakin ingin menghapus data ini? Tindakan tidak bisa dibatalkan!')) return;
-
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'hapusData',
-                        rowIndex: rowIndex
-                    })
-                });
-
-                alert('✅ Data berhasil dihapus!');
-                loadAllData();
-            } catch (error) {
-                alert('❌ Gagal hapus data: ' + error.message);
-            }
-        }
-
-        // ============ EKSPOR CSV ============
-        function exportCSV() {
-            if (filteredData.length === 0) {
-                alert('Tidak ada data untuk diekspor.');
-                return;
-            }
-
-            const headers = ['No', 'Tanggal', 'Kemitraan', 'Kandang', 'Bakul', 'Tonase', 'Harga Jual', 'Harga Beli',
-                'Total Penjualan', 'Total Biaya', 'Laba', 'Biaya Makan', 'Jasa Angkut', 'Setoran'
-            ];
-            const rows = filteredData.map(d => [
-                d.no, d.tanggal, d.kemitraan, d.kandang, d.bakul,
-                d.tonase.toFixed(1), d.hargaJual, d.hargaBeli,
-                d.totalPenjualan, d.totalBiaya, d.laba,
-                d.biayaMakanTotal || 0, d.jasaAngkutTotal || 0, d.setoran || 0
-            ]);
-
-            const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `laporan_rekap_${new Date().toISOString().slice(0,10)}.csv`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-        }
+        // ============ INIT ============
+        window.onload = async function() {
+            await loadMaster();
+            hitungTotal();
+            document.querySelectorAll('.bakul-item input').forEach(inp => inp.addEventListener('input', hitungTotal));
+        };
     </script>
 </body>
 </html>
