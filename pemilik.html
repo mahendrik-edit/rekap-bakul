@@ -188,7 +188,7 @@
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadRekap()">🔄 Refresh</button>
                 </div>
-                <div id="loadingRekap" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
+                <div id="loadingRekap" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat数据…</div>
                 <div class="table-wrapper" id="rekapWrapper" style="display:none;">
                     <table>
                         <thead>
@@ -399,7 +399,7 @@
                 saveSession();
                 document.getElementById('passwordOverlay').classList.remove('active');
                 document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('logoutBtn').style.display = 'inline-block');
+                document.getElementById('logoutBtn').style.display = 'inline-block';
                 loadAllData();
             } else {
                 error.style.display = 'block';
@@ -672,7 +672,7 @@
                 }, 1500);
             } catch (error) {
                 alertDiv.className = 'alert-box error';
-                alertDiv.textContent = '❌ Error: ' + error.message;
+                alertDiv.textContent = '❌ Error: ' + error.message';
             } finally {
                 btn.disabled = false; btn.textContent = '💾 Simpan Perubahan';
             }
@@ -800,7 +800,6 @@
                     const kemitraan = nota[2] || 'Unknown';
                     const kandang = nota[3] || 'Unknown';
                     const totalKemitraan = parseFloat(nota[6]) || 0;
-                    // TOTAL BIAYA di KOLOM M (index 12) - SUDAH × PEGAWAI
                     const totalBiaya = parseFloat(nota[12]) || 0;
                     
                     labaMap[noNota] = {
@@ -933,7 +932,7 @@
         function renderMasterHarga() {
             const tbody = document.getElementById('masterBody');
             if (!masterData || masterData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Belum ada data master</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ios-gray);">Belum ada数据 master</td></tr>';
                 return;
             }
             tbody.innerHTML = masterData.map(row => {
@@ -991,20 +990,34 @@
 
         // ============ LOAD ALL DATA ============
         async function loadAllData() {
-            await loadMaster();
-            hitungTotal();
-            loadRekap();
-            loadLaba();
-            loadPenjualanNota();
+            try {
+                await loadMaster();
+                hitungTotal();
+                await loadRekap();
+                await loadLaba();
+                await loadPenjualanNota();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Tampilkan pesan error di halaman
+                document.getElementById('loadingRekap').textContent = '❌ Gagal memuat data: ' + error.message;
+                document.getElementById('loadingLaba').textContent = '❌ Gagal memuat data: ' + error.message;
+                document.getElementById('loadingPenjualan').textContent = '❌ Gagal memuat data: ' + error.message;
+            }
         }
 
         // ============ INIT ============
         window.onload = function() {
+            console.log('Window loaded');
             if (!checkSession()) {
                 document.getElementById('passwordOverlay').classList.add('active');
                 document.getElementById('mainContent').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'none';
                 document.getElementById('passwordInput').focus();
+            } else {
+                // Jika session aktif, load data setelah elemen siap
+                setTimeout(function() {
+                    loadAllData();
+                }, 100);
             }
         };
     </script>
