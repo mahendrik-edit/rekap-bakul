@@ -175,7 +175,7 @@
                     </div>
                     <div style="background:var(--ios-gray-light);padding:16px;border-radius:var(--ios-radius-sm);margin:16px 0;">
                         <p><strong>Total Kemitraan:</strong> Rp <span id="totalKemitraanDisplay">0</span></p>
-                        <p><strong>Biaya Operasional:</strong> Rp <span id="biayaOperasionalDisplay">0</span></p>
+                        <p><strong>Total Biaya:</strong> Rp <span id="totalBiayaDisplay">0</span></p>
                     </div>
                     <button type="submit" class="btn btn-success btn-block" id="submitBtn">💾 Buat Nota</button>
                     <div id="alertMessage" class="alert-box"></div>
@@ -215,7 +215,7 @@
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadPenjualanNota()">🔄 Refresh</button>
                 </div>
-                <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat数据…</div>
+                <div id="loadingPenjualan" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data…</div>
                 <div class="table-wrapper" id="penjualanWrapper" style="display:none;">
                     <table>
                         <thead>
@@ -399,7 +399,7 @@
                 saveSession();
                 document.getElementById('passwordOverlay').classList.remove('active');
                 document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('logoutBtn').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'inline-block');
                 loadAllData();
             } else {
                 error.style.display = 'block';
@@ -495,16 +495,17 @@
             const biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
             const jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 10000;
             const totalKemitraan = tonase * hargaKemitraan;
-            const biayaAngkutTotal = (tonase / 100) * jasaAngkut;
-            const biayaOperasional = biayaMakan + biayaAngkutTotal;
+            const biayaPerPegawai = biayaMakan + ((tonase / 100) * jasaAngkut);
+            const totalBiaya = biayaPerPegawai * (parseInt(document.getElementById('jumlahPegawai').value) || 1);
             document.getElementById('totalKemitraanDisplay').textContent = totalKemitraan.toLocaleString('id-ID');
-            document.getElementById('biayaOperasionalDisplay').textContent = biayaOperasional.toLocaleString('id-ID');
+            document.getElementById('totalBiayaDisplay').textContent = totalBiaya.toLocaleString('id-ID');
         }
 
         document.getElementById('tonase').addEventListener('input', hitungTotal);
         document.getElementById('hargaKemitraan').addEventListener('input', hitungTotal);
         document.getElementById('biayaMakan').addEventListener('input', hitungTotal);
         document.getElementById('jasaAngkut').addEventListener('input', hitungTotal);
+        document.getElementById('jumlahPegawai').addEventListener('input', hitungTotal);
 
         function showAlert(msg, type) {
             const el = document.getElementById('alertMessage');
@@ -548,7 +549,7 @@
                 document.getElementById('formNota').reset();
                 document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
                 document.getElementById('totalKemitraanDisplay').textContent = '0';
-                document.getElementById('biayaOperasionalDisplay').textContent = '0';
+                document.getElementById('totalBiayaDisplay').textContent = '0';
             } catch (error) {
                 showAlert('❌ Error: ' + error.message, 'error');
             } finally {
@@ -759,7 +760,6 @@
                     `;
                 }).join('');
                 
-                // Grand Total
                 tbody.innerHTML += `
                     <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
                         <td colspan="4" class="text-right">GRAND TOTAL</td>
@@ -793,7 +793,6 @@
                 document.getElementById('labaWrapper').style.display = 'block';
                 document.getElementById('rincianWrapper').style.display = 'block';
 
-                // ===== REKAP LABA PER NOTA =====
                 const labaMap = {};
                 
                 notaRows.forEach(nota => {
@@ -801,7 +800,8 @@
                     const kemitraan = nota[2] || 'Unknown';
                     const kandang = nota[3] || 'Unknown';
                     const totalKemitraan = parseFloat(nota[6]) || 0;
-                    const biayaOperasional = parseFloat(nota[12]) || 0;
+                    // TOTAL BIAYA di KOLOM M (index 12) - SUDAH × PEGAWAI
+                    const totalBiaya = parseFloat(nota[12]) || 0;
                     
                     labaMap[noNota] = {
                         noNota: noNota,
@@ -811,7 +811,7 @@
                         totalTonase: 0,
                         totalPenjualan: 0,
                         totalKemitraan: totalKemitraan,
-                        totalBiaya: biayaOperasional,
+                        totalBiaya: totalBiaya,
                         details: []
                     };
                 });
@@ -883,7 +883,6 @@
                     `;
                 }).join('');
 
-                // Grand Total
                 tbody.innerHTML += `
                     <tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">
                         <td colspan="4" class="text-right">GRAND TOTAL</td>
@@ -897,7 +896,6 @@
                     </tr>
                 `;
 
-                // ===== RINCIAN PENJUALAN PER BAKUL =====
                 const rincianBody = document.getElementById('rincianBody');
                 const allDetails = [];
                 Object.values(labaMap).forEach(item => {
