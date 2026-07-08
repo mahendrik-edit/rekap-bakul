@@ -3,330 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Pemilik - Input Nota</title>
+    <title>Pemilik - Buat Nota</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --ios-blue: #007AFF;
-            --ios-blue-hover: #0055CC;
-            --ios-red: #FF3B30;
-            --ios-green: #34C759;
-            --ios-orange: #FF9500;
-            --ios-gray: #8E8E93;
-            --ios-gray-light: #F2F2F7;
-            --ios-gray-bg: #F2F2F7;
-            --ios-white: #FFFFFF;
-            --ios-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            --ios-radius: 16px;
-            --ios-radius-sm: 10px;
+            --ios-blue: #007AFF; --ios-blue-hover: #0055CC;
+            --ios-red: #FF3B30; --ios-green: #34C759;
+            --ios-orange: #FF9500; --ios-gray: #8E8E93;
+            --ios-gray-light: #F2F2F7; --ios-gray-bg: #F2F2F7;
+            --ios-white: #FFFFFF; --ios-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            --ios-radius: 16px; --ios-radius-sm: 10px;
             --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-            --ios-transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --ios-transition: all 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
         }
-        body {
-            font-family: var(--ios-font);
-            background: var(--ios-gray-bg);
-            min-height: 100vh;
-            padding: 16px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            color: #1C1C1E;
-        }
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background: var(--ios-white);
-            border-radius: var(--ios-radius);
-            padding: 24px 20px 32px;
-            box-shadow: var(--ios-shadow);
-            margin: 0 auto;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--ios-blue);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-        }
-        .back-link:hover {
-            opacity: 0.7;
-        }
-        .back-link svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1C1C1E;
-        }
-        .badge-role {
-            background: var(--ios-green);
-            color: white;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .subtitle {
-            font-size: 14px;
-            color: var(--ios-gray);
-            margin-bottom: 20px;
-            border-left: 3px solid var(--ios-blue);
-            padding-left: 12px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1C1C1E;
-            margin-bottom: 4px;
-        }
-        .required::after {
-            content: " *";
-            color: var(--ios-red);
-        }
-        input,
-        select {
-            width: 100%;
-            padding: 12px 14px;
-            background: var(--ios-gray-light);
-            border: 1.5px solid transparent;
-            border-radius: var(--ios-radius-sm);
-            font-size: 16px;
-            font-family: var(--ios-font);
-            transition: var(--ios-transition);
-            outline: none;
-            color: #1C1C1E;
-        }
-        input:focus,
-        select:focus {
-            border-color: var(--ios-blue);
-            background: var(--ios-white);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-        }
-        input[readonly] {
-            background: #E5E5EA;
-            color: var(--ios-gray);
-        }
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--ios-blue);
-            color: white;
-            border: none;
-            border-radius: var(--ios-radius-sm);
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-            margin-top: 10px;
-        }
-        .btn:hover {
-            background: var(--ios-blue-hover);
-        }
-        .btn:disabled {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        .btn-success {
-            background: var(--ios-green);
-        }
-        .btn-success:hover {
-            background: #2DB84E;
-        }
-        .btn-warning {
-            background: var(--ios-orange);
-        }
-        .btn-warning:hover {
-            background: #E68600;
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--ios-blue);
-            border: 1.5px solid var(--ios-blue);
-        }
-        .btn-outline:hover {
-            background: rgba(0, 122, 255, 0.06);
-        }
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 13px;
-            width: auto;
-            margin-top: 0;
-        }
-        .alert-box {
-            padding: 12px 14px;
-            border-radius: var(--ios-radius-sm);
-            margin-top: 14px;
-            display: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .alert-box.success {
-            background: rgba(52, 199, 89, 0.12);
-            color: #1A7A3A;
-            border-left: 4px solid var(--ios-green);
-            display: block;
-        }
-        .alert-box.error {
-            background: rgba(255, 59, 48, 0.10);
-            color: #B8221A;
-            border-left: 4px solid var(--ios-red);
-            display: block;
-        }
-        .alert-box.info {
-            background: rgba(0, 122, 255, 0.10);
-            color: #0055B3;
-            border-left: 4px solid var(--ios-blue);
-            display: block;
-        }
+        body { font-family: var(--ios-font); background: var(--ios-gray-bg); min-height: 100vh; padding: 16px; display: flex; align-items: flex-start; justify-content: center; color: #1C1C1E; }
+        .container { max-width: 800px; width: 100%; background: var(--ios-white); border-radius: var(--ios-radius); padding: 24px 20px 32px; box-shadow: var(--ios-shadow); margin: 0 auto; }
+        .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-link { display: inline-flex; align-items: center; gap: 4px; color: var(--ios-blue); text-decoration: none; font-weight: 500; font-size: 15px; }
+        .back-link:hover { opacity: 0.7; }
+        .back-link svg { width: 18px; height: 18px; fill: currentColor; }
+        h1 { font-size: 24px; font-weight: 700; color: #1C1C1E; }
+        .badge-role { background: var(--ios-green); color: white; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .subtitle { font-size: 14px; color: var(--ios-gray); margin-bottom: 20px; border-left: 3px solid var(--ios-blue); padding-left: 12px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 14px; font-weight: 600; color: #1C1C1E; margin-bottom: 4px; }
+        .required::after { content: " *"; color: var(--ios-red); }
+        input, select { width: 100%; padding: 12px 14px; background: var(--ios-gray-light); border: 1.5px solid transparent; border-radius: var(--ios-radius-sm); font-size: 16px; font-family: var(--ios-font); transition: var(--ios-transition); outline: none; color: #1C1C1E; }
+        input:focus, select:focus { border-color: var(--ios-blue); background: var(--ios-white); box-shadow: 0 0 0 3px rgba(0,122,255,0.15); }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .btn { width: 100%; padding: 14px; background: var(--ios-blue); color: white; border: none; border-radius: var(--ios-radius-sm); font-size: 17px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); margin-top: 10px; }
+        .btn:hover { background: var(--ios-blue-hover); }
+        .btn:disabled { opacity: 0.6; pointer-events: none; }
+        .btn-success { background: var(--ios-green); }
+        .btn-success:hover { background: #2DB84E; }
+        .btn-warning { background: var(--ios-orange); }
+        .btn-warning:hover { background: #E68600; }
+        .btn-outline { background: transparent; color: var(--ios-blue); border: 1.5px solid var(--ios-blue); }
+        .btn-outline:hover { background: rgba(0,122,255,0.06); }
+        .btn-sm { padding: 6px 14px; font-size: 13px; width: auto; margin-top: 0; }
+        .alert-box { padding: 12px 14px; border-radius: var(--ios-radius-sm); margin-top: 14px; display: none; font-size: 14px; font-weight: 500; }
+        .alert-box.success { background: rgba(52,199,89,0.12); color: #1A7A3A; border-left: 4px solid var(--ios-green); display: block; }
+        .alert-box.error { background: rgba(255,59,48,0.10); color: #B8221A; border-left: 4px solid var(--ios-red); display: block; }
+        .alert-box.info { background: rgba(0,122,255,0.10); color: #0055B3; border-left: 4px solid var(--ios-blue); display: block; }
 
-        /* ===== BAKUL SECTION ===== */
-        .bakul-section {
-            background: var(--ios-gray-light);
-            border-radius: var(--ios-radius-sm);
-            padding: 16px;
-            margin: 16px 0;
-        }
-        .bakul-section h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-        .bakul-item {
-            display: grid;
-            grid-template-columns: 1fr 0.8fr 0.8fr 0.5fr;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-        .bakul-item input {
-            padding: 8px 10px;
-            font-size: 14px;
-        }
-        .bakul-item .btn-remove {
-            background: var(--ios-red);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 0;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-        }
-        .bakul-item .btn-remove:hover {
-            opacity: 0.8;
-        }
-        .btn-add-bakul {
-            background: var(--ios-green);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--ios-transition);
-            margin-top: 8px;
-        }
-        .btn-add-bakul:hover {
-            opacity: 0.8;
-        }
+        .nota-info { background: var(--ios-gray-light); padding: 16px; border-radius: var(--ios-radius-sm); margin: 16px 0; }
+        .nota-info p { margin: 4px 0; }
 
-        /* ===== MASTER PRICE SECTION ===== */
-        .master-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #E5E5EA;
-        }
-        .master-section h3 {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-        .master-section .table-wrapper {
-            overflow-x: auto;
-        }
-        .master-section table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            min-width: 600px;
-        }
-        .master-section th {
-            background: var(--ios-gray-light);
-            padding: 8px 10px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .master-section td {
-            padding: 6px 10px;
-            border-bottom: 1px solid #E5E5EA;
-        }
-        .master-section td input[type="number"] {
-            width: 70px;
-            padding: 4px 6px;
-            border: 1px solid #E5E5EA;
-            border-radius: 6px;
-            font-size: 13px;
-            text-align: right;
-        }
+        /* MASTER SECTION */
+        .master-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid #E5E5EA; }
+        .master-section h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
+        .master-section .table-wrapper { overflow-x: auto; }
+        .master-section table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        .master-section th { background: var(--ios-gray-light); padding: 8px 10px; text-align: left; font-size: 12px; font-weight: 600; }
+        .master-section td { padding: 6px 10px; border-bottom: 1px solid #E5E5EA; }
+        .master-section td input[type="number"] { width: 70px; padding: 4px 6px; border: 1px solid #E5E5EA; border-radius: 6px; font-size: 13px; text-align: right; }
 
-        @media (max-width: 600px) {
-            .row {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-            .bakul-item {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .bakul-item .btn-remove {
-                grid-column: span 2;
-            }
-            .container {
-                padding: 18px 14px 24px;
-            }
-            h1 {
-                font-size: 20px;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
+        @media (max-width: 600px) { .row { grid-template-columns: 1fr; gap: 0; } .container { padding: 18px 14px 24px; } h1 { font-size: 20px; } .header { flex-direction: column; align-items: flex-start; } }
     </style>
 </head>
 <body>
@@ -338,15 +71,12 @@
                     <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
                     Kembali
                 </a>
-                <h1>📝 Input Nota</h1>
+                <h1>📝 Buat Nota</h1>
                 <span class="badge-role">Pemilik</span>
             </div>
         </div>
-        <p class="subtitle">Input nota per kemitraan dan daftar bakul</p>
+        <p class="subtitle">Buat nota induk untuk kemitraan</p>
 
-        <!-- ============================================================
-        FORM INPUT NOTA
-        ============================================================ -->
         <form id="formNota">
             <div class="form-group">
                 <label class="required">Tanggal</label>
@@ -395,55 +125,23 @@
                 <input type="number" id="jumlahPegawai" placeholder="1" min="1" value="1">
             </div>
 
-            <!-- DAFTAR BAKUL -->
-            <div class="bakul-section">
-                <h3>🧑‍🌾 Daftar Bakul (Pembeli)</h3>
-                <div id="bakulContainer">
-                    <div class="bakul-item" data-index="0">
-                        <input type="text" class="bakul-nama" placeholder="Nama Bakul">
-                        <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase">
-                        <input type="number" class="bakul-harga" step="100" placeholder="Harga Jual">
-                        <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
-                    </div>
-                </div>
-                <button type="button" class="btn-add-bakul" onclick="tambahBakul()">➕ Tambah Bakul</button>
+            <div class="nota-info">
+                <p><strong>Total Kemitraan:</strong> Rp <span id="totalKemitraanDisplay">0</span></p>
+                <p><strong>Biaya Operasional:</strong> Rp <span id="biayaOperasionalDisplay">0</span></p>
+                <p><strong>Total Biaya:</strong> Rp <span id="totalBiayaDisplay">0</span></p>
             </div>
 
-            <!-- RINGKASAN -->
-            <div style="background:var(--ios-gray-light);padding:16px;border-radius:var(--ios-radius-sm);margin:16px 0;">
-                <p><strong>Total Kemitraan:</strong> <span id="totalKemitraanDisplay">Rp 0</span></p>
-                <p><strong>Total Penjualan:</strong> <span id="totalPenjualanDisplay">Rp 0</span></p>
-                <p><strong>Total Biaya Operasional:</strong> <span id="totalBiayaDisplay">Rp 0</span></p>
-                <p style="font-size:18px;font-weight:700;color:var(--ios-green);"><strong>Laba:</strong> <span id="labaDisplay">Rp 0</span></p>
-            </div>
-
-            <button type="submit" class="btn btn-success" id="submitBtn">💾 Simpan Nota</button>
+            <button type="submit" class="btn btn-success" id="submitBtn">💾 Buat Nota</button>
             <div id="alertMessage" class="alert-box"></div>
         </form>
 
-        <!-- ============================================================
-        EDIT HARGA MASTER
-        ============================================================ -->
+        <!-- EDIT MASTER -->
         <div class="master-section">
             <h3>✏️ Kelola Harga Master</h3>
-            <p style="color:var(--ios-gray);font-size:14px;margin-bottom:12px;">Ubah harga beli, jual, biaya makan, jasa angkut, dan jumlah pegawai.</p>
             <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Kemitraan</th>
-                            <th>Kandang</th>
-                            <th>Harga Beli</th>
-                            <th>Harga Jual</th>
-                            <th>Biaya Makan</th>
-                            <th>Jasa Angkut</th>
-                            <th>Pegawai</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="masterBody">
-                        <tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr>
-                    </tbody>
+                    <thead><tr><th>Kemitraan</th><th>Kandang</th><th>Harga Beli</th><th>Harga Jual</th><th>Biaya Makan</th><th>Jasa Angkut</th><th>Pegawai</th><th>Aksi</th></tr></thead>
+                    <tbody id="masterBody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ios-gray);">Memuat data…</td></tr></tbody>
                 </table>
             </div>
             <div style="text-align:center;margin-top:12px;">
@@ -453,40 +151,28 @@
     </div>
 
     <script>
-        // ============ KONFIGURASI ============
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby1GnDS-v-Au8M9LlH8DUNvFeR3YsHIPjwTl8efe_wNu7ExgMNfCz92qh9ynO3Xa6cG/exec';
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
-
         let masterData = [];
 
-        // ============ SET DEFAULT TANGGAL ============
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
         });
 
-        // ============ AMBIL DATA MASTER ============
         async function ambilMaster() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/MASTER_HARGA?key=${API_KEY}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                if (data.values && data.values.length > 1) {
-                    return data.values.slice(1);
-                }
-                return [];
-            } catch (error) {
-                console.error('Error ambil master:', error);
-                return [];
-            }
+                return data.values && data.values.length > 1 ? data.values.slice(1) : [];
+            } catch (error) { console.error(error); return []; }
         }
 
-        // ============ LOAD MASTER ============
         async function loadMaster() {
-            const data = await ambilMaster();
-            masterData = data;
+            masterData = await ambilMaster();
             const kemitraanSelect = document.getElementById('kemitraan');
-            const kemitraanList = [...new Set(data.map(row => row[0]))];
+            const kemitraanList = [...new Set(masterData.map(row => row[0]))];
             kemitraanSelect.innerHTML = '<option value="">Pilih Kemitraan</option>';
             kemitraanList.forEach(k => {
                 const option = document.createElement('option');
@@ -497,14 +183,10 @@
             renderMasterHarga();
         }
 
-        // ============ UPDATE KANDANG & HARGA ============
         document.getElementById('kemitraan').addEventListener('change', function() {
             const kemitraan = this.value;
             const kandangSelect = document.getElementById('kandang');
-            if (!kemitraan) {
-                kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>';
-                return;
-            }
+            if (!kemitraan) { kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>'; return; }
             const filtered = masterData.filter(row => row[0] === kemitraan);
             kandangSelect.innerHTML = '<option value="">Pilih Kandang</option>';
             filtered.forEach(row => {
@@ -528,81 +210,34 @@
             hitungTotal();
         });
 
-        // ============ BAKUL ============
-        let bakulIndex = 1;
-
-        function tambahBakul() {
-            const container = document.getElementById('bakulContainer');
-            const div = document.createElement('div');
-            div.className = 'bakul-item';
-            div.dataset.index = bakulIndex;
-            div.innerHTML = `
-                <input type="text" class="bakul-nama" placeholder="Nama Bakul">
-                <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase">
-                <input type="number" class="bakul-harga" step="100" placeholder="Harga Jual">
-                <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
-            `;
-            container.appendChild(div);
-            bakulIndex++;
-            div.querySelectorAll('input').forEach(inp => inp.addEventListener('input', hitungTotal));
-        }
-
-        function hapusBakul(btn) {
-            const container = document.getElementById('bakulContainer');
-            if (container.children.length <= 1) {
-                showAlert('⚠️ Minimal harus ada 1 bakul!', 'error');
-                return;
-            }
-            btn.closest('.bakul-item').remove();
-            hitungTotal();
-        }
-
-        // ============ HITUNG TOTAL ============
         function hitungTotal() {
             const tonase = parseFloat(document.getElementById('tonase').value) || 0;
             const hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value) || 0;
             const biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
             const jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 0;
-
             const totalKemitraan = tonase * hargaKemitraan;
-            const totalBiayaOperasional = biayaMakan + (jasaAngkut * tonase);
-
-            let totalPenjualan = 0;
-            document.querySelectorAll('.bakul-item').forEach(item => {
-                const t = parseFloat(item.querySelector('.bakul-tonase').value) || 0;
-                const h = parseFloat(item.querySelector('.bakul-harga').value) || 0;
-                totalPenjualan += t * h;
-            });
-
-            const laba = totalPenjualan - (totalKemitraan + totalBiayaOperasional);
-
-            document.getElementById('totalKemitraanDisplay').textContent = 'Rp ' + totalKemitraan.toLocaleString('id-ID');
-            document.getElementById('totalPenjualanDisplay').textContent = 'Rp ' + totalPenjualan.toLocaleString('id-ID');
-            document.getElementById('totalBiayaDisplay').textContent = 'Rp ' + totalBiayaOperasional.toLocaleString('id-ID');
-            document.getElementById('labaDisplay').textContent = 'Rp ' + laba.toLocaleString('id-ID');
-            document.getElementById('labaDisplay').style.color = laba >= 0 ? 'var(--ios-green)' : 'var(--ios-red)';
+            const biayaOperasional = biayaMakan + (jasaAngkut * tonase);
+            document.getElementById('totalKemitraanDisplay').textContent = totalKemitraan.toLocaleString('id-ID');
+            document.getElementById('biayaOperasionalDisplay').textContent = biayaOperasional.toLocaleString('id-ID');
+            document.getElementById('totalBiayaDisplay').textContent = (totalKemitraan + biayaOperasional).toLocaleString('id-ID');
         }
 
         document.getElementById('tonase').addEventListener('input', hitungTotal);
         document.getElementById('hargaKemitraan').addEventListener('input', hitungTotal);
         document.getElementById('biayaMakan').addEventListener('input', hitungTotal);
         document.getElementById('jasaAngkut').addEventListener('input', hitungTotal);
-        document.getElementById('jumlahPegawai').addEventListener('input', hitungTotal);
 
-        // ============ ALERT ============
-        function showAlert(message, type) {
-            const alertDiv = document.getElementById('alertMessage');
-            alertDiv.className = 'alert-box ' + type;
-            alertDiv.textContent = message;
-            alertDiv.style.display = 'block';
-            setTimeout(() => { alertDiv.style.display = 'none'; }, 5000);
+        function showAlert(msg, type) {
+            const el = document.getElementById('alertMessage');
+            el.className = 'alert-box ' + type;
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 5000);
         }
 
-        // ============ SIMPAN NOTA ============
         async function simpanNota(e) {
             e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-
+            const btn = document.getElementById('submitBtn');
             const tanggal = document.getElementById('tanggal').value;
             const kemitraan = document.getElementById('kemitraan').value;
             const kandang = document.getElementById('kandang').value;
@@ -612,27 +247,11 @@
             const jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 0;
             const jumlahPegawai = parseInt(document.getElementById('jumlahPegawai').value) || 1;
 
-            const daftarBakul = [];
-            let valid = true;
-            document.querySelectorAll('.bakul-item').forEach(item => {
-                const nama = item.querySelector('.bakul-nama').value.trim();
-                const t = parseFloat(item.querySelector('.bakul-tonase').value);
-                const h = parseFloat(item.querySelector('.bakul-harga').value);
-                if (!nama || !t || !h) valid = false;
-                daftarBakul.push({ nama, tonase: t || 0, hargaJual: h || 0 });
-            });
-
             if (!tanggal || !kemitraan || !kandang || !tonase || !hargaKemitraan) {
-                showAlert('⚠️ Data nota belum lengkap!', 'error');
-                return;
-            }
-            if (!valid || daftarBakul.length === 0) {
-                showAlert('⚠️ Data bakul belum lengkap!', 'error');
-                return;
+                showAlert('⚠️ Data nota belum lengkap!', 'error'); return;
             }
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = '⏳ Menyimpan…';
+            btn.disabled = true; btn.textContent = '⏳ Menyimpan…';
             showAlert('⏳ Menyimpan nota...', 'info');
 
             try {
@@ -641,36 +260,26 @@
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        action: 'simpanNota',
+                        action: 'buatNota',
                         tanggal, kemitraan, kandang, tonase, hargaKemitraan,
-                        biayaMakan, jasaAngkut, jumlahPegawai, daftarBakul
+                        biayaMakan, jasaAngkut, jumlahPegawai
                     })
                 });
-                showAlert('✅ Nota berhasil disimpan!', 'success');
+                showAlert('✅ Nota berhasil dibuat!', 'success');
                 document.getElementById('formNota').reset();
                 document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
-                document.getElementById('bakulContainer').innerHTML = `
-                    <div class="bakul-item" data-index="0">
-                        <input type="text" class="bakul-nama" placeholder="Nama Bakul">
-                        <input type="number" class="bakul-tonase" step="0.1" placeholder="Tonase">
-                        <input type="number" class="bakul-harga" step="100" placeholder="Harga Jual">
-                        <button type="button" class="btn-remove" onclick="hapusBakul(this)">✕</button>
-                    </div>
-                `;
-                bakulIndex = 1;
-                document.querySelectorAll('.bakul-item input').forEach(inp => inp.addEventListener('input', hitungTotal));
-                hitungTotal();
+                document.getElementById('totalKemitraanDisplay').textContent = '0';
+                document.getElementById('biayaOperasionalDisplay').textContent = '0';
+                document.getElementById('totalBiayaDisplay').textContent = '0';
             } catch (error) {
                 showAlert('❌ Error: ' + error.message, 'error');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '💾 Simpan Nota';
+                btn.disabled = false; btn.textContent = '💾 Buat Nota';
             }
         }
-
         document.getElementById('formNota').addEventListener('submit', simpanNota);
 
-        // ============ RENDER MASTER HARGA ============
+        // MASTER
         function renderMasterHarga() {
             const tbody = document.getElementById('masterBody');
             if (!masterData || masterData.length === 0) {
@@ -679,92 +288,57 @@
             }
             tbody.innerHTML = masterData.map(row => {
                 const id = (name) => `harga_${name}_${row[0]}_${row[1]}`.replace(/[^a-zA-Z0-9_]/g, '_');
-                return `
-                    <tr>
-                        <td>${row[0]}</td>
-                        <td>${row[1]}</td>
-                        <td><input type="number" id="${id('beli')}" value="${row[2] || 0}" step="100"></td>
-                        <td><input type="number" id="${id('jual')}" value="${row[3] || 0}" step="100"></td>
-                        <td><input type="number" id="${id('makan')}" value="${row[4] || 0}" step="1000"></td>
-                        <td><input type="number" id="${id('angkut')}" value="${row[5] || 0}" step="1000"></td>
-                        <td><input type="number" id="${id('pegawai')}" value="${row[6] || 1}" step="1" min="0"></td>
-                        <td><button class="btn btn-success btn-sm" onclick="updateAllHarga('${row[0]}','${row[1]}', this)">💾 Update</button></td>
-                    </tr>
-                `;
+                return `<tr><td>${row[0]}</td><td>${row[1]}</td>
+                    <td><input type="number" id="${id('beli')}" value="${row[2]||0}" step="100"></td>
+                    <td><input type="number" id="${id('jual')}" value="${row[3]||0}" step="100"></td>
+                    <td><input type="number" id="${id('makan')}" value="${row[4]||0}" step="1000"></td>
+                    <td><input type="number" id="${id('angkut')}" value="${row[5]||0}" step="1000"></td>
+                    <td><input type="number" id="${id('pegawai')}" value="${row[6]||1}" step="1" min="0"></td>
+                    <td><button class="btn btn-success btn-sm" onclick="updateAllHarga('${row[0]}','${row[1]}', this)">💾 Update</button></td></tr>`;
             }).join('');
         }
 
-        // ============ UPDATE HARGA MASTER ============
-        async function updateAllHarga(kemitraan, kandang, btnElement) {
+        async function updateAllHarga(kemitraan, kandang, btn) {
             const id = (name) => `harga_${name}_${kemitraan}_${kandang}`.replace(/[^a-zA-Z0-9_]/g, '_');
             const data = {
-                kemitraan,
-                kandang,
+                kemitraan, kandang,
                 hargaBeli: parseFloat(document.getElementById(id('beli'))?.value) || 0,
                 hargaJual: parseFloat(document.getElementById(id('jual'))?.value) || 0,
                 biayaMakan: parseFloat(document.getElementById(id('makan'))?.value) || 0,
                 jasaAngkut: parseFloat(document.getElementById(id('angkut'))?.value) || 0,
                 jumlahPegawai: parseInt(document.getElementById(id('pegawai'))?.value) || 1
             };
-
-            if (btnElement) {
-                btnElement.disabled = true;
-                btnElement.textContent = '⏳…';
-            }
-
+            if (btn) { btn.disabled = true; btn.textContent = '⏳…'; }
             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
+                    method: 'POST', mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'updateAllHarga', ...data })
                 });
                 alert('✅ Harga berhasil diupdate!');
                 await loadMaster();
-            } catch (error) {
-                alert('❌ Error: ' + error.message);
-            } finally {
-                if (btnElement) {
-                    btnElement.disabled = false;
-                    btnElement.textContent = '💾 Update';
-                }
-            }
+            } catch (error) { alert('❌ Error: ' + error.message); }
+            finally { if (btn) { btn.disabled = false; btn.textContent = '💾 Update'; } }
         }
 
-        // ============ MODAL TAMBAH MASTER ============
         function bukaModalTambahMaster() {
-            // Simple prompt untuk tambah master
             const kemitraan = prompt('Masukkan nama Kemitraan baru:');
             if (!kemitraan) return;
             const kandang = prompt('Masukkan nama Kandang baru:');
             if (!kandang) return;
-
             fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
+                method: 'POST', mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'tambahMaster',
-                    kemitraan,
-                    kandang,
-                    hargaBeli: 0,
-                    hargaJual: 0,
-                    biayaMakan: 0,
-                    jasaAngkut: 10000,
-                    jumlahPegawai: 1
+                    kemitraan, kandang,
+                    hargaBeli: 0, hargaJual: 0, biayaMakan: 0, jasaAngkut: 10000, jumlahPegawai: 1
                 })
-            }).then(() => {
-                alert('✅ Master berhasil ditambahkan!');
-                loadMaster();
-            }).catch(err => alert('❌ Error: ' + err.message));
+            }).then(() => { alert('✅ Master berhasil ditambahkan!'); loadMaster(); })
+              .catch(err => alert('❌ Error: ' + err.message));
         }
 
-        // ============ INIT ============
-        window.onload = async function() {
-            await loadMaster();
-            hitungTotal();
-            document.querySelectorAll('.bakul-item input').forEach(inp => inp.addEventListener('input', hitungTotal));
-        };
+        window.onload = async function() { await loadMaster(); hitungTotal(); };
     </script>
 </body>
 </html>
