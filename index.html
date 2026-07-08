@@ -125,14 +125,14 @@
         /* ===== STATS MINI ===== */
         .stats-mini {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
             margin: 20px 0 24px;
         }
         .stat-mini-item {
             background: var(--ios-gray-light);
             border-radius: var(--ios-radius-sm);
-            padding: 14px 8px;
+            padding: 18px 12px;
             text-align: center;
             transition: var(--ios-transition);
         }
@@ -140,7 +140,7 @@
             transform: translateY(-2px);
         }
         .stat-mini-item .num {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--ios-blue);
         }
@@ -151,15 +151,14 @@
             color: var(--ios-orange);
         }
         .stat-mini-item .lbl {
-            font-size: 11px;
-            color: var(--ios-gray);
-            font-weight: 500;
-            margin-top: 2px;
-        }
-        .loading-text {
             font-size: 12px;
             color: var(--ios-gray);
-            font-weight: 400;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .stat-mini-item .loading-text {
+            font-size: 14px;
+            color: var(--ios-gray);
         }
 
         /* ===== MENU CARD ===== */
@@ -274,6 +273,91 @@
             transform: scale(1.05);
         }
 
+        /* ============================================================
+           NOTIFIKASI (TOAST)
+           ============================================================ */
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 360px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--ios-white);
+            color: #1C1C1E;
+            padding: 14px 18px;
+            border-radius: var(--ios-radius-sm);
+            box-shadow: var(--ios-shadow-lg);
+            border-left: 4px solid var(--ios-blue);
+            animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--ios-transition);
+        }
+        .toast.success {
+            border-left-color: var(--ios-green);
+        }
+        .toast.warning {
+            border-left-color: var(--ios-orange);
+        }
+        .toast.error {
+            border-left-color: var(--ios-red);
+        }
+        .toast .toast-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--ios-gray);
+            padding: 0 4px;
+        }
+        .toast .toast-close:hover {
+            color: #1C1C1E;
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+        }
+        .toast.hide {
+            animation: slideOutRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        body.dark-mode .toast {
+            background: #2C2C2E;
+            color: #FFFFFF;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 500px) {
             .container {
@@ -292,11 +376,11 @@
                 font-size: 24px;
             }
             .stats-mini {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
             }
             .stat-mini-item .num {
-                font-size: 17px;
+                font-size: 20px;
             }
             .menu-grid {
                 grid-template-columns: 1fr;
@@ -326,6 +410,16 @@
                 font-size: 14px;
                 padding: 3px 10px;
             }
+            #toastContainer {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: 100%;
+            }
+            .toast {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
         }
         @media (max-width: 380px) {
             .container {
@@ -335,14 +429,14 @@
                 font-size: 20px;
             }
             .stats-mini {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
             }
             .stat-mini-item .num {
-                font-size: 15px;
+                font-size: 17px;
             }
             .stat-mini-item .lbl {
-                font-size: 10px;
+                font-size: 11px;
             }
             .logo-wrapper {
                 width: 50px;
@@ -372,6 +466,9 @@
     </style>
 </head>
 <body>
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer"></div>
+
     <div class="container">
         <!-- THEME TOGGLE -->
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -389,15 +486,11 @@
         <h1>Rekap Dagang</h1>
         <p class="subtitle">Sistem pencatatan keuangan kemitraan</p>
 
-        <!-- STATS MINI (DATA REAL-TIME) -->
+        <!-- STATS MINI (TONASE & TRANSAKSI) -->
         <div class="stats-mini">
             <div class="stat-mini-item">
                 <div class="num" id="statTonase">-</div>
                 <div class="lbl">🐓 Tonase (kg)</div>
-            </div>
-            <div class="stat-mini-item">
-                <div class="num green" id="statPendapatan">-</div>
-                <div class="lbl">💰 Pendapatan</div>
             </div>
             <div class="stat-mini-item">
                 <div class="num orange" id="statTransaksi">-</div>
@@ -440,14 +533,43 @@
             document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
         }
 
-        // Load saved theme
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
             document.querySelector('.theme-toggle').textContent = '☀️';
         }
 
         // ============================================================
-        // 2. AMBIL DATA REAL-TIME DARI GOOGLE SHEETS
+        // 2. NOTIFIKASI (TOAST)
+        // ============================================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            const iconMap = {
+                success: '✅',
+                warning: '⚠️',
+                error: '❌',
+                info: 'ℹ️'
+            };
+            toast.innerHTML = `
+                    <span class="toast-icon">${iconMap[type] || 'ℹ️'}</span>
+                    <span>${message}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
+                `;
+            container.appendChild(toast);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // ============================================================
+        // 3. AMBIL DATA REAL-TIME DARI GOOGLE SHEETS
         // ============================================================
         const SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         const API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
@@ -464,37 +586,59 @@
                 const transaksi = rows.slice(1);
 
                 let totalTonase = 0;
-                let totalPendapatan = 0;
-
                 transaksi.forEach(row => {
                     const tonase = parseFloat(row[5]) || 0;
-                    const pendapatan = parseFloat(row[8]) || 0; // Total Penjualan
                     totalTonase += tonase;
-                    totalPendapatan += pendapatan;
                 });
 
                 const totalTransaksi = transaksi.length;
 
                 // Update elemen HTML
                 document.getElementById('statTonase').textContent = totalTonase.toFixed(1) + ' kg';
-                document.getElementById('statPendapatan').textContent = 'Rp ' + totalPendapatan.toLocaleString('id-ID');
                 document.getElementById('statTransaksi').textContent = totalTransaksi;
 
             } catch (error) {
                 console.error('Error loading data:', error);
-                // Tampilkan pesan error jika gagal
                 document.getElementById('statTonase').textContent = '⚠️ Error';
-                document.getElementById('statPendapatan').textContent = '⚠️ Error';
                 document.getElementById('statTransaksi').textContent = '⚠️ Error';
+                showToast('❌ Gagal memuat data dari Google Sheets', 'error');
             }
         }
 
         // ============================================================
-        // 3. LOAD DATA SAAT HALAMAN DIMUAT
+        // 4. SIMULASI NOTIFIKASI (UNTUK DEMO)
+        // ============================================================
+        function simulateNotifications() {
+            // Tampilkan notifikasi selamat datang
+            setTimeout(() => {
+                showToast('👋 Selamat datang di Rekap Dagang!', 'info');
+            }, 1000);
+
+            // Simulasi aktivitas baru (demo)
+            setTimeout(() => {
+                showToast('📝 Transaksi baru dari Bu Atul (47,1 kg)', 'success');
+            }, 5000);
+
+            setTimeout(() => {
+                showToast('🔄 Harga kemitraan SAUD diupdate', 'warning');
+            }, 10000);
+        }
+
+        // ============================================================
+        // 5. LOAD DATA SAAT HALAMAN DIMUAT
         // ============================================================
         window.onload = function() {
             loadData();
+            // Tampilkan notifikasi setelah data dimuat
+            setTimeout(simulateNotifications, 1500);
         };
+
+        // ============================================================
+        // 6. CEK DATA BARU SETIAP 60 DETIK (OPSIONAL)
+        // ============================================================
+        setInterval(() => {
+            loadData();
+        }, 60000);
     </script>
 </body>
 </html>
