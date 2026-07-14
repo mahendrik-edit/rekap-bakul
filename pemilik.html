@@ -38,6 +38,8 @@
         .btn-danger:hover { background: #D63031; }
         .btn-sm { padding: 4px 12px; font-size: 13px; }
         .btn-block { width: 100%; }
+        .btn-outline { background: transparent; color: var(--ios-blue); border: 1.5px solid var(--ios-blue); }
+        .btn-outline:hover { background: rgba(0,122,255,0.06); }
 
         .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 1px solid #E5E5EA; padding-bottom: 12px; }
         .tab-btn { padding: 10px 20px; background: transparent; border: none; border-radius: var(--ios-radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; transition: var(--ios-transition); font-family: var(--ios-font); color: var(--ios-gray); }
@@ -57,6 +59,13 @@
         .alert-box.success { background: rgba(52,199,89,0.12); color: #1A7A3A; border-left: 4px solid var(--ios-green); display: block; }
         .alert-box.error { background: rgba(255,59,48,0.10); color: #B8221A; border-left: 4px solid var(--ios-red); display: block; }
         .alert-box.info { background: rgba(0,122,255,0.10); color: #0055B3; border-left: 4px solid var(--ios-blue); display: block; }
+
+        .filter-section { background: var(--ios-gray-light); padding: 16px; border-radius: var(--ios-radius-sm); margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+        .filter-group { flex: 1; min-width: 120px; }
+        .filter-group label { font-size: 12px; font-weight: 600; color: var(--ios-gray); display: block; margin-bottom: 4px; }
+        .filter-group input, .filter-group select { width: 100%; padding: 8px 12px; border: 1.5px solid #E5E5EA; border-radius: 8px; font-size: 14px; font-family: var(--ios-font); background: var(--ios-white); color: #1C1C1E; }
+        .filter-group input:focus, .filter-group select:focus { border-color: var(--ios-blue); outline: none; }
+        .filter-group .btn { width: auto; padding: 8px 16px; }
 
         .table-wrapper { overflow-x: auto; margin-top: 12px; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 600px; }
@@ -90,6 +99,8 @@
             .header { flex-direction: column; align-items: flex-start; }
             .tab-btn { padding: 8px 14px; font-size: 13px; }
             .modal-box { padding: 20px 16px; }
+            .filter-section { flex-direction: column; align-items: stretch; }
+            .filter-group { min-width: 0; }
             table { font-size: 11px; min-width: 500px; }
             th, td { padding: 6px 8px; }
         }
@@ -231,6 +242,26 @@
             <!-- TAB 3: REKAP PENJUALAN PER NOTA -->
             <div class="tab-panel" id="tabPenjualanNota">
                 <p class="subtitle">Rekap penjualan per nomor nota dengan rincian ke bakul</p>
+                
+                <!-- FILTER PENJUALAN -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label>Tanggal Mulai</label>
+                        <input type="date" id="filterPenjualanStart">
+                    </div>
+                    <div class="filter-group">
+                        <label>Tanggal Akhir</label>
+                        <input type="date" id="filterPenjualanEnd">
+                    </div>
+                    <div class="filter-group">
+                        <label>Kemitraan</label>
+                        <select id="filterPenjualanKemitraan"><option value="">Semua</option></select>
+                    </div>
+                    <div class="filter-group" style="flex:0 1 auto;">
+                        <button class="btn btn-sm btn-outline" onclick="resetFilterPenjualan()">Reset Filter</button>
+                    </div>
+                </div>
+                
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadPenjualanNota()">🔄 Refresh</button>
                 </div>
@@ -257,6 +288,26 @@
             <!-- TAB 4: REKAP LABA -->
             <div class="tab-panel" id="tabLaba">
                 <p class="subtitle">Rekap laba per nota dengan rincian penjualan dan biaya</p>
+                
+                <!-- FILTER LABA -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label>Tanggal Mulai</label>
+                        <input type="date" id="filterLabaStart">
+                    </div>
+                    <div class="filter-group">
+                        <label>Tanggal Akhir</label>
+                        <input type="date" id="filterLabaEnd">
+                    </div>
+                    <div class="filter-group">
+                        <label>Kemitraan</label>
+                        <select id="filterLabaKemitraan"><option value="">Semua</option></select>
+                    </div>
+                    <div class="filter-group" style="flex:0 1 auto;">
+                        <button class="btn btn-sm btn-outline" onclick="resetFilterLaba()">Reset Filter</button>
+                    </div>
+                </div>
+                
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
                 </div>
@@ -475,6 +526,26 @@
             var btn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
             if (btn) {
                 btn.classList.add('active');
+            }
+            
+            // Isi dropdown filter kemitraan
+            if (tabId === 'tabPenjualanNota' || tabId === 'tabLaba') {
+                var selectId = tabId === 'tabPenjualanNota' ? 'filterPenjualanKemitraan' : 'filterLabaKemitraan';
+                var select = document.getElementById(selectId);
+                if (select && select.options.length <= 1) {
+                    var kemitraanList = [];
+                    for (var k = 0; k < masterData.length; k++) {
+                        if (masterData[k][0] && kemitraanList.indexOf(masterData[k][0]) === -1) {
+                            kemitraanList.push(masterData[k][0]);
+                        }
+                    }
+                    for (var l = 0; l < kemitraanList.length; l++) {
+                        var option = document.createElement('option');
+                        option.value = kemitraanList[l];
+                        option.textContent = kemitraanList[l];
+                        select.appendChild(option);
+                    }
+                }
             }
             
             if (tabId === 'tabRekap') loadRekap();
@@ -855,8 +926,41 @@
             }
         }
 
+        // ============ FILTER PENJUALAN ============
+        function getFilterPenjualan() {
+            return {
+                start: document.getElementById('filterPenjualanStart').value,
+                end: document.getElementById('filterPenjualanEnd').value,
+                kemitraan: document.getElementById('filterPenjualanKemitraan').value
+            };
+        }
+
+        function resetFilterPenjualan() {
+            document.getElementById('filterPenjualanStart').value = '';
+            document.getElementById('filterPenjualanEnd').value = '';
+            document.getElementById('filterPenjualanKemitraan').value = '';
+            loadPenjualanNota();
+        }
+
+        // ============ FILTER LABA ============
+        function getFilterLaba() {
+            return {
+                start: document.getElementById('filterLabaStart').value,
+                end: document.getElementById('filterLabaEnd').value,
+                kemitraan: document.getElementById('filterLabaKemitraan').value
+            };
+        }
+
+        function resetFilterLaba() {
+            document.getElementById('filterLabaStart').value = '';
+            document.getElementById('filterLabaEnd').value = '';
+            document.getElementById('filterLabaKemitraan').value = '';
+            loadLaba();
+        }
+
         // ============ REKAP PENJUALAN PER NOTA ============
         async function loadPenjualanNota() {
+            var filter = getFilterPenjualan();
             var urlBakul = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_BAKUL?key=' + API_KEY;
             var urlNota = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
             
@@ -871,32 +975,42 @@
                 var notaMap = {};
                 for (var i = 0; i < notaRows.length; i++) {
                     var row = notaRows[i];
+                    var tanggal = row[1] || '';
+                    var kemitraan = row[2] || '';
+                    if (filter.start && tanggal < filter.start) continue;
+                    if (filter.end && tanggal > filter.end) continue;
+                    if (filter.kemitraan && kemitraan !== filter.kemitraan) continue;
                     notaMap[row[0]] = {
-                        kemitraan: row[2] || 'Unknown',
+                        kemitraan: kemitraan,
                         kandang: row[3] || 'Unknown',
-                        tanggal: row[1] || ''
+                        tanggal: tanggal
                     };
+                }
+                
+                var filteredBakul = [];
+                for (var j = 0; j < bakulRows.length; j++) {
+                    var row = bakulRows[j];
+                    if (notaMap[row[0]]) {
+                        filteredBakul.push(row);
+                    }
                 }
                 
                 document.getElementById('loadingPenjualan').style.display = 'none';
                 document.getElementById('penjualanWrapper').style.display = 'block';
                 
                 var tbody = document.getElementById('penjualanBody');
-                
-                if (bakulRows.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data penjualan</td></tr>';
+                if (filteredBakul.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--ios-gray);padding:20px;">Tidak ada data</td></tr>';
                     return;
                 }
                 
-                bakulRows.sort(function(a, b) {
-                    return (a[0] || '').localeCompare(b[0] || '');
-                });
+                filteredBakul.sort(function(a, b) { return (a[0] || '').localeCompare(b[0] || ''); });
                 
                 var grandTotalTonase = 0;
                 var grandTotalPenjualan = 0;
                 var html = '';
-                for (var j = 0; j < bakulRows.length; j++) {
-                    var row = bakulRows[j];
+                for (var k = 0; k < filteredBakul.length; k++) {
+                    var row = filteredBakul[k];
                     var noNota = row[0] || '';
                     var bakul = row[1] || 'Unknown';
                     var tonase = parseFloat(row[2]) || 0;
@@ -929,6 +1043,14 @@
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '</tr>';
                 
+                // Keterangan Grand Total
+                tbody.innerHTML += '<tr style="background:var(--ios-gray-light);font-size:12px;color:var(--ios-gray);">';
+                tbody.innerHTML += '<td colspan="8" style="padding:8px 12px;">';
+                tbody.innerHTML += '📌 <strong>Keterangan Grand Total:</strong> ';
+                tbody.innerHTML += 'Total Penjualan: <strong>Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</strong> ';
+                tbody.innerHTML += '(dari ' + filteredBakul.length + ' transaksi, total tonase ' + grandTotalTonase.toFixed(1) + ' kg)';
+                tbody.innerHTML += '</td></tr>';
+                
             } catch (error) {
                 console.error('Error loadPenjualanNota:', error);
                 document.getElementById('loadingPenjualan').textContent = '❌ Gagal memuat data: ' + error.message;
@@ -937,6 +1059,7 @@
 
         // ============ REKAP LABA ============
         async function loadLaba() {
+            var filter = getFilterLaba();
             var urlNota = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
             var urlBakul = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_BAKUL?key=' + API_KEY;
             
@@ -948,15 +1071,26 @@
                 var notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
                 var bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
 
+                // Filter nota
+                var filteredNota = [];
+                for (var i = 0; i < notaRows.length; i++) {
+                    var nota = notaRows[i];
+                    var tanggal = nota[1] || '';
+                    var kemitraan = nota[2] || '';
+                    if (filter.start && tanggal < filter.start) continue;
+                    if (filter.end && tanggal > filter.end) continue;
+                    if (filter.kemitraan && kemitraan !== filter.kemitraan) continue;
+                    filteredNota.push(nota);
+                }
+
                 document.getElementById('loadingLaba').style.display = 'none';
                 document.getElementById('labaWrapper').style.display = 'block';
                 document.getElementById('rincianWrapper').style.display = 'block';
 
                 // ===== REKAP LABA PER NOTA =====
                 var labaMap = {};
-                
-                for (var i = 0; i < notaRows.length; i++) {
-                    var nota = notaRows[i];
+                for (var j = 0; j < filteredNota.length; j++) {
+                    var nota = filteredNota[j];
                     var noNota = nota[0];
                     var kemitraan = nota[2] || 'Unknown';
                     var kandang = nota[3] || 'Unknown';
@@ -966,7 +1100,6 @@
                     var totalBiaya = parseFloat(nota[12]) || 0;
                     var biayaSolar = parseFloat(nota[13]) || 0;
                     var biayaLain = parseFloat(nota[14]) || 0;
-                    var keteranganLain = nota[15] || '';
                     
                     labaMap[noNota] = {
                         noNota: noNota,
@@ -981,15 +1114,16 @@
                         totalBiaya: totalBiaya,
                         biayaSolar: biayaSolar,
                         biayaLain: biayaLain,
-                        keteranganLain: keteranganLain,
                         details: []
                     };
                 }
 
-                // Kumpulkan data penjualan dari DATA_BAKUL
-                for (var j = 0; j < bakulRows.length; j++) {
-                    var row = bakulRows[j];
+                // Kumpulkan data penjualan
+                for (var k = 0; k < bakulRows.length; k++) {
+                    var row = bakulRows[k];
                     var noNota = row[0];
+                    if (!labaMap[noNota]) continue;
+                    
                     var bakul = row[1] || 'Unknown';
                     var tonase = parseFloat(row[2]) || 0;
                     var hargaJual = parseFloat(row[3]) || 0;
@@ -997,33 +1131,30 @@
                     var laba = parseFloat(row[5]) || 0;
                     var tanggal = row[6] || '';
                     
-                    if (labaMap[noNota]) {
-                        labaMap[noNota].totalTonase += tonase;
-                        labaMap[noNota].totalPenjualan += totalPenjualan;
-                        labaMap[noNota].details.push({
-                            noNota: noNota,
-                            tanggal: tanggal,
-                            kemitraan: labaMap[noNota].kemitraan,
-                            kandang: labaMap[noNota].kandang,
-                            bakul: bakul,
-                            tonase: tonase,
-                            hargaJual: hargaJual,
-                            totalPenjualan: totalPenjualan,
-                            laba: laba
-                        });
-                    }
+                    labaMap[noNota].totalTonase += tonase;
+                    labaMap[noNota].totalPenjualan += totalPenjualan;
+                    labaMap[noNota].details.push({
+                        noNota: noNota,
+                        tanggal: tanggal,
+                        kemitraan: labaMap[noNota].kemitraan,
+                        kandang: labaMap[noNota].kandang,
+                        bakul: bakul,
+                        tonase: tonase,
+                        hargaJual: hargaJual,
+                        totalPenjualan: totalPenjualan,
+                        laba: laba
+                    });
                 }
 
                 var tbody = document.getElementById('labaBody');
                 var keys = Object.keys(labaMap);
                 
                 if (keys.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--ios-gray);padding:20px;">Tidak ada data</td></tr>';
                     document.getElementById('rincianWrapper').style.display = 'none';
                     return;
                 }
                 
-                // ===== RENDER REKAP LABA PER NOTA =====
                 var grandTotalLaba = 0;
                 var grandTotalTonase = 0;
                 var grandTotalPenjualan = 0;
@@ -1033,8 +1164,8 @@
                 var grandTotalLain = 0;
                 var html = '';
                 
-                for (var k = 0; k < keys.length; k++) {
-                    var key = keys[k];
+                for (var m = 0; m < keys.length; m++) {
+                    var key = keys[m];
                     var item = labaMap[key];
                     var laba = item.totalPenjualan - (item.totalKemitraan + item.totalBiaya);
                     grandTotalLaba += laba;
@@ -1064,7 +1195,7 @@
                 }
                 tbody.innerHTML = html;
                 
-                // ===== GRAND TOTAL DENGAN RINCIAN PENGURANG =====
+                // ===== GRAND TOTAL DENGAN KETERANGAN =====
                 var grandClass = grandTotalLaba >= 0 ? 'text-success' : 'text-danger';
                 tbody.innerHTML += '<tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">';
                 tbody.innerHTML += '<td colspan="4" class="text-right">GRAND TOTAL</td>';
@@ -1072,17 +1203,17 @@
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</td>';
-                tbody.innerHTML += '<td></td>';
-                tbody.innerHTML += '<td></td>';
-                tbody.innerHTML += '<td></td>';
+                tbody.innerHTML += '<td></td><td></td><td></td>';
                 tbody.innerHTML += '<td class="text-right ' + grandClass + '">Rp ' + grandTotalLaba.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '</tr>';
                 
-                // ===== RINCIAN FAKTOR PENGURANG =====
-                var rincianFaktor = '📌 <strong>Rincian Grand Total:</strong> ';
+                // KETERANGAN GRAND TOTAL
+                var totalNota = keys.length;
+                var rincianFaktor = '📌 <strong>Keterangan Grand Total:</strong> ';
                 rincianFaktor += 'Total Penjualan: <strong>Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</strong> ';
-                rincianFaktor += '| Total Kemitraan: <strong>Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</strong> (pengurang) ';
-                rincianFaktor += '| Total Biaya: <strong>Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                rincianFaktor += '(dari ' + totalNota + ' nota, total tonase ' + grandTotalTonase.toFixed(1) + ' kg) | ';
+                rincianFaktor += 'Total Kemitraan: <strong>Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</strong> (pengurang) | ';
+                rincianFaktor += 'Total Biaya: <strong>Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</strong> (pengurang) ';
                 if (grandTotalSolar > 0) {
                     rincianFaktor += '| Biaya Solar: <strong>Rp ' + grandTotalSolar.toLocaleString('id-ID') + '</strong> (pengurang) ';
                 }
@@ -1099,19 +1230,17 @@
                 var rincianBody = document.getElementById('rincianBody');
                 var allDetails = [];
                 var keys2 = Object.keys(labaMap);
-                for (var m = 0; m < keys2.length; m++) {
-                    var item2 = labaMap[keys2[m]];
-                    for (var n = 0; n < item2.details.length; n++) {
-                        allDetails.push(item2.details[n]);
+                for (var n = 0; n < keys2.length; n++) {
+                    var item2 = labaMap[keys2[n]];
+                    for (var o = 0; o < item2.details.length; o++) {
+                        allDetails.push(item2.details[o]);
                     }
                 }
 
                 if (allDetails.length === 0) {
                     rincianBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada rincian penjualan</td></tr>';
                 } else {
-                    allDetails.sort(function(a, b) {
-                        return (a.tanggal < b.tanggal) ? 1 : -1;
-                    });
+                    allDetails.sort(function(a, b) { return (a.tanggal < b.tanggal) ? 1 : -1; });
                     var html2 = '';
                     for (var p = 0; p < allDetails.length; p++) {
                         var d = allDetails[p];
