@@ -243,7 +243,7 @@
             <div class="tab-panel" id="tabPenjualanNota">
                 <p class="subtitle">Rekap penjualan per nomor nota dengan rincian ke bakul</p>
                 
-                <!-- FILTER PENJUALAN -->
+                <!-- FILTER PENJUALAN (NOMOR NOTA) -->
                 <div class="filter-section">
                     <div class="filter-group">
                         <label>Tanggal Mulai</label>
@@ -254,8 +254,8 @@
                         <input type="date" id="filterPenjualanEnd">
                     </div>
                     <div class="filter-group">
-                        <label>Kemitraan</label>
-                        <select id="filterPenjualanKemitraan"><option value="">Semua</option></select>
+                        <label>Nomor Nota</label>
+                        <input type="text" id="filterPenjualanNota" placeholder="Cari No Nota...">
                     </div>
                     <div class="filter-group" style="flex:0 1 auto;">
                         <button class="btn btn-sm btn-outline" onclick="resetFilterPenjualan()">Reset Filter</button>
@@ -289,7 +289,7 @@
             <div class="tab-panel" id="tabLaba">
                 <p class="subtitle">Rekap laba per nota dengan rincian penjualan dan biaya</p>
                 
-                <!-- FILTER LABA -->
+                <!-- FILTER LABA (NOMOR NOTA) -->
                 <div class="filter-section">
                     <div class="filter-group">
                         <label>Tanggal Mulai</label>
@@ -300,8 +300,8 @@
                         <input type="date" id="filterLabaEnd">
                     </div>
                     <div class="filter-group">
-                        <label>Kemitraan</label>
-                        <select id="filterLabaKemitraan"><option value="">Semua</option></select>
+                        <label>Nomor Nota</label>
+                        <input type="text" id="filterLabaNota" placeholder="Cari No Nota...">
                     </div>
                     <div class="filter-group" style="flex:0 1 auto;">
                         <button class="btn btn-sm btn-outline" onclick="resetFilterLaba()">Reset Filter</button>
@@ -526,26 +526,6 @@
             var btn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
             if (btn) {
                 btn.classList.add('active');
-            }
-            
-            // Isi dropdown filter kemitraan
-            if (tabId === 'tabPenjualanNota' || tabId === 'tabLaba') {
-                var selectId = tabId === 'tabPenjualanNota' ? 'filterPenjualanKemitraan' : 'filterLabaKemitraan';
-                var select = document.getElementById(selectId);
-                if (select && select.options.length <= 1) {
-                    var kemitraanList = [];
-                    for (var k = 0; k < masterData.length; k++) {
-                        if (masterData[k][0] && kemitraanList.indexOf(masterData[k][0]) === -1) {
-                            kemitraanList.push(masterData[k][0]);
-                        }
-                    }
-                    for (var l = 0; l < kemitraanList.length; l++) {
-                        var option = document.createElement('option');
-                        option.value = kemitraanList[l];
-                        option.textContent = kemitraanList[l];
-                        select.appendChild(option);
-                    }
-                }
             }
             
             if (tabId === 'tabRekap') loadRekap();
@@ -836,7 +816,7 @@
                 document.getElementById('alertEdit').className = 'alert-box';
                 document.getElementById('alertEdit').style.display = 'none';
             } catch (error) {
-                alert('❌ Gagal memuat data nota: ' + error.message);
+                alert('❌ Gagal memuat数据 nota: ' + error.message);
             }
         }
 
@@ -931,14 +911,14 @@
             return {
                 start: document.getElementById('filterPenjualanStart').value,
                 end: document.getElementById('filterPenjualanEnd').value,
-                kemitraan: document.getElementById('filterPenjualanKemitraan').value
+                nota: document.getElementById('filterPenjualanNota').value.trim().toUpperCase()
             };
         }
 
         function resetFilterPenjualan() {
             document.getElementById('filterPenjualanStart').value = '';
             document.getElementById('filterPenjualanEnd').value = '';
-            document.getElementById('filterPenjualanKemitraan').value = '';
+            document.getElementById('filterPenjualanNota').value = '';
             loadPenjualanNota();
         }
 
@@ -947,14 +927,14 @@
             return {
                 start: document.getElementById('filterLabaStart').value,
                 end: document.getElementById('filterLabaEnd').value,
-                kemitraan: document.getElementById('filterLabaKemitraan').value
+                nota: document.getElementById('filterLabaNota').value.trim().toUpperCase()
             };
         }
 
         function resetFilterLaba() {
             document.getElementById('filterLabaStart').value = '';
             document.getElementById('filterLabaEnd').value = '';
-            document.getElementById('filterLabaKemitraan').value = '';
+            document.getElementById('filterLabaNota').value = '';
             loadLaba();
         }
 
@@ -975,14 +955,18 @@
                 var notaMap = {};
                 for (var i = 0; i < notaRows.length; i++) {
                     var row = notaRows[i];
+                    var noNota = row[0] || '';
                     var tanggal = row[1] || '';
                     var kemitraan = row[2] || '';
+                    var kandang = row[3] || '';
+                    
                     if (filter.start && tanggal < filter.start) continue;
                     if (filter.end && tanggal > filter.end) continue;
-                    if (filter.kemitraan && kemitraan !== filter.kemitraan) continue;
-                    notaMap[row[0]] = {
+                    if (filter.nota && noNota.toUpperCase().indexOf(filter.nota) === -1) continue;
+                    
+                    notaMap[noNota] = {
                         kemitraan: kemitraan,
-                        kandang: row[3] || 'Unknown',
+                        kandang: kandang,
                         tanggal: tanggal
                     };
                 }
@@ -1075,11 +1059,14 @@
                 var filteredNota = [];
                 for (var i = 0; i < notaRows.length; i++) {
                     var nota = notaRows[i];
+                    var noNota = nota[0] || '';
                     var tanggal = nota[1] || '';
                     var kemitraan = nota[2] || '';
+                    
                     if (filter.start && tanggal < filter.start) continue;
                     if (filter.end && tanggal > filter.end) continue;
-                    if (filter.kemitraan && kemitraan !== filter.kemitraan) continue;
+                    if (filter.nota && noNota.toUpperCase().indexOf(filter.nota) === -1) continue;
+                    
                     filteredNota.push(nota);
                 }
 
