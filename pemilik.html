@@ -59,8 +59,8 @@
         .alert-box.info { background: rgba(0,122,255,0.10); color: #0055B3; border-left: 4px solid var(--ios-blue); display: block; }
 
         .table-wrapper { overflow-x: auto; margin-top: 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
-        th { background: var(--ios-gray-light); padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; border-bottom: 1px solid #E5E5EA; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 600px; }
+        th { background: var(--ios-gray-light); padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 600; border-bottom: 1px solid #E5E5EA; white-space: nowrap; }
         td { padding: 10px 12px; border-bottom: 1px solid #E5E5EA; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
@@ -90,6 +90,8 @@
             .header { flex-direction: column; align-items: flex-start; }
             .tab-btn { padding: 8px 14px; font-size: 13px; }
             .modal-box { padding: 20px 16px; }
+            table { font-size: 11px; min-width: 500px; }
+            th, td { padding: 6px 8px; }
         }
     </style>
 </head>
@@ -254,11 +256,13 @@
 
             <!-- TAB 4: REKAP LABA -->
             <div class="tab-panel" id="tabLaba">
-                <p class="subtitle">Rekap laba per nota dengan rincian penjualan</p>
+                <p class="subtitle">Rekap laba per nota dengan rincian penjualan dan biaya</p>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="btn btn-sm btn-success" onclick="loadLaba()">🔄 Refresh</button>
                 </div>
                 <div id="loadingLaba" style="text-align:center;color:var(--ios-gray);padding:20px;">Memuat data...</div>
+                
+                <!-- REKAP LABA PER NOTA -->
                 <div class="table-wrapper" id="labaWrapper" style="display:none;">
                     <h4 style="margin:12px 0 8px;">📊 Rekap Laba per Nota</h4>
                     <table>
@@ -271,6 +275,10 @@
                                 <th class="text-right">Total Tonase</th>
                                 <th class="text-right">Total Penjualan</th>
                                 <th class="text-right">Total Kemitraan</th>
+                                <th class="text-right">Biaya Makan</th>
+                                <th class="text-right">Jasa Angkut</th>
+                                <th class="text-right">Biaya Solar</th>
+                                <th class="text-right">Biaya Lain</th>
                                 <th class="text-right">Total Biaya</th>
                                 <th class="text-right">Total Laba</th>
                             </tr>
@@ -278,6 +286,8 @@
                         <tbody id="labaBody"></tbody>
                     </table>
                 </div>
+
+                <!-- RINCIAN PENJUALAN PER BAKUL -->
                 <div class="table-wrapper" id="rincianWrapper" style="display:none; margin-top:24px;">
                     <h4 style="margin:12px 0 8px;">🧾 Rincian Penjualan per Bakul</h4>
                     <p style="color:var(--ios-gray);font-size:13px;margin-bottom:8px;">Detail penjualan dari setiap nota yang sudah didistribusikan</p>
@@ -393,7 +403,7 @@
 
     <script>
         // ============ KONFIGURASI ============
-        var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzNw7tNlmxjdLhPPqGEceJDpa_gsXPpUxaDxNxr3DEuPrm202KDKpiyXarQWEQaLwWM/exec';
+        var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxnw0UVgZg808wD8BVHH0rt4aSrVR9Wu4IU1AoBNclALq1xnVlAtZTtcyrVHgT33uF_/exec';
         var SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         var API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
         var PASSWORD = 'pass4all';
@@ -942,6 +952,7 @@
                 document.getElementById('labaWrapper').style.display = 'block';
                 document.getElementById('rincianWrapper').style.display = 'block';
 
+                // ===== REKAP LABA PER NOTA =====
                 var labaMap = {};
                 
                 for (var i = 0; i < notaRows.length; i++) {
@@ -950,6 +961,8 @@
                     var kemitraan = nota[2] || 'Unknown';
                     var kandang = nota[3] || 'Unknown';
                     var totalKemitraan = parseFloat(nota[6]) || 0;
+                    var biayaMakan = parseFloat(nota[7]) || 0;
+                    var jasaAngkut = parseFloat(nota[8]) || 0;
                     var totalBiaya = parseFloat(nota[12]) || 0;
                     var biayaSolar = parseFloat(nota[13]) || 0;
                     var biayaLain = parseFloat(nota[14]) || 0;
@@ -963,6 +976,8 @@
                         totalTonase: 0,
                         totalPenjualan: 0,
                         totalKemitraan: totalKemitraan,
+                        biayaMakan: biayaMakan,
+                        jasaAngkut: jasaAngkut,
                         totalBiaya: totalBiaya,
                         biayaSolar: biayaSolar,
                         biayaLain: biayaLain,
@@ -971,6 +986,7 @@
                     };
                 }
 
+                // Kumpulkan data penjualan dari DATA_BAKUL
                 for (var j = 0; j < bakulRows.length; j++) {
                     var row = bakulRows[j];
                     var noNota = row[0];
@@ -1002,11 +1018,12 @@
                 var keys = Object.keys(labaMap);
                 
                 if (keys.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada data laba</td></tr>';
                     document.getElementById('rincianWrapper').style.display = 'none';
                     return;
                 }
                 
+                // ===== RENDER REKAP LABA PER NOTA =====
                 var grandTotalLaba = 0;
                 var grandTotalTonase = 0;
                 var grandTotalPenjualan = 0;
@@ -1037,13 +1054,17 @@
                     html += '<td class="text-right">' + item.totalTonase.toFixed(1) + '</td>';
                     html += '<td class="text-right">Rp ' + item.totalPenjualan.toLocaleString('id-ID') + '</td>';
                     html += '<td class="text-right">Rp ' + item.totalKemitraan.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">Rp ' + item.biayaMakan.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">Rp ' + item.jasaAngkut.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">Rp ' + item.biayaSolar.toLocaleString('id-ID') + '</td>';
+                    html += '<td class="text-right">Rp ' + item.biayaLain.toLocaleString('id-ID') + '</td>';
                     html += '<td class="text-right">Rp ' + item.totalBiaya.toLocaleString('id-ID') + '</td>';
                     html += '<td class="text-right ' + labaClass + '">Rp ' + laba.toLocaleString('id-ID') + '</td>';
                     html += '</tr>';
                 }
                 tbody.innerHTML = html;
                 
-                // GRAND TOTAL DENGAN RINCIAN
+                // ===== GRAND TOTAL DENGAN RINCIAN PENGURANG =====
                 var grandClass = grandTotalLaba >= 0 ? 'text-success' : 'text-danger';
                 tbody.innerHTML += '<tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">';
                 tbody.innerHTML += '<td colspan="4" class="text-right">GRAND TOTAL</td>';
@@ -1051,26 +1072,30 @@
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</td>';
+                tbody.innerHTML += '<td></td>';
+                tbody.innerHTML += '<td></td>';
+                tbody.innerHTML += '<td></td>';
                 tbody.innerHTML += '<td class="text-right ' + grandClass + '">Rp ' + grandTotalLaba.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '</tr>';
                 
-                // RINCIAN FAKTOR PENGURANG & PENAMBAH
-                tbody.innerHTML += '<tr style="background:var(--ios-gray-light);font-size:12px;color:var(--ios-gray);">';
-                tbody.innerHTML += '<td colspan="9" style="padding:8px 12px;">';
-                tbody.innerHTML += '📌 <strong>Rincian Grand Total:</strong> ';
-                tbody.innerHTML += 'Total Penjualan: <strong>Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</strong> ';
-                tbody.innerHTML += '| Total Kemitraan: <strong>Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</strong> (pengurang) ';
-                tbody.innerHTML += '| Total Biaya: <strong>Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                // ===== RINCIAN FAKTOR PENGURANG =====
+                var rincianFaktor = '📌 <strong>Rincian Grand Total:</strong> ';
+                rincianFaktor += 'Total Penjualan: <strong>Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</strong> ';
+                rincianFaktor += '| Total Kemitraan: <strong>Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                rincianFaktor += '| Total Biaya: <strong>Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</strong> (pengurang) ';
                 if (grandTotalSolar > 0) {
-                    tbody.innerHTML += '| Biaya Solar: <strong>Rp ' + grandTotalSolar.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                    rincianFaktor += '| Biaya Solar: <strong>Rp ' + grandTotalSolar.toLocaleString('id-ID') + '</strong> (pengurang) ';
                 }
                 if (grandTotalLain > 0) {
-                    tbody.innerHTML += '| Biaya Lain: <strong>Rp ' + grandTotalLain.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                    rincianFaktor += '| Biaya Lain: <strong>Rp ' + grandTotalLain.toLocaleString('id-ID') + '</strong> (pengurang) ';
                 }
-                tbody.innerHTML += '| <strong>Laba Akhir: Rp ' + grandTotalLaba.toLocaleString('id-ID') + '</strong>';
-                tbody.innerHTML += '</td></tr>';
+                rincianFaktor += '| <strong>Laba Akhir: Rp ' + grandTotalLaba.toLocaleString('id-ID') + '</strong>';
+                
+                tbody.innerHTML += '<tr style="background:var(--ios-gray-light);font-size:12px;color:var(--ios-gray);">';
+                tbody.innerHTML += '<td colspan="13" style="padding:8px 12px;">' + rincianFaktor + '</td>';
+                tbody.innerHTML += '</tr>';
 
-                // Rincian
+                // ===== RINCIAN PENJUALAN PER BAKUL =====
                 var rincianBody = document.getElementById('rincianBody');
                 var allDetails = [];
                 var keys2 = Object.keys(labaMap);
