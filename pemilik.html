@@ -161,21 +161,37 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label>Biaya Makan (Flat)</label>
-                            <input type="number" id="biayaMakan" step="any" placeholder="0">
+                            <label>Biaya Makan / Pegawai</label>
+                            <input type="number" id="biayaMakan" step="any" placeholder="40000" value="40000">
                         </div>
                         <div class="form-group">
                             <label>Jasa Angkut (per 100Kg)</label>
-                            <input type="number" id="jasaAngkut" step="any" placeholder="10000" value="10000">
+                            <input type="number" id="jasaAngkut" step="any" placeholder="5000" value="5000">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Jumlah Pegawai</label>
                         <input type="number" id="jumlahPegawai" placeholder="1" min="1" value="1">
                     </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Biaya Solar (Opsional)</label>
+                            <input type="number" id="biayaSolar" step="any" placeholder="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Biaya Lain-lain (Opsional)</label>
+                            <input type="number" id="biayaLain" step="any" placeholder="0" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Keterangan Biaya Lain</label>
+                        <input type="text" id="keteranganLain" placeholder="Contoh: Biaya bongkar muat, dll">
+                    </div>
                     <div style="background:var(--ios-gray-light);padding:16px;border-radius:var(--ios-radius-sm);margin:16px 0;">
                         <p><strong>Total Kemitraan:</strong> Rp <span id="totalKemitraanDisplay">0</span></p>
                         <p><strong>Total Biaya:</strong> Rp <span id="totalBiayaDisplay">0</span></p>
+                        <p><strong>Total Biaya Solar:</strong> Rp <span id="totalSolarDisplay">0</span></p>
+                        <p><strong>Total Biaya Lain:</strong> Rp <span id="totalLainDisplay">0</span></p>
                     </div>
                     <button type="submit" class="btn btn-success btn-block" id="submitBtn">💾 Buat Nota</button>
                     <div id="alertMessage" class="alert-box"></div>
@@ -197,9 +213,10 @@
                                 <th>Tanggal</th>
                                 <th>Kemitraan</th>
                                 <th>Kandang</th>
-                                <th class="text-right">Tonase</th>
+                                <th class="text-right">Tonase Nota</th>
+                                <th class="text-right">Tonase Supir</th>
+                                <th class="text-right">Sisa Tonase</th>
                                 <th class="text-right">Total Kemitraan</th>
-                                <th class="text-right">Sisa</th>
                                 <th>Status</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
@@ -341,7 +358,7 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label>Biaya Makan</label>
+                            <label>Biaya Makan / Pegawai</label>
                             <input type="number" id="editBiayaMakan" step="any">
                         </div>
                         <div class="form-group">
@@ -353,6 +370,20 @@
                         <label>Jumlah Pegawai</label>
                         <input type="number" id="editJumlahPegawai" min="1">
                     </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Biaya Solar</label>
+                            <input type="number" id="editBiayaSolar" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>Biaya Lain-lain</label>
+                            <input type="number" id="editBiayaLain" step="any">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Keterangan Biaya Lain</label>
+                        <input type="text" id="editKeteranganLain">
+                    </div>
                     <button type="submit" class="btn btn-success btn-block">💾 Simpan Perubahan</button>
                     <div id="alertEdit" class="alert-box"></div>
                 </form>
@@ -362,7 +393,7 @@
 
     <script>
         // ============ KONFIGURASI ============
-        var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxnw0UVgZg808wD8BVHH0rt4aSrVR9Wu4IU1AoBNclALq1xnVlAtZTtcyrVHgT33uF_/exec';
+        var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzNw7tNlmxjdLhPPqGEceJDpa_gsXPpUxaDxNxr3DEuPrm202KDKpiyXarQWEQaLwWM/exec';
         var SPREADSHEET_ID = '11NF6Yx8Sb8G7QK4e3QABdOSRaUdbOa187HlBHdWlyZI';
         var API_KEY = 'AIzaSyB4hhr2H9w3pzeHr9esP0i9ljNJU-gWtic';
         var PASSWORD = 'pass4all';
@@ -504,9 +535,9 @@
                 option.value = filtered[j][1];
                 option.textContent = filtered[j][1];
                 option.dataset.hargaBeli = filtered[j][2] || 0;
-                option.dataset.biayaMakan = filtered[j][4] || 0;
-                option.dataset.jasaAngkut = filtered[j][5] || 10000;
-                option.dataset.jumlahPegawai = filtered[j][6] || 1;
+                option.dataset.biayaMakan = filtered[j][3] || 40000;
+                option.dataset.jasaAngkut = filtered[j][4] || 5000;
+                option.dataset.jumlahPegawai = filtered[j][5] || 1;
                 kandangSelect.appendChild(option);
             }
         });
@@ -514,8 +545,8 @@
         document.getElementById('kandang').addEventListener('change', function() {
             var opt = this.options[this.selectedIndex];
             var hargaBeli = opt?.dataset?.hargaBeli || 0;
-            var biayaMakan = opt?.dataset?.biayaMakan || 0;
-            var jasaAngkut = opt?.dataset?.jasaAngkut || 10000;
+            var biayaMakan = opt?.dataset?.biayaMakan || 40000;
+            var jasaAngkut = opt?.dataset?.jasaAngkut || 5000;
             var jumlahPegawai = opt?.dataset?.jumlahPegawai || 1;
             document.getElementById('hargaKemitraan').value = hargaBeli;
             document.getElementById('biayaMakan').value = biayaMakan;
@@ -527,14 +558,20 @@
         function hitungTotal() {
             var tonase = parseFloat(document.getElementById('tonase').value) || 0;
             var hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value) || 0;
-            var biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
-            var jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 10000;
+            var biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 40000;
+            var jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 5000;
             var jumlahPegawai = parseInt(document.getElementById('jumlahPegawai').value) || 1;
+            var biayaSolar = parseFloat(document.getElementById('biayaSolar').value) || 0;
+            var biayaLain = parseFloat(document.getElementById('biayaLain').value) || 0;
+            
             var totalKemitraan = tonase * hargaKemitraan;
             var biayaPerPegawai = biayaMakan + ((tonase / 100) * jasaAngkut);
             var totalBiaya = biayaPerPegawai * jumlahPegawai;
+            
             document.getElementById('totalKemitraanDisplay').textContent = totalKemitraan.toLocaleString('id-ID');
             document.getElementById('totalBiayaDisplay').textContent = totalBiaya.toLocaleString('id-ID');
+            document.getElementById('totalSolarDisplay').textContent = biayaSolar.toLocaleString('id-ID');
+            document.getElementById('totalLainDisplay').textContent = biayaLain.toLocaleString('id-ID');
         }
 
         document.getElementById('tonase').addEventListener('input', hitungTotal);
@@ -542,6 +579,8 @@
         document.getElementById('biayaMakan').addEventListener('input', hitungTotal);
         document.getElementById('jasaAngkut').addEventListener('input', hitungTotal);
         document.getElementById('jumlahPegawai').addEventListener('input', hitungTotal);
+        document.getElementById('biayaSolar').addEventListener('input', hitungTotal);
+        document.getElementById('biayaLain').addEventListener('input', hitungTotal);
 
         function showAlert(msg, type) {
             var el = document.getElementById('alertMessage');
@@ -562,9 +601,12 @@
             var kandang = document.getElementById('kandang').value;
             var tonase = parseFloat(document.getElementById('tonase').value);
             var hargaKemitraan = parseFloat(document.getElementById('hargaKemitraan').value);
-            var biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 0;
-            var jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 10000;
+            var biayaMakan = parseFloat(document.getElementById('biayaMakan').value) || 40000;
+            var jasaAngkut = parseFloat(document.getElementById('jasaAngkut').value) || 5000;
             var jumlahPegawai = parseInt(document.getElementById('jumlahPegawai').value) || 1;
+            var biayaSolar = parseFloat(document.getElementById('biayaSolar').value) || 0;
+            var biayaLain = parseFloat(document.getElementById('biayaLain').value) || 0;
+            var keteranganLain = document.getElementById('keteranganLain').value || '';
 
             if (!tanggal || !kemitraan || !kandang || !tonase || !hargaKemitraan) {
                 showAlert('⚠️ Data belum lengkap!', 'error');
@@ -589,14 +631,24 @@
                         hargaKemitraan: hargaKemitraan,
                         biayaMakan: biayaMakan,
                         jasaAngkut: jasaAngkut,
-                        jumlahPegawai: jumlahPegawai
+                        jumlahPegawai: jumlahPegawai,
+                        biayaSolar: biayaSolar,
+                        biayaLain: biayaLain,
+                        keteranganLain: keteranganLain
                     })
                 });
                 showAlert('✅ Nota berhasil dibuat!', 'success');
                 document.getElementById('formNota').reset();
                 document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
+                document.getElementById('biayaMakan').value = 40000;
+                document.getElementById('jasaAngkut').value = 5000;
+                document.getElementById('jumlahPegawai').value = 1;
+                document.getElementById('biayaSolar').value = 0;
+                document.getElementById('biayaLain').value = 0;
                 document.getElementById('totalKemitraanDisplay').textContent = '0';
                 document.getElementById('totalBiayaDisplay').textContent = '0';
+                document.getElementById('totalSolarDisplay').textContent = '0';
+                document.getElementById('totalLainDisplay').textContent = '0';
             } catch (error) {
                 showAlert('❌ Error: ' + error.message, 'error');
             } finally {
@@ -608,40 +660,63 @@
 
         // ============ REKAP NOTA ============
         async function loadRekap() {
-            var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
+            var urlNota = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_NOTA?key=' + API_KEY;
+            var urlBakul = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/DATA_BAKUL?key=' + API_KEY;
+            
             try {
-                var response = await fetch(url);
-                var data = await response.json();
-                var rows = data.values && data.values.length > 1 ? data.values.slice(1) : [];
+                var [resNota, resBakul] = await Promise.all([fetch(urlNota), fetch(urlBakul)]);
+                var notaData = await resNota.json();
+                var bakulData = await resBakul.json();
+                
+                var notaRows = notaData.values && notaData.values.length > 1 ? notaData.values.slice(1) : [];
+                var bakulRows = bakulData.values && bakulData.values.length > 1 ? bakulData.values.slice(1) : [];
+                
                 document.getElementById('loadingRekap').style.display = 'none';
                 document.getElementById('rekapWrapper').style.display = 'block';
+                
                 var tbody = document.getElementById('rekapBody');
-                if (rows.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada nota</td></tr>';
+                if (notaRows.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--ios-gray);padding:20px;">Belum ada nota</td></tr>';
                     return;
                 }
+                
+                // Hitung total tonase supir per nota
+                var tonaseSupirMap = {};
+                for (var i = 0; i < bakulRows.length; i++) {
+                    var row = bakulRows[i];
+                    var noNota = row[0];
+                    if (!tonaseSupirMap[noNota]) tonaseSupirMap[noNota] = 0;
+                    tonaseSupirMap[noNota] += parseFloat(row[2]) || 0;
+                }
+                
                 var html = '';
-                for (var i = 0; i < rows.length; i++) {
-                    var row = rows[i];
-                    var statusColor = row[11] === 'CLOSED' ? 'var(--ios-green)' : 'var(--ios-orange)';
+                for (var j = 0; j < notaRows.length; j++) {
+                    var nota = notaRows[j];
+                    var noNota = nota[0] || '';
+                    var tonaseNota = parseFloat(nota[4]) || 0;
+                    var tonaseSupir = tonaseSupirMap[noNota] || 0;
+                    var sisaTonase = tonaseNota - tonaseSupir;
+                    var statusColor = nota[11] === 'CLOSED' ? 'var(--ios-green)' : 'var(--ios-orange)';
+                    
                     html += '<tr>';
-                    html += '<td><strong>' + (row[0] || '') + '</strong></td>';
-                    html += '<td>' + (row[1] || '') + '</td>';
-                    html += '<td>' + (row[2] || '') + '</td>';
-                    html += '<td>' + (row[3] || '') + '</td>';
-                    html += '<td class="text-right">' + (row[4] || 0) + '</td>';
-                    html += '<td class="text-right">Rp ' + Number(row[6] || 0).toLocaleString('id-ID') + '</td>';
-                    html += '<td class="text-right">' + (row[10] || 0) + '</td>';
-                    html += '<td><span style="color:' + statusColor + '">' + (row[11] || 'OPEN') + '</span></td>';
+                    html += '<td><strong>' + noNota + '</strong></td>';
+                    html += '<td>' + (nota[1] || '') + '</td>';
+                    html += '<td>' + (nota[2] || '') + '</td>';
+                    html += '<td>' + (nota[3] || '') + '</td>';
+                    html += '<td class="text-right">' + tonaseNota.toFixed(1) + '</td>';
+                    html += '<td class="text-right">' + tonaseSupir.toFixed(1) + '</td>';
+                    html += '<td class="text-right">' + sisaTonase.toFixed(1) + '</td>';
+                    html += '<td class="text-right">Rp ' + Number(nota[6] || 0).toLocaleString('id-ID') + '</td>';
+                    html += '<td><span style="color:' + statusColor + '">' + (nota[11] || 'OPEN') + '</span></td>';
                     html += '<td class="text-center">';
-                    html += '<button class="btn btn-warning btn-sm" onclick="bukaEditNota(\'' + row[0] + '\')">✏️</button> ';
-                    html += '<button class="btn btn-danger btn-sm" onclick="hapusNota(\'' + row[0] + '\')">🗑️</button>';
+                    html += '<button class="btn btn-warning btn-sm" onclick="bukaEditNota(\'' + noNota + '\')">✏️</button> ';
+                    html += '<button class="btn btn-danger btn-sm" onclick="hapusNota(\'' + noNota + '\')">🗑️</button>';
                     html += '</td></tr>';
                 }
                 tbody.innerHTML = html;
             } catch (error) {
                 console.error(error);
-                document.getElementById('loadingRekap').textContent = '❌ Gagal memuat data';
+                document.getElementById('loadingRekap').textContent = '❌ Gagal memuat data: ' + error.message;
             }
         }
 
@@ -669,10 +744,13 @@
                 document.getElementById('editKandang').value = nota[3] || '';
                 document.getElementById('editTonase').value = nota[4] || 0;
                 document.getElementById('editHargaKemitraan').value = nota[5] || 0;
-                document.getElementById('editBiayaMakan').value = nota[7] || 0;
+                document.getElementById('editBiayaMakan').value = nota[7] || 40000;
                 var tonase = parseFloat(nota[4]) || 1;
-                document.getElementById('editJasaAngkut').value = (parseFloat(nota[8]) || 0) / (tonase / 100) || 10000;
+                document.getElementById('editJasaAngkut').value = (parseFloat(nota[8]) || 0) / (tonase / 100) || 5000;
                 document.getElementById('editJumlahPegawai').value = nota[9] || 1;
+                document.getElementById('editBiayaSolar').value = nota[13] || 0;
+                document.getElementById('editBiayaLain').value = nota[14] || 0;
+                document.getElementById('editKeteranganLain').value = nota[15] || '';
                 document.getElementById('modalEditNota').classList.add('active');
                 document.getElementById('alertEdit').className = 'alert-box';
                 document.getElementById('alertEdit').style.display = 'none';
@@ -692,9 +770,12 @@
             var tanggal = document.getElementById('editTanggal').value;
             var tonase = parseFloat(document.getElementById('editTonase').value);
             var hargaKemitraan = parseFloat(document.getElementById('editHargaKemitraan').value);
-            var biayaMakan = parseFloat(document.getElementById('editBiayaMakan').value) || 0;
-            var jasaAngkut = parseFloat(document.getElementById('editJasaAngkut').value) || 10000;
+            var biayaMakan = parseFloat(document.getElementById('editBiayaMakan').value) || 40000;
+            var jasaAngkut = parseFloat(document.getElementById('editJasaAngkut').value) || 5000;
             var jumlahPegawai = parseInt(document.getElementById('editJumlahPegawai').value) || 1;
+            var biayaSolar = parseFloat(document.getElementById('editBiayaSolar').value) || 0;
+            var biayaLain = parseFloat(document.getElementById('editBiayaLain').value) || 0;
+            var keteranganLain = document.getElementById('editKeteranganLain').value || '';
             var alertDiv = document.getElementById('alertEdit');
 
             if (!tanggal || !tonase || !hargaKemitraan) {
@@ -723,7 +804,10 @@
                         hargaKemitraan: hargaKemitraan,
                         biayaMakan: biayaMakan,
                         jasaAngkut: jasaAngkut,
-                        jumlahPegawai: jumlahPegawai
+                        jumlahPegawai: jumlahPegawai,
+                        biayaSolar: biayaSolar,
+                        biayaLain: biayaLain,
+                        keteranganLain: keteranganLain
                     })
                 });
                 alertDiv.className = 'alert-box success';
@@ -867,6 +951,9 @@
                     var kandang = nota[3] || 'Unknown';
                     var totalKemitraan = parseFloat(nota[6]) || 0;
                     var totalBiaya = parseFloat(nota[12]) || 0;
+                    var biayaSolar = parseFloat(nota[13]) || 0;
+                    var biayaLain = parseFloat(nota[14]) || 0;
+                    var keteranganLain = nota[15] || '';
                     
                     labaMap[noNota] = {
                         noNota: noNota,
@@ -877,6 +964,9 @@
                         totalPenjualan: 0,
                         totalKemitraan: totalKemitraan,
                         totalBiaya: totalBiaya,
+                        biayaSolar: biayaSolar,
+                        biayaLain: biayaLain,
+                        keteranganLain: keteranganLain,
                         details: []
                     };
                 }
@@ -922,6 +1012,8 @@
                 var grandTotalPenjualan = 0;
                 var grandTotalKemitraan = 0;
                 var grandTotalBiaya = 0;
+                var grandTotalSolar = 0;
+                var grandTotalLain = 0;
                 var html = '';
                 
                 for (var k = 0; k < keys.length; k++) {
@@ -933,6 +1025,8 @@
                     grandTotalPenjualan += item.totalPenjualan;
                     grandTotalKemitraan += item.totalKemitraan;
                     grandTotalBiaya += item.totalBiaya;
+                    grandTotalSolar += item.biayaSolar || 0;
+                    grandTotalLain += item.biayaLain || 0;
                     
                     var labaClass = laba >= 0 ? 'text-success' : 'text-danger';
                     html += '<tr>';
@@ -949,6 +1043,7 @@
                 }
                 tbody.innerHTML = html;
                 
+                // GRAND TOTAL DENGAN RINCIAN
                 var grandClass = grandTotalLaba >= 0 ? 'text-success' : 'text-danger';
                 tbody.innerHTML += '<tr style="font-weight:700;background:var(--ios-gray-light);border-top:2px solid #1C1C1E;">';
                 tbody.innerHTML += '<td colspan="4" class="text-right">GRAND TOTAL</td>';
@@ -958,6 +1053,22 @@
                 tbody.innerHTML += '<td class="text-right">Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '<td class="text-right ' + grandClass + '">Rp ' + grandTotalLaba.toLocaleString('id-ID') + '</td>';
                 tbody.innerHTML += '</tr>';
+                
+                // RINCIAN FAKTOR PENGURANG & PENAMBAH
+                tbody.innerHTML += '<tr style="background:var(--ios-gray-light);font-size:12px;color:var(--ios-gray);">';
+                tbody.innerHTML += '<td colspan="9" style="padding:8px 12px;">';
+                tbody.innerHTML += '📌 <strong>Rincian Grand Total:</strong> ';
+                tbody.innerHTML += 'Total Penjualan: <strong>Rp ' + grandTotalPenjualan.toLocaleString('id-ID') + '</strong> ';
+                tbody.innerHTML += '| Total Kemitraan: <strong>Rp ' + grandTotalKemitraan.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                tbody.innerHTML += '| Total Biaya: <strong>Rp ' + grandTotalBiaya.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                if (grandTotalSolar > 0) {
+                    tbody.innerHTML += '| Biaya Solar: <strong>Rp ' + grandTotalSolar.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                }
+                if (grandTotalLain > 0) {
+                    tbody.innerHTML += '| Biaya Lain: <strong>Rp ' + grandTotalLain.toLocaleString('id-ID') + '</strong> (pengurang) ';
+                }
+                tbody.innerHTML += '| <strong>Laba Akhir: Rp ' + grandTotalLaba.toLocaleString('id-ID') + '</strong>';
+                tbody.innerHTML += '</td></tr>';
 
                 // Rincian
                 var rincianBody = document.getElementById('rincianBody');
@@ -1024,9 +1135,9 @@
                 html += '<td>' + (row[0] || '') + '</td>';
                 html += '<td>' + (row[1] || '') + '</td>';
                 html += '<td><input type="number" id="' + idBeli + '" value="' + (row[2] || 0) + '" step="any"></td>';
-                html += '<td><input type="number" id="' + idMakan + '" value="' + (row[4] || 0) + '" step="any"></td>';
-                html += '<td><input type="number" id="' + idAngkut + '" value="' + (row[5] || 10000) + '" step="any"></td>';
-                html += '<td><input type="number" id="' + idPegawai + '" value="' + (row[6] || 1) + '" step="1" min="0"></td>';
+                html += '<td><input type="number" id="' + idMakan + '" value="' + (row[3] || 40000) + '" step="any"></td>';
+                html += '<td><input type="number" id="' + idAngkut + '" value="' + (row[4] || 5000) + '" step="any"></td>';
+                html += '<td><input type="number" id="' + idPegawai + '" value="' + (row[5] || 1) + '" step="1" min="0"></td>';
                 html += '<td><button class="btn btn-success btn-sm" onclick="updateAllHarga(\'' + row[0] + '\',\'' + row[1] + '\', this)">💾 Update</button></td>';
                 html += '</tr>';
             }
@@ -1047,8 +1158,8 @@
                 kemitraan: kemitraan,
                 kandang: kandang,
                 hargaBeli: parseFloat(document.getElementById(idBeli)?.value) || 0,
-                biayaMakan: parseFloat(document.getElementById(idMakan)?.value) || 0,
-                jasaAngkut: parseFloat(document.getElementById(idAngkut)?.value) || 10000,
+                biayaMakan: parseFloat(document.getElementById(idMakan)?.value) || 40000,
+                jasaAngkut: parseFloat(document.getElementById(idAngkut)?.value) || 5000,
                 jumlahPegawai: parseInt(document.getElementById(idPegawai)?.value) || 1
             };
             if (btn) {
@@ -1088,8 +1199,8 @@
                     kemitraan: kemitraan,
                     kandang: kandang,
                     hargaBeli: 0,
-                    biayaMakan: 0,
-                    jasaAngkut: 10000,
+                    biayaMakan: 40000,
+                    jasaAngkut: 5000,
                     jumlahPegawai: 1
                 })
             }).then(function() {
